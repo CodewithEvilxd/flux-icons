@@ -1,70 +1,79 @@
 <div align="center">
   <a href="https://fluxicons.vercel.app">
-    <img src="public/logo/logo.svg" width="80" height="80" alt="Flux Icons logo" />
+    <img src="public/logo/logo.svg" width="88" height="88" alt="Flux Icons logo" />
   </a>
   <br />
   <h1>Flux Icons</h1>
-  <p><strong>The Comprehensive Modern Icon Ecosystem for React, shadcn/ui & Next.js.</strong></p>
-  <p>3 Specialized Vaults · 3,700+ Master Glyphs · 21,000+ Production SVGs · 0 Runtime Bloat · 100% Free & MIT.</p>
+  <p><strong>The High-Precision Icon Ecosystem Engineered for Modern Web Apps, shadcn/ui & React.</strong></p>
+  <p>3 Specialized Vaults · 3,700+ Master Glyphs · 21,000+ Production SVGs · Zero Runtime Bloat · 100% Free & MIT.</p>
 
   <p>
-    <a href="https://fluxicons.vercel.app"><img src="https://img.shields.io/badge/Website-fluxicons.vercel.app-black?style=flat-square&logo=vercel" alt="Website" /></a>
-    <a href="https://github.com/codewithevilxd/flux-icons/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/codewithevilxd/flux-icons/ci.yml?branch=main&label=CI&style=flat-square" alt="CI Status" /></a>
-    <a href="https://www.npmjs.com/package/@flux-icons/react"><img src="https://img.shields.io/npm/v/@flux-icons/react?style=flat-square&color=black&label=%40flux-icons%2Freact" alt="NPM Version" /></a>
-    <a href="https://www.figma.com/community/plugin/1672557050316875938/flux-icons"><img src="https://img.shields.io/badge/Figma-Community%20Plugin-black?style=flat-square&logo=figma" alt="Figma Plugin" /></a>
-    <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-black.svg?style=flat-square" alt="License: MIT" /></a>
+    <a href="https://fluxicons.vercel.app"><img src="https://img.shields.io/badge/Website-fluxicons.vercel.app-000000?style=for-the-badge&logo=vercel" alt="Website" /></a>
+    <a href="https://github.com/codewithevilxd/flux-icons/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/codewithevilxd/flux-icons/ci.yml?branch=main&label=CI&style=for-the-badge&color=000000" alt="CI Status" /></a>
+    <a href="https://www.npmjs.com/package/@flux-icons/react"><img src="https://img.shields.io/npm/v/@flux-icons/react?style=for-the-badge&color=000000&label=%40flux-icons%2Freact" alt="NPM Version" /></a>
+    <a href="https://www.figma.com/community/plugin/1672557050316875938/flux-icons"><img src="https://img.shields.io/badge/Figma-Community%20Plugin-000000?style=for-the-badge&logo=figma" alt="Figma Plugin" /></a>
+    <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-000000?style=for-the-badge" alt="License: MIT" /></a>
   </p>
 
   <p>
-    <a href="https://fluxicons.vercel.app"><strong>Live Browser</strong></a> ·
-    <a href="#the-three-vaults"><strong>The 3 Vaults</strong></a> ·
-    <a href="#quick-start"><strong>Quick Start</strong></a> ·
-    <a href="#vault-01-keyline-system"><strong>Keyline Grid</strong></a> ·
-    <a href="#shadcnui-registry"><strong>shadcn/ui Registry</strong></a> ·
-    <a href="#ai-assistant-mcp-server"><strong>MCP Server</strong></a> ·
-    <a href="#packages"><strong>Packages</strong></a> ·
-    <a href="#development"><strong>Development</strong></a>
+    <a href="https://fluxicons.vercel.app"><strong>Browse Library</strong></a> &nbsp;•&nbsp;
+    <a href="#-the-three-vaults"><strong>The 3 Vaults</strong></a> &nbsp;•&nbsp;
+    <a href="#-quick-start"><strong>Quick Start</strong></a> &nbsp;•&nbsp;
+    <a href="#-keyline-system-specification"><strong>Keyline Grid</strong></a> &nbsp;•&nbsp;
+    <a href="#-shadcnui-registry"><strong>shadcn/ui</strong></a> &nbsp;•&nbsp;
+    <a href="#-ai-assistant-mcp-server"><strong>AI MCP Server</strong></a> &nbsp;•&nbsp;
+    <a href="#-monorepo-packages"><strong>Packages</strong></a> &nbsp;•&nbsp;
+    <a href="#-development--contributing"><strong>Development</strong></a>
   </p>
 </div>
 
 ---
 
-## Overview
+## ⚡ Overview
 
-Flux Icons is an open-source, production-grade icon design system engineered from the ground up for modern web apps, design systems, and AI workflows. Rather than a generic grab-bag of symbols, Flux Icons provides a unified visual hierarchy organized into **three specialized vaults totaling over 3,700 unique icons**:
+**Flux Icons** is an open-source, production-grade icon design system engineered from first principles for React, Next.js, and design-conscious developers. Rather than a loosely curated bundle, Flux Icons provides a unified visual hierarchy organized into **three specialized vaults totaling over 3,700 unique icons**:
 
-1. **Keyline Vault**: 1,000 geometric glyphs on a 24×24 grid with strict 2px strokes, 4 cohesive rendering styles, and dual corner geometry (Rounded & Sharp).
-2. **Extended Vault**: 2,242 rich interface icons spanning 6 visual treatments (Linear, Bold, Two-Tone, Bulk, Broken, Outline) across 39 UI categories.
-3. **Motion Vault**: 467 interactive React icons powered by Framer Motion, with fluid hover, tap, loop, and micro-interaction states.
+1. **Vault 01: Keyline (1,000 Glyphs · 8,000 SVGs)**: Geometric drawings on a 24×24 coordinate grid with strict 2px keyline rules, 4 rendering weights (`stroke`, `two-tone`, `duotone`, `fill`), and dual corner geometry (`rounded` and `sharp`).
+2. **Vault 02: Extended (2,242 Glyphs · 13,450+ SVGs)**: Rich interface icons spanning 6 distinct visual treatments (`Linear`, `Bold`, `Two-Tone`, `Bulk`, `Broken`, `Outline`) tailored for fintech, commerce, dashboards, and enterprise applications.
+3. **Vault 03: Motion (467 Components)**: Living, interactive React micro-animations powered by Framer Motion with fluid hover, tap, loop, and controlled animation physics.
 
 Every icon is available as tree-shakable React components, copy-paste shadcn/ui registry items, raw normalized SVGs, or via the terminal CLI and AI MCP server.
 
 ---
 
-## The Three Vaults
+## 🏛️ The Three Vaults
 
-| Vault | Master Glyphs | Total SVGs / Files | Formats & Styles | Best For |
-| --- | --- | --- | --- | --- |
-| **01. Keyline** | `1,000` | 8,000 SVGs | `stroke`, `two-tone`, `duotone`, `fill` (in both `rounded` & `sharp`) | Core product UI, navigation bars, standard action buttons, and design system primitives. |
-| **02. Extended** | `2,242` | 13,450+ SVGs | `Linear`, `Bold`, `Two-Tone`, `Bulk`, `Broken`, `Outline` | Dashboards, fintech, commerce, crypto, settings panels, rich forms, and enterprise apps. |
-| **03. Motion** | `467` | 467 Components | Framer Motion interactive animated React components | Hero sections, active toggle feedback, notifications, delight micro-interactions. |
+Flux Icons organizes its 3,700+ glyphs into three distinct collections so that every part of your application gets the exact visual density it needs:
+
+| Vault | Master Glyphs | Production Files | Styles & Treatments | Primary Use Case |
+| :--- | :---: | :---: | :--- | :--- |
+| **01. Keyline** | `1,000` | 8,000 SVGs | `stroke`, `two-tone`, `duotone`, `fill` (Rounded & Sharp) | Core product navigation, actions, toolbars, and design system primitives. |
+| **02. Extended** | `2,242` | 13,450+ SVGs | `Linear`, `Bold`, `Two-Tone`, `Bulk`, `Broken`, `Outline` | Fintech, e-commerce, dashboards, crypto, settings panels, and complex workflows. |
+| **03. Motion** | `467` | 467 Components | Framer Motion interactive micro-animations | Hero sections, active toggle feedback, notifications, and micro-delight. |
 
 ---
 
-## Quick Start
+## 🚀 Quick Start
 
 ### 1. Keyline React Icons (`@flux-icons/react`)
 
-Install `@flux-icons/react` using your favorite package manager:
+Install `@flux-icons/react` using your package manager of choice:
 
 ```bash
+# pnpm (recommended)
 pnpm add @flux-icons/react
-# or npm i @flux-icons/react
-# or yarn add @flux-icons/react
-# or bun add @flux-icons/react
+
+# npm
+npm install @flux-icons/react
+
+# yarn
+yarn add @flux-icons/react
+
+# bun
+bun add @flux-icons/react
 ```
 
-Import icons directly into your React or Next.js app:
+Import icons directly into your React / Next.js application:
 
 ```tsx
 import { ArrowUpRight, Check, Menu } from "@flux-icons/react"
@@ -87,7 +96,7 @@ export function Navbar() {
 
 ### 2. Extended React Icons
 
-The Extended vault components provide comprehensive UI and dashboard icons with 6 weights:
+Import rich dashboard, commerce, and settings icons across 6 styles:
 
 ```tsx
 import { 
@@ -97,9 +106,9 @@ import {
   WalletMoney 
 } from "@/components/extended-icons/icons"
 
-export function DashboardWidget() {
+export function DashboardHeader() {
   return (
-    <div className="flex gap-4">
+    <div className="flex items-center gap-4">
       <CardSend className="size-6 text-blue-500" />
       <DirectboxNotif className="size-6 text-violet-500" />
       <WalletMoney className="size-6 text-emerald-500" />
@@ -111,7 +120,7 @@ export function DashboardWidget() {
 
 ### 3. Motion Icons (Interactive Micro-Animations)
 
-Motion icons bring tactile delight to buttons, notifications, and indicators using Framer Motion:
+Bring tactile micro-interactions to buttons, notifications, and indicators using Framer Motion:
 
 ```tsx
 import { BellMotion, HeartMotion, CheckMotion } from "@/components/motion-icons/icons"
@@ -129,7 +138,7 @@ export function InteractiveToolbar() {
 
 ---
 
-## Vault 01: Keyline System
+## 📐 Keyline System Specification
 
 **1,000 icons, drawn on one 24×24 grid, in four styles and two corner treatments.** Built for shadcn/ui, free under MIT.
 
@@ -144,7 +153,7 @@ Flux Icons provides a complete visual language designed on a strict 24×24 coord
 
 `stroke` is the drawing every other style starts from, and since 1.0.0 every name comes in all four. `two-tone` is what `duotone` meant until 0.9.0: the outline kept, a 40% plate under it. `duotone` now drops the outline and decides per icon which part is grey and which is black, so the thing that matters reads first: the check on a badge, the liquid in a flask, the data rather than the chart's axes. A glyph with nothing to fill, like `bar-chart`, carries its stroke drawing in the filled styles, so no import ever comes up empty.
 
-### Rounded and Sharp Corners
+### Dual Corner Geometry (Rounded & Sharp)
 
 Every drawing in the table comes twice: rounded, with round caps and filleted corners, and sharp, with butt caps and square corners. Same names, same coverage, so 8,000 SVGs in total.
 
@@ -157,7 +166,7 @@ icons/sharp/fill/bell.svg           # Sharp fill
 
 Sharp is a drawing of its own rather than a filter over the rounded one. Squaring a corner moves the ink, and where that changes the silhouette the geometry was solved again, so both treatments sit side by side in `raw/` and the build converts neither into the other.
 
-### Containers
+### Precision Containers
 
 56 icons come in a `square-` form and 61 in a `circle-` form, which wrap the base drawing rather than replacing it:
 
@@ -171,7 +180,7 @@ A `square-` or `circle-` prefix does not always mean a container. `circle-half` 
 
 ---
 
-## Installation and Tooling
+## 🛠️ Developer & AI Tooling
 
 ### A. Own the Source with shadcn/ui
 
@@ -204,7 +213,7 @@ Give your AI coding companion (Claude Code, Cursor, Windsurf, Antigravity) nativ
 claude mcp add flux-icons -- npx -y @flux-icons/mcp
 ```
 
-Or add to your `.cursor/mcp.json` or IDE config:
+Or add to your `.cursor/mcp.json` or `.mcp.json`:
 
 ```json
 {
@@ -249,7 +258,7 @@ icons/
     └── fill/             # Sharp fill SVGs
 ```
 
-### E. Vue, Svelte, Solid, and Vanilla (Iconify)
+### E. Vue, Svelte, Solid & Vanilla (Iconify)
 
 The entire set is indexed on [Iconify](https://icon-sets.iconify.design/flux-icons/) as `flux-icons`:
 
@@ -267,12 +276,12 @@ The entire set is indexed on [Iconify](https://icon-sets.iconify.design/flux-ico
 
 ---
 
-## Packages
+## 📦 Monorepo Packages
 
-The repository is maintained as a high-performance monorepo containing three npm packages and one Figma plugin:
+The repository is maintained as an organized pnpm monorepo containing three npm packages and one Figma plugin:
 
 | Package | Purpose | Distribution |
-| --- | --- | --- |
+| :--- | :--- | :--- |
 | [`@flux-icons/react`](packages/react) | Tree-shakable React components with subpath exports | [npm](https://www.npmjs.com/package/@flux-icons/react) |
 | [`@flux-icons/cli`](packages/cli) | Terminal search and download utility | [npm](https://www.npmjs.com/package/@flux-icons/cli) |
 | [`@flux-icons/mcp`](packages/mcp) | MCP server for Claude, Cursor, and AI agents | [npm](https://www.npmjs.com/package/@flux-icons/mcp) |
@@ -280,7 +289,7 @@ The repository is maintained as a high-performance monorepo containing three npm
 
 ---
 
-## Categories
+## 🗂️ Categories
 
 The icon set spans 39 comprehensive categories designed to meet real production application needs:
 
@@ -290,28 +299,27 @@ Release updates and redraws are detailed in the [Changelog](https://fluxicons.ve
 
 ---
 
-## Repository Architecture
+## 📁 Repository Architecture
 
 ```
 flux-icons/
-├── src/
-│   ├── app/               # Next.js App Router (web application at fluxicons.vercel.app)
-│   ├── components/        # UI components, layout, and icon catalog browsers
-│   │   ├── icons/         # Keyline React icons (generated)
-│   │   ├── extended-icons/# Extended collection components (2,242 icons)
-│   │   └── motion-icons/  # Framer Motion animated icons (467 icons)
-│   ├── hooks/             # Custom React hooks
-│   └── lib/               # Metadata, SEO, search algorithms, and icon loaders
-├── packages/
-│   ├── react/             # @flux-icons/react component library
-│   ├── cli/               # @flux-icons/cli terminal utility
-│   ├── mcp/               # @flux-icons/mcp AI assistant integration
-│   └── figma-plugin/      # Flux Icons Figma plugin
+├── .github/               # CI workflows, issue templates & funding config
+├── .vscode/               # Workspace recommended settings
+├── icons/                 # 8,000 production SVGs (normalized & checked)
+├── packages/              # Monorepo packages (react, cli, mcp, figma-plugin)
+├── pipeline/              # Build pipelines, linters & geometric tools
+│   ├── build.mjs          # Compiles raw Figma vectors to icons/
+│   ├── build-react.mjs    # Compiles Keyline React components
+│   ├── build-extended.mjs # Compiles Extended React components (2,242 icons)
+│   ├── build-motion.mjs   # Compiles Framer Motion animated icons (467 icons)
+│   ├── build-data.mjs     # Generates search & metadata bundles
+│   ├── lint.mjs           # Geometry, padding & ink-box verification
+│   ├── ship.mjs           # Automated release & packaging pipeline
+│   └── tools/             # Mathematical shape solvers & geometry generators
+├── previews/              # Social cards, posters & Figma covers
+├── public/                # Static brand assets & mockups
 ├── raw/                   # Figma SVG exports (Single Source of Truth)
-├── icons/                 # Generated normalized SVGs (rounded & sharp)
-├── pipeline/              # Build pipelines, geometry linters, and verification suites
-├── previews/              # Social cards, posters, and Figma cover assets
-└── public/                # Static brand assets and mockups
+└── src/                   # Next.js App Router & web applications
 ```
 
 > [!IMPORTANT]
@@ -319,7 +327,7 @@ flux-icons/
 
 ---
 
-## Development
+## 💻 Development & Contributing
 
 Prerequisites: **Node.js >= 20.9** and **pnpm**.
 
@@ -335,6 +343,8 @@ pnpm icons:build
 
 # 4. Generate React components across packages and web catalog
 pnpm icons:react
+pnpm icons:extended:build
+pnpm icons:motion:build
 
 # 5. Run geometry, ink-box, and padding linters
 pnpm icons:lint
@@ -357,7 +367,7 @@ For detailed information on geometric tolerances, stroke envelopes, and corner r
 
 ---
 
-## Sponsors
+## 🤝 Sponsors
 
 <!-- SPONSORS:start -->
 
@@ -367,6 +377,6 @@ For detailed information on geometric tolerances, stroke envelopes, and corner r
 
 ---
 
-## License
+## 📄 License
 
 Flux Icons is open-source software licensed under the [MIT License](LICENSE). Built and maintained with precision by Nishant Gaurav ([@codewithevilxd](https://github.com/codewithevilxd)).
