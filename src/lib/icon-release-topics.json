@@ -1,0 +1,479 @@
+{
+  "$comment": "SOURCE, NOT GENERATED. How a release reads on the changelog, shaped after Preline's (Zafar, 17 Sep 2026, pointing at preline.co/docs/changelog.html): a title, then chips (an icon and a label, like Preline's \"New Components & Improvements\" and \"Fixes and Improvements\"), each followed by its items with a bold lead (\"People:\", \"Layout:\") and the drawings the item is about. His asks on the way: \"topic > icons, topic > icons. not all topics first and then all icons after that\", \"categorize them, not just text > icons. titles, etc.\", \"redrawns deserve to be a separate topic, not within a topic and each subtitle must carry shareable link like the main titles\". So redraws are always their own chip. Per version: `title` (the release's headline, which every version has, released ones included, because the page heads each entry by it) and optionally `sections`: chips with `title`, `icon` (a drawing from this set, by name), `text`, and items in `sections` with `title`, `text`, `names` (added) or `redraws`. A version with no `sections` is drawn with default chips, New drawings and Redrawn, straight off git. pipeline/build-history.mjs gives every chip and item an `anchor` (v<version>-<chip>, v<version>-<chip>-<item>) that the site links, keeps only the drawings the entry carries, and appends anything no item claims in a last untitled group, reported, so a stale list never drops a drawing. Keyed by the version the work ships as, so nothing is re-keyed at the tag. Numbers go in as {names} and {files}. Where a version has sections they replace the note.",
+  "releases": {
+    "1.0.0": {
+      "title": "1,000 icons in stroke, two-tone, duotone and fill, each rounded and sharp: 8,000 total",
+      "sections": [
+        {
+          "title": "Four styles",
+          "icon": "shapes",
+          "text": "Every name now comes in four styles, stroke, two-tone, duotone and fill, and each style in two corner shapes, rounded and sharp: {files} SVGs across {names} names. The outlined duotone is called two-tone from this release, so an import of duotone that wants the old look changes to two-tone. Duotone is a new style with no outline, a grey body with the part that matters in black, drawn icon by icon."
+        },
+        {
+          "title": "New drawings",
+          "icon": "sparkles",
+          "sections": [
+            {
+              "title": "People",
+              "text": "A new shelf for the boy, the girl, a baby with a curl, one with a bow, and both babies again with a pacifier.",
+              "names": [
+                "boy",
+                "girl",
+                "baby-boy",
+                "baby-girl",
+                "baby-2-boy",
+                "baby-2-girl"
+              ]
+            },
+            {
+              "title": "Layout",
+              "text": "The panels gain their close, open and dashed forms on every side, three split layouts and a table.",
+              "names": [
+                "panel-left-open",
+                "panel-left-close",
+                "panel-left-dashed",
+                "panel-left-open-dashed",
+                "panel-right-open",
+                "panel-right-close",
+                "panel-right-dashed",
+                "panel-right-open-dashed",
+                "panel-top-open",
+                "panel-top-close",
+                "panel-top-dashed",
+                "panel-top-open-dashed",
+                "panel-bottom-open",
+                "panel-bottom-close",
+                "panel-bottom-dashed",
+                "panel-bottom-open-dashed",
+                "panels-left-bottom",
+                "panels-right-bottom",
+                "panels-top-left",
+                "table"
+              ]
+            },
+            {
+              "title": "Devices",
+              "text": "The phone takes call, incoming, outgoing, missed and forwarded. The tablet takes its upright form and the phone's eight signs, a laptop arrives and sits beside a phone. A watch, a hard drive, a cable and a headset visor join them, and a phone casts. An app window takes a plus, a minus, an x and a cursor beside its ruled form, a CCTV camera watches with and without a slash, a mouse arrives, and a shredder takes a page.",
+              "names": [
+                "phone-call",
+                "phone-incoming",
+                "phone-outgoing",
+                "phone-missed",
+                "phone-forwarded",
+                "tablet",
+                "tablet-vertical",
+                "tablet-arrow-down",
+                "tablet-arrow-left",
+                "tablet-arrow-in-up",
+                "tablet-arrow-in-right",
+                "tablet-check",
+                "tablet-minus",
+                "tablet-plus",
+                "tablet-x",
+                "laptop",
+                "laptop-smartphone",
+                "watch",
+                "hard-drive",
+                "cable",
+                "vision-pro",
+                "smartphone-cast",
+                "app-window",
+                "app-window-2",
+                "app-window-plus",
+                "app-window-minus",
+                "app-window-x",
+                "app-window-cursor",
+                "cctv",
+                "cctv-off",
+                "mouse",
+                "shredder"
+              ]
+            },
+            {
+              "title": "Finance",
+              "text": "Two banknotes carry a check, minus, plus and x, and a wallet holds its cards.",
+              "names": [
+                "banknote",
+                "banknote-check",
+                "banknote-minus",
+                "banknote-plus",
+                "banknote-x",
+                "banknote-2",
+                "banknote-2-check",
+                "banknote-2-minus",
+                "banknote-2-plus",
+                "banknote-2-x",
+                "wallet-cards"
+              ]
+            },
+            {
+              "title": "Time",
+              "text": "The alarm clock takes a check, plus and minus, beside a stopwatch and its reset.",
+              "names": [
+                "alarm-clock",
+                "alarm-clock-check",
+                "alarm-clock-plus",
+                "alarm-clock-minus",
+                "timer",
+                "timer-reset"
+              ]
+            },
+            {
+              "title": "Transport",
+              "text": "A rocket climbs on its flame, trails speed lines and stands upright, and a car drives past in profile.",
+              "names": [
+                "rocket",
+                "rocket-2",
+                "rocket-vertical",
+                "car"
+              ]
+            },
+            {
+              "title": "Pointers",
+              "text": "A closed hand and an open hand join the pointer.",
+              "names": [
+                "hand-closed",
+                "hand-open"
+              ]
+            },
+            {
+              "title": "Arrows",
+              "text": "The big arrows point four ways, long and short, and a clockwise turn takes a plus.",
+              "names": [
+                "arrow-big-up",
+                "arrow-big-down",
+                "arrow-big-left",
+                "arrow-big-right",
+                "arrow-big-up-short",
+                "arrow-big-down-short",
+                "arrow-big-left-short",
+                "arrow-big-right-short",
+                "rotate-cw-plus"
+              ]
+            },
+            {
+              "title": "Text",
+              "text": "The heading comes with its six levels, beside the case marks, an outlined T and a whole word.",
+              "names": [
+                "heading",
+                "heading-1",
+                "heading-2",
+                "heading-3",
+                "heading-4",
+                "heading-5",
+                "heading-6",
+                "case-sensitive",
+                "case-upper",
+                "type-outline",
+                "whole-word"
+              ]
+            },
+            {
+              "title": "Mail",
+              "text": "The round and the square bubble take a sparkle, and send takes a clock.",
+              "names": [
+                "message-sparkle",
+                "message-square-sparkle",
+                "send-clock"
+              ]
+            },
+            {
+              "title": "Media",
+              "text": "A screen takes AirPlay, a film camera rolls its reels, a mast broadcasts, a radio tunes in, and sound gets a search.",
+              "names": [
+                "airplay",
+                "video",
+                "broadcast",
+                "audio-lines-search",
+                "radio"
+              ]
+            },
+            {
+              "title": "Users",
+              "text": "A person speaks, contacts and an ID card carry a portrait, and the accessibility figure stands in its ring. A fingerprint and an incognito hat with dark glasses join them.",
+              "names": [
+                "user-voice",
+                "contacts",
+                "id-card",
+                "accessibility",
+                "fingerprint-pattern",
+                "hat-glasses"
+              ]
+            },
+            {
+              "title": "Actions",
+              "text": "A shield takes a key, a siren sounds, and delete clears a character.",
+              "names": [
+                "shield-key",
+                "siren",
+                "delete"
+              ]
+            },
+            {
+              "title": "Controls",
+              "text": "Two switches, one on and one off.",
+              "names": [
+                "toggles"
+              ]
+            },
+            {
+              "title": "Charts",
+              "text": "A gauge reads its dial.",
+              "names": [
+                "gauge"
+              ]
+            },
+            {
+              "title": "Maps",
+              "text": "A map pin carries a heart, and a milestone points the way.",
+              "names": [
+                "map-pin-heart",
+                "milestone"
+              ]
+            },
+            {
+              "title": "Commerce",
+              "text": "A shopping basket, a paper bag and a shirt.",
+              "names": [
+                "shopping-basket",
+                "paper-bag",
+                "shirt"
+              ]
+            },
+            {
+              "title": "Stationery",
+              "text": "A sticky note takes a check, a minus, a plus, an x and a slash, and two of them stack.",
+              "names": [
+                "sticky-note",
+                "sticky-note-check",
+                "sticky-note-minus",
+                "sticky-note-plus",
+                "sticky-note-x",
+                "sticky-note-off",
+                "sticky-notes"
+              ]
+            },
+            {
+              "title": "Art",
+              "text": "A swatch book fans its colours.",
+              "names": [
+                "swatch-book"
+              ]
+            },
+            {
+              "title": "Weather",
+              "text": "A snowflake, wind and humidity, two clouds, and a cloud over the sun and over the moon.",
+              "names": [
+                "snowflake",
+                "wind",
+                "humidity",
+                "clouds",
+                "cloud-sun",
+                "cloud-moon"
+              ]
+            },
+            {
+              "title": "Web",
+              "text": "The earth, the Americas and Africa on a globe.",
+              "names": [
+                "earth"
+              ]
+            },
+            {
+              "title": "Nature",
+              "text": "Three arrows chase round to recycle.",
+              "names": [
+                "recycle"
+              ]
+            },
+            {
+              "title": "AI",
+              "text": "The bot takes a slash, and a brain turns a cog.",
+              "names": [
+                "bot-off",
+                "brain-cog"
+              ]
+            },
+            {
+              "title": "Files",
+              "text": "A zipped folder, a folder tree, a file takes a search and a type mark, whole or in its corner, and a pen writes with sparkles.",
+              "names": [
+                "folder-zip",
+                "file-search",
+                "folder-tree",
+                "file-type",
+                "file-type-corner",
+                "pen-sparkles"
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Redrawn",
+          "icon": "pen",
+          "text": "Drawings that already shipped and were drawn again, each shown before and after.",
+          "sections": [
+            {
+              "title": "Layout",
+              "text": "The four dashed close panels sit their grey under the frame's round corners, and the grid fills keep 2 units clear of their edges.",
+              "redraws": [
+                "panel-left-close-dashed",
+                "panel-right-close-dashed",
+                "panel-top-close-dashed",
+                "panel-bottom-close-dashed",
+                "grid-2x2",
+                "grid-2x3",
+                "grid-3x2",
+                "grid-3x3"
+              ]
+            },
+            {
+              "title": "Devices",
+              "text": "In two-tone scan-eye greys its frame, scan-search's handle starts on its ring, and monitor-off's far side stands off the slash as far as every other -off does.",
+              "redraws": [
+                "scan-eye",
+                "scan-search",
+                "monitor-off"
+              ]
+            },
+            {
+              "title": "Finance",
+              "text": "The coins sit on rounder faces with 2 units between every coin.",
+              "redraws": [
+                "coins"
+              ]
+            },
+            {
+              "title": "Pointers",
+              "text": "The pointer is drawn again in all four directions, and its fill carries the finger lines.",
+              "redraws": [
+                "hand-pointer",
+                "hand-pointer-down",
+                "hand-pointer-left",
+                "hand-pointer-right"
+              ]
+            },
+            {
+              "title": "Files",
+              "text": "The file fills cut their folded corner clear of the edge, and the paperclip runs longer.",
+              "redraws": [
+                "paperclip",
+                "file",
+                "file-arrow-down",
+                "file-arrow-left",
+                "file-arrow-right",
+                "file-arrow-up",
+                "file-check",
+                "file-code",
+                "file-image",
+                "file-minus",
+                "file-off",
+                "file-plus",
+                "file-spreadsheet",
+                "file-text",
+                "file-x",
+                "file-zip"
+              ]
+            },
+            {
+              "title": "Charts",
+              "text": "In two-tone the charts grey their axes and keep the data in black.",
+              "redraws": [
+                "chart-area",
+                "chart-bar-big",
+                "chart-bar-stacked",
+                "chart-candlestick",
+                "chart-column-big",
+                "chart-column-stacked",
+                "chart-network",
+                "chart-scatter-bubble"
+              ]
+            },
+            {
+              "title": "Media",
+              "text": "The gallery frames take a tighter radius, and play is smaller.",
+              "redraws": [
+                "gallery-horizontal",
+                "gallery-horizontal-end",
+                "gallery-horizontal-start",
+                "gallery-vertical",
+                "gallery-vertical-end",
+                "gallery-vertical-start",
+                "play"
+              ]
+            },
+            {
+              "title": "Actions",
+              "text": "The three dots are larger, and the sparkle's tips reach the same 2-unit margin as everything else.",
+              "redraws": [
+                "more-horizontal",
+                "more-vertical",
+                "sparkle"
+              ]
+            },
+            {
+              "title": "Shapes",
+              "text": "The dice take larger pips, and in two-tone circle-progress-play greys the part still to play.",
+              "redraws": [
+                "dice-1",
+                "dice-2",
+                "dice-3",
+                "dice-4",
+                "dice-5",
+                "dice-6",
+                "dice-6-horizontal",
+                "circle-progress-play"
+              ]
+            },
+            {
+              "title": "Web",
+              "text": "In two-tone globe-off greys its far side.",
+              "redraws": [
+                "globe-off"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "0.9.0": {
+      "title": "Transport, Nature, Animals, AI, Science and Health"
+    },
+    "0.8.0": {
+      "title": "A month of empty searches, drawn"
+    },
+    "0.7.0": {
+      "title": "Charts, diagrams, faces and square messages"
+    },
+    "0.6.0": {
+      "title": "Currency marks with circled halves"
+    },
+    "0.5.0": {
+      "title": "The chains renamed and a Text shelf"
+    },
+    "0.4.0": {
+      "title": "Every sharp end cut back"
+    },
+    "0.3.0": {
+      "title": "Sharp corners across the whole set"
+    },
+    "0.2.0": {
+      "title": "Shields, tools, grids and percent tags"
+    },
+    "0.1.4": {
+      "title": "No drawing changes"
+    },
+    "0.1.3": {
+      "title": "Queue and repeat-1 redrawn"
+    },
+    "0.1.2": {
+      "title": "Media controls and gallery layouts"
+    },
+    "0.1.1": {
+      "title": "Batteries, podiums and grids"
+    },
+    "0.1.0": {
+      "title": "The first cut of the set"
+    }
+  }
+}

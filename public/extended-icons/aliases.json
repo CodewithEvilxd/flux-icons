@@ -1,0 +1,449 @@
+{
+  "cross": [
+    "close-circle",
+    "close-square",
+    "close"
+  ],
+  "cancel": [
+    "close-circle",
+    "close-square"
+  ],
+  "xmark": [
+    "close-circle",
+    "close-square",
+    "close"
+  ],
+  "delete": [
+    "trash",
+    "close-circle",
+    "minus-cirlce"
+  ],
+  "remove": [
+    "trash",
+    "close-circle",
+    "minus-cirlce"
+  ],
+  "bin": [
+    "trash"
+  ],
+  "tick": [
+    "tick-circle",
+    "tick-square",
+    "check"
+  ],
+  "check": [
+    "tick-circle",
+    "tick-square",
+    "verify"
+  ],
+  "done": [
+    "tick-circle",
+    "tick-square"
+  ],
+  "success": [
+    "tick-circle",
+    "tick-square"
+  ],
+  "checkmark": [
+    "tick-circle",
+    "tick-square"
+  ],
+  "verify": [
+    "tick-circle",
+    "verify",
+    "shield-tick"
+  ],
+  "mail": [
+    "sms",
+    "message",
+    "message-text"
+  ],
+  "email": [
+    "sms",
+    "message",
+    "message-text"
+  ],
+  "inbox": [
+    "sms",
+    "direct-inbox",
+    "message"
+  ],
+  "plus": [
+    "add",
+    "add-circle",
+    "add-square"
+  ],
+  "create": [
+    "add",
+    "add-circle",
+    "pen-add"
+  ],
+  "new": [
+    "add",
+    "add-circle"
+  ],
+  "edit": [
+    "edit",
+    "edit-2",
+    "pen-tool"
+  ],
+  "pencil": [
+    "edit",
+    "pen-tool"
+  ],
+  "write": [
+    "edit",
+    "pen-tool"
+  ],
+  "search": [
+    "search-normal",
+    "search-zoom-in",
+    "search-favorite"
+  ],
+  "find": [
+    "search-normal"
+  ],
+  "magnify": [
+    "search-zoom-in"
+  ],
+  "settings": [
+    "setting",
+    "setting-2",
+    "setting-3"
+  ],
+  "preferences": [
+    "setting",
+    "setting-2"
+  ],
+  "config": [
+    "setting",
+    "setting-2"
+  ],
+  "gear": [
+    "setting",
+    "setting-2"
+  ],
+  "user": [
+    "user",
+    "profile",
+    "profile-circle"
+  ],
+  "profile": [
+    "user",
+    "profile",
+    "profile-circle"
+  ],
+  "account": [
+    "user",
+    "profile"
+  ],
+  "person": [
+    "user",
+    "profile"
+  ],
+  "home": [
+    "home",
+    "home-1",
+    "home-2"
+  ],
+  "house": [
+    "home",
+    "house"
+  ],
+  "heart": [
+    "heart",
+    "like",
+    "like-1"
+  ],
+  "like": [
+    "heart",
+    "like",
+    "like-1"
+  ],
+  "favorite": [
+    "heart",
+    "like",
+    "star"
+  ],
+  "love": [
+    "heart",
+    "like"
+  ],
+  "star": [
+    "star",
+    "star-1",
+    "medal-star"
+  ],
+  "rating": [
+    "star",
+    "ranking"
+  ],
+  "favourite": [
+    "star",
+    "heart"
+  ],
+  "lock": [
+    "lock",
+    "lock-1",
+    "lock-circle"
+  ],
+  "unlock": [
+    "unlock"
+  ],
+  "security": [
+    "lock",
+    "security",
+    "shield-security"
+  ],
+  "secure": [
+    "lock",
+    "shield"
+  ],
+  "warning": [
+    "warning-2",
+    "danger",
+    "info-circle"
+  ],
+  "alert": [
+    "notification",
+    "notification-bing",
+    "danger"
+  ],
+  "error": [
+    "danger",
+    "close-circle"
+  ],
+  "calendar": [
+    "calendar",
+    "calendar-1",
+    "calendar-2"
+  ],
+  "date": [
+    "calendar"
+  ],
+  "schedule": [
+    "calendar",
+    "clock"
+  ],
+  "time": [
+    "clock",
+    "clock-1",
+    "timer"
+  ],
+  "clock": [
+    "clock",
+    "clock-1"
+  ],
+  "timer": [
+    "timer",
+    "timer-1"
+  ],
+  "download": [
+    "document-download",
+    "arrow-down",
+    "import"
+  ],
+  "upload": [
+    "document-upload",
+    "arrow-up",
+    "export"
+  ],
+  "import": [
+    "import",
+    "document-download"
+  ],
+  "export": [
+    "export",
+    "document-upload"
+  ],
+  "arrow": [
+    "arrow",
+    "arrow-right",
+    "arrow-left",
+    "arrow-up",
+    "arrow-down"
+  ],
+  "next": [
+    "arrow-right",
+    "next",
+    "forward"
+  ],
+  "previous": [
+    "arrow-left",
+    "previous",
+    "backward"
+  ],
+  "back": [
+    "arrow-left",
+    "back-square"
+  ],
+  "copy": [
+    "copy",
+    "document-copy"
+  ],
+  "duplicate": [
+    "copy",
+    "document-copy"
+  ],
+  "paste": [
+    "clipboard"
+  ],
+  "clipboard": [
+    "clipboard"
+  ],
+  "file": [
+    "document",
+    "document-text"
+  ],
+  "document": [
+    "document",
+    "document-text"
+  ],
+  "page": [
+    "document",
+    "note"
+  ],
+  "folder": [
+    "folder",
+    "folder-2",
+    "folder-open"
+  ],
+  "directory": [
+    "folder"
+  ],
+  "image": [
+    "image",
+    "gallery",
+    "picture-frame"
+  ],
+  "picture": [
+    "image",
+    "gallery"
+  ],
+  "photo": [
+    "image",
+    "gallery",
+    "camera"
+  ],
+  "gallery": [
+    "gallery"
+  ],
+  "video": [
+    "video",
+    "video-play",
+    "video-circle"
+  ],
+  "play": [
+    "play",
+    "video-play"
+  ],
+  "audio": [
+    "music",
+    "musicnote",
+    "volume"
+  ],
+  "music": [
+    "music",
+    "musicnote"
+  ],
+  "sound": [
+    "sound",
+    "volume"
+  ],
+  "volume": [
+    "volume",
+    "speaker"
+  ],
+  "phone": [
+    "call",
+    "mobile"
+  ],
+  "call": [
+    "call",
+    "calling"
+  ],
+  "mobile": [
+    "mobile"
+  ],
+  "location": [
+    "location",
+    "gps",
+    "map"
+  ],
+  "map": [
+    "map",
+    "location"
+  ],
+  "gps": [
+    "gps",
+    "location"
+  ],
+  "pin": [
+    "location"
+  ],
+  "cart": [
+    "shopping-cart",
+    "bag"
+  ],
+  "shop": [
+    "shop",
+    "shopping-cart",
+    "bag"
+  ],
+  "shopping": [
+    "shopping-cart",
+    "shop"
+  ],
+  "bag": [
+    "bag",
+    "shopping-bag"
+  ],
+  "money": [
+    "dollar-circle",
+    "money",
+    "wallet"
+  ],
+  "dollar": [
+    "dollar-circle"
+  ],
+  "payment": [
+    "wallet",
+    "card"
+  ],
+  "wallet": [
+    "wallet"
+  ],
+  "github": [
+    "github"
+  ],
+  "twitter": [
+    "twitter"
+  ],
+  "x": [
+    "new-twitter"
+  ],
+  "instagram": [
+    "instagram"
+  ],
+  "facebook": [
+    "facebook"
+  ],
+  "youtube": [
+    "youtube"
+  ],
+  "linkedin": [
+    "linkedin"
+  ],
+  "discord": [
+    "discord"
+  ],
+  "twitch": [
+    "twitch"
+  ],
+  "sparkle": [
+    "sparkle",
+    "magic",
+    "ai",
+    "star"
+  ]
+}

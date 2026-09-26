@@ -1,0 +1,525 @@
+// Compose the Figma Community cover, then rasterise it.
+//
+//   node pipeline/build-cover.mjs [--check]
+//
+// Writes two covers: previews/figma-cover.{svg,png} at 1920x1080, the size
+// Figma asks for on a Community file, and previews/social-preview.{svg,png} at
+// 1280x640 for a repository's social preview. The two aspects differ, which is
+// why there are two compositions rather than one drawing at two scales.
+//
+// The icons on them are read out of icons/stroke/ rather than pasted in, so a
+// cover cannot end up advertising a glyph that has since been redrawn or
+// renamed.
+//
+// Like build-brand.mjs, this shells out to headless Chrome, because plain Node
+// cannot rasterise a vector. It carries its own copy of the Chrome lookup
+// rather than importing one: the two scripts are the only callers, and a
+// pipeline/lib/chrome.mjs holding nine lines used twice is worth doing on the
+// day a third caller appears, not before.
+//
+// --check re-composes the SVG and compares it, so a renamed icon fails here
+// rather than being noticed on the Community page. It deliberately does not
+// diff the PNG: two Chrome versions disagree by a pixel on identical input,
+// which is the same reason brand:check stays out of CI.
+
+import { execFile } from "node:child_process"
+import { existsSync } from "node:fs"
+import { mkdir, readdir, readFile, writeFile } from "node:fs/promises"
+import { join } from "node:path"
+import { promisify } from "node:util"
+import { fileURLToPath } from "node:url"
+
+const run = promisify(execFile)
+const ROOT = fileURLToPath(new URL("..", import.meta.url))
+const SRC = join(ROOT, "icons", "stroke")
+const OUT = join(ROOT, "previews")
+const check = process.argv.includes("--check")
+
+const c = (n, s) => `\x1b[${n}m${s}\x1b[0m`
+
+const W = 1920
+const PAD = 100
+
+/**
+ * The light theme's tokens resolved to literals, exactly as the social card
+ * resolves them. A cover is a static image on someone else's page: there is no
+ * viewer theme to read, and Figma puts it on its own surface.
+ */
+const BG = "#ffffff"
+const PRIMARY = "#006aa5"
+const INK = "#0a0a0a"
+const MUTED = "#737373"
+const HAIRLINE = "#e5e5e5"
+
+/**
+ * The mark's paths and ink box, read from public/logo/logo.svg, which
+ * `brand:check` holds to the shipped `shapes-2` drawings. Their painting comes
+ * with them and paints `currentColor`, so a cover only supplies the colour.
+ */
+const LOGO = await readFile(join(ROOT, "public", "logo", "logo.svg"), "utf8")
+const MARK = (LOGO.match(/<(?:path|image)\b[^>]*?\/?>/g) || []).join("")
+const [MARK_X, MARK_Y, MARK_W] = LOGO.match(/viewBox="([^"]+)"/)[1]
+  .split(/\s+/)
+  .map(Number)
+
+/** The mark at `px` across, with the top-left corner of its ink box at (x, y). */
+const markAt = (x, y, px, colour) =>
+  `<g transform="translate(${x} ${y}) scale(${px / MARK_W}) translate(${-MARK_X} ${-MARK_Y})" color="${colour}">${MARK}</g>`
+
+/**
+ * The glyphs the cover leads with, in reading order.
+ *
+ * Curated rather than sampled, because the first row is the one anyone
+ * actually looks at and an alphabetical slice opens on four align-offsets. Any
+ * name that no longer exists is dropped and the grid tops up from the set, so
+ * a rename degrades the cover instead of breaking the build.
+ */
+const WISHLIST = [
+  // Row 1: the glyphs every set is judged on.
+  "check",
+  "x",
+  "plus",
+  "search",
+  "user",
+  "settings",
+  "mail",
+  "calendar",
+  "file",
+  "folder",
+  // Row 2: the next tier of universals.
+  "home",
+  "bell",
+  "lock",
+  "globe",
+  "play",
+  "download",
+  "upload",
+  "bin",
+  "copy",
+  "clock",
+  // Row 3: range, so the cover is not thirty variations on a rectangle.
+  "smartphone",
+  "shopping-cart",
+  "credit-card",
+  "map-pin",
+  "git-branch",
+  "terminal",
+  "bar-chart",
+  "tag",
+  "arrow-right",
+  "menu",
+  // Row 4, which the Figma cover added when it went to 16:9. It was briefly
+  // filled by the alphabetical top-up and ended on `align-offset-bottom`,
+  // `-left` and `-right`: three near-identical glyphs closing the one image
+  // most people judge the set by.
+  "link",
+  "package",
+  "bookmark",
+  "share",
+  "gift",
+  "heart",
+  "star",
+  "eye",
+  "image",
+  "code",
+  // Spares. The list is longer than the grid so a rename is absorbed here
+  // rather than by the alphabetical top-up, which opens on align-offset.
+  "chevron-down",
+  "cloud",
+  "sun",
+  "wifi",
+  "filter",
+  "database",
+]
+
+const COLS = 10
+const CELL = (W - PAD * 2) / COLS
+const GLYPH = 64
+
+/**
+ * The two covers, which are no longer one drawing at two scales.
+ *
+ * They were, on the belief that Figma wanted 1920×960 and GitHub 1280×640, both
+ * 2:1. Figma's publish dialog asks for **1920×1080**, so the shared aspect never
+ * held and the cover sat 120px short inside the frame with the composition
+ * floating in it. GitHub's social preview really is 2:1, so the fix is a second
+ * composition rather than one aspect for both.
+ *
+ * The 120px is exactly one glyph row, which is why the Figma cover carries four
+ * rows and the social preview three. Nothing else moves: the header is
+ * identical, and the footer is measured from the bottom edge so both sit the
+ * same distance from it.
+ */
+const COVERS = [
+  {
+    svg: "figma-cover.svg",
+    png: "figma-cover.png",
+    h: 1080,
+    rows: 4,
+    raster: [1920, 1080],
+  },
+  {
+    svg: "social-preview.svg",
+    png: "social-preview.png",
+    h: 960,
+    rows: 3,
+    raster: [1280, 640],
+  },
+]
+
+/**
+ * The plugin's Community cover, which is a different pitch from the file's.
+ *
+ * The file cover argues "here is a set". This one has to argue "here is a thing
+ * that does something", so it draws the plugin's own panel: the search field,
+ * the three style tabs and a grid, at the proportions `ui.html` actually uses.
+ * A cover that showed only glyphs would be indistinguishable from the file's
+ * and would say nothing about why a plugin exists.
+ *
+ * Same 1920×1080 the publish dialog asks for, and the glyphs on it are read out
+ * of `icons/stroke/` like every other cover here, so it cannot advertise a
+ * drawing that has since been renamed.
+ */
+const PLUGIN_COVER = {
+  svg: "plugin-cover.svg",
+  png: "plugin-cover.png",
+  raster: [1920, 1080],
+}
+
+/** The panel's own grid, which needs more distinct drawings than any cover does. */
+const PANEL_COLS = 8
+const PANEL_ROWS = 9
+
+/** Enough glyphs for the tallest cover; each composition takes what it needs. */
+const MAX_ROWS = Math.max(...COVERS.map((c) => c.rows))
+
+const ATTR = /([\w-]+)="([^"]*)"/g
+const ROOT_DROP = new Set(["width", "height", "xmlns", "viewBox"])
+
+/** An icon's root presentation attributes and its body, ready to nest in a <g>. */
+async function readGlyph(name) {
+  const svg = await readFile(join(SRC, `${name}.svg`), "utf8")
+  const open = svg.match(/<svg\b([^>]*)>/)?.[1] ?? ""
+  const attrs = [...open.matchAll(ATTR)]
+    .filter(([, k]) => !ROOT_DROP.has(k))
+    .map(([, k, v]) => `${k}="${v}"`)
+    .join(" ")
+  const body = svg
+    .replace(/^[\s\S]*?<svg\b[^>]*>/, "")
+    .replace(/<\/svg>[\s\S]*$/, "")
+  return { attrs, body: body.trim() }
+}
+
+/**
+ * The twenty glyphs on the plugin card.
+ *
+ * Recognisable at a glance and varied in silhouette, which is what a block of
+ * twenty needs: a grid of near-identical outlines reads as one texture rather
+ * than as twenty things.
+ */
+const COVER_BLOCK = [
+  "bell",
+  "heart",
+  "star",
+  "gift",
+  "cloud",
+  "sun",
+  "camera",
+  "bookmark",
+  "message",
+  "folder",
+  "shopping-cart",
+  "package",
+  "calendar",
+  "image",
+  "lock",
+  "map-pin",
+  "user",
+  "search",
+  "settings",
+  "share",
+]
+
+const available = new Set(
+  (await readdir(SRC))
+    .filter((f) => f.endsWith(".svg"))
+    .map((f) => f.slice(0, -4))
+)
+
+/* Enough for whichever wants the most. The covers slice what they need, so the
+   surplus the panel asks for costs them nothing. */
+const want = Math.max(COLS * MAX_ROWS, PANEL_COLS * PANEL_ROWS)
+const picked = WISHLIST.filter((n) => available.has(n)).slice(0, want)
+for (const n of [...available].sort()) {
+  if (picked.length >= want) break
+  if (!picked.includes(n)) picked.push(n)
+}
+
+/** Every glyph the tallest cover needs, positioned. A shorter one takes a slice. */
+const glyphs = []
+
+/** The same drawings unpositioned, keyed by name, for the plugin panel. */
+const art24 = {}
+for (const [i, name] of picked.entries()) {
+  const { attrs, body } = await readGlyph(name)
+  // The glyph is drawn on a 24 grid, so the scale carries its stroke with it:
+  // 2 units at 24 is the same weight as 5.33 at 64. Scaling is what makes an
+  // enlarged keyline look drawn rather than hairline.
+  const s = GLYPH / 24
+  const x = PAD + (i % COLS) * CELL + (CELL - GLYPH) / 2
+  const y = 490 + Math.floor(i / COLS) * 120
+  glyphs.push(
+    `<g transform="translate(${x.toFixed(2)} ${y}) scale(${s})" ${attrs}>${body}</g>`
+  )
+  art24[name] = { attrs, body }
+}
+
+/*
+  The card's glyph block names drawings the covers may never have picked, and
+  `glyphAt` returns nothing for a name it has no art for. That failed silently:
+  `camera` and `message` passed the `available` check, which reads the whole of
+  icons/stroke, and then rendered as two holes in the grid.
+
+  Loaded straight into art24 rather than pushed onto `picked`, which is what
+  positions the other two covers and must not move.
+*/
+for (const name of COVER_BLOCK) {
+  if (art24[name] || !available.has(name)) continue
+  const { attrs, body } = await readGlyph(name)
+  art24[name] = { attrs, body }
+}
+
+const FONT =
+  "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+
+const total = available.size.toLocaleString("en-US")
+const styles = ["stroke", "two-tone", "duotone", "fill"]
+
+/**
+ * One cover at a given height, with the glyph grid cut to `rows`.
+ *
+ * The header is fixed: the mark, the title and the rule under it sit the same
+ * distance from the top on both, so the two covers read as the same object. The
+ * footer is measured from the bottom edge instead, which is what lets one
+ * composition serve two heights without a second set of tuned numbers.
+ *
+ * Drawn on a 1920-wide canvas and sized to the raster, so the social preview's
+ * 1920×960 scales down into 1280×640. With the canvas size as the SVG's own
+ * size, Chrome drew it at 1920×960 in a 1280×640 window and screenshotted the
+ * top-left corner: GitHub showed the header and a row and a half of glyphs,
+ * with the rule running off the right edge and no footer at all.
+ */
+const compose = (h, rows, [rw, rh]) =>
+  `<svg xmlns="http://www.w3.org/2000/svg" width="${rw}" height="${rh}" viewBox="0 0 ${W} ${h}">` +
+  `<rect width="${W}" height="${h}" fill="${BG}"/>` +
+  // The mark, 104 across: the height the old 40-unit tile stood at.
+  markAt(PAD, 96, 104, PRIMARY) +
+  `<text x="${PAD}" y="322" font-family="${FONT}" font-size="96" font-weight="600" letter-spacing="-3" fill="${INK}">Flux Icons</text>` +
+  `<text x="${PAD}" y="378" font-family="${FONT}" font-size="34" fill="${MUTED}">Built for shadcn/ui · React, Figma and Paper</text>` +
+  `<line x1="${PAD}" y1="430" x2="${W - PAD}" y2="430" stroke="${HAIRLINE}" stroke-width="2"/>` +
+  `<g fill="none" stroke="${INK}">${glyphs.slice(0, COLS * rows).join("")}</g>` +
+  `<line x1="${PAD}" y1="${h - 114}" x2="${W - PAD}" y2="${h - 114}" stroke="${HAIRLINE}" stroke-width="2"/>` +
+  `<text x="${PAD}" y="${h - 60}" font-family="${FONT}" font-size="30" fill="${INK}">${total} free icons</text>` +
+  `<text x="${W - PAD}" y="${h - 60}" text-anchor="end" font-family="${FONT}" font-size="30" fill="${MUTED}">${styles.join(" · ")}  |  24 × 24  |  MIT</text>` +
+  `</svg>\n`
+
+const CHROME_CANDIDATES = [
+  process.env.CHROME,
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "/Applications/Chromium.app/Contents/MacOS/Chromium",
+  "/usr/bin/google-chrome",
+  "/usr/bin/chromium",
+  "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+  "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
+  "C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe",
+  "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+].filter(Boolean)
+
+function findChrome() {
+  const hit = CHROME_CANDIDATES.find((p) => existsSync(p))
+  if (hit) return hit
+  throw new Error(
+    `${c(31, "No Chrome found.")} Rasterising needs one. Set CHROME=/path/to/chrome,\n` +
+      `or install one of:\n` +
+      CHROME_CANDIDATES.map((p) => `  ${p}`).join("\n")
+  )
+}
+
+/** Each cover's finished SVG, keyed by the file it is written to. */
+/**
+ * The plugin panel, drawn to the proportions `ui.html` gives it.
+ *
+ * `figma.showUI` opens it at 400×560, and the parts inside are measured off the
+ * stylesheet there rather than invented: an 8px gutter, a 5px-radius search
+ * field, three equal style tabs, and a grid whose cells are `minmax(40px, 1fr)`
+ * with a 2px gap. Drawn at 1.6× so it reads at cover scale without the glyphs
+ * going soft.
+ *
+ * It is a drawing of the panel, not a screenshot of it. A screenshot would
+ * freeze whatever the set said the day it was taken, and this file already
+ * carries that argument for the Figma mockup on the landing page.
+ */
+/** One drawing at a size, without the wrapper the grid composer adds. */
+function glyphAt(name, size) {
+  const art = art24[name]
+  if (!art) return ""
+  const s = size / 24
+  return `<g transform="scale(${s})" ${art.attrs}>${art.body}</g>`
+}
+
+/**
+ * The plugin's Community card.
+ *
+ * Built for a card in a grid, not for a page. It is seen at roughly a fifth of
+ * this size next to a screenful of other icon plugins, so anything that only
+ * works at 1920 is decoration: the wordmark carries it, the glyph block says
+ * "icons" before any word is read, and everything else is a caption for the
+ * people who click through.
+ *
+ * Dark on purpose. Almost every icon plugin card is light, including the three
+ * Iconduck ones that share a template, so a black card is the cheapest way to
+ * stop looking like them. It is also what the set already does: `3-range.png`
+ * puts 98 drawings on #0a0a0a and they hold, because every glyph takes its
+ * colour from `currentColor`.
+ *
+ * Four of the twenty glyphs are coloured. That is the one thing a monochrome
+ * icon set cannot put on its own cover, and it is a real capability rather than
+ * a flourish: `code.js` inserts paths that keep their own paint, which is what
+ * lets a gift take a red box and a yellow bow. Four rather than twenty because
+ * the set is monochrome by default and a cover full of colour would be selling
+ * something else.
+ */
+const COVER_DARK = "#0a0a0a"
+const COVER_INK = "#ffffff"
+/* `--primary` in the dark theme, which is what the mark wears on a black page. */
+const COVER_BRAND = "#76bfe4"
+const COVER_MUTED = "#8a8a8f"
+
+/* Tuned for a black ground rather than lifted from the FigJam palette, which is
+   mixed on white and goes muddy here. */
+const COVER_ACCENTS = ["#ff5c4d", "#ffc247", "#35d6b8", "#57a9ff"]
+
+/* Which of the twenty carry colour. Spread so no row is without one and no two
+   sit adjacent, because a cluster reads as a mistake and a diagonal reads as a
+   choice. */
+const COVER_COLOURED = { 3: 0, 6: 1, 14: 2, 16: 3 }
+
+function coverBlock(x, y, cols, cell, glyph) {
+  const out = []
+  for (const [i, name] of COVER_BLOCK.entries()) {
+    if (!available.has(name)) continue
+    const accent = COVER_COLOURED[i]
+    const colour = accent === undefined ? COVER_INK : COVER_ACCENTS[accent]
+    const cx = x + (i % cols) * cell
+    const cy = y + Math.floor(i / cols) * cell
+    // `color` rather than `stroke`, because the drawings carry
+    // `stroke="currentColor"` on their own root and would win over an inherited
+    // stroke. Setting the colour property is what currentColor resolves against.
+    out.push(
+      `<g transform="translate(${cx} ${cy})" color="${colour}">` +
+        `${glyphAt(name, glyph)}</g>`
+    )
+  }
+  return out.join("")
+}
+
+const pluginCoverSvg = (() => {
+  const PADX = 132
+  const COLS = 5
+  const CELL = 170
+  const GLYPH = 110
+  // Right-aligned to the same optical margin the text keeps on the left, and
+  // four rows rather than five because five ran off the bottom of the canvas.
+  const BLOCK_X = W - PADX - (COLS - 1) * CELL - GLYPH
+  const BLOCK_Y = 230
+
+  return (
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="1080" viewBox="0 0 ${W} 1080">` +
+    `<rect width="${W}" height="1080" fill="${COVER_DARK}"/>` +
+    coverBlock(BLOCK_X, BLOCK_Y, COLS, CELL, GLYPH) +
+    // The mark, sitting on the cap height of the wordmark below it.
+    markAt(PADX, 300, 104, COVER_BRAND) +
+    `<text x="${PADX}" y="576" font-family="${FONT}" font-size="128" font-weight="600" ` +
+    `letter-spacing="-5" fill="${COVER_INK}">Flux Icons</text>` +
+    `<text x="${PADX}" y="646" font-family="${FONT}" font-size="38" fill="${COVER_MUTED}">` +
+    `Search ${total} icons and drop one on the canvas.</text>` +
+    // The three facts that survive being shrunk, on one line.
+    `<text x="${PADX}" y="900" font-family="${FONT}" font-size="30" font-weight="500" fill="${COVER_INK}">` +
+    `Stroke, two-tone, duotone and fill` +
+    `<tspan fill="${COVER_MUTED}">  ·  </tspan>Figma and FigJam` +
+    `<tspan fill="${COVER_MUTED}">  ·  </tspan>MIT</text>` +
+    `<text x="${PADX}" y="948" font-family="${FONT}" font-size="26" fill="${COVER_MUTED}">fluxicons.vercel.app</text>` +
+    `</svg>\n`
+  )
+})()
+
+const built = [
+  ...COVERS.map((cover) => ({
+    ...cover,
+    text: compose(cover.h, cover.rows, cover.raster),
+  })),
+  { ...PLUGIN_COVER, text: pluginCoverSvg },
+]
+
+if (check) {
+  // Both covers are reported before exiting. Bailing on the first would hide a
+  // stale second behind it, so the fix looks complete after one rebuild.
+  let drift = false
+  for (const { svg: file, text } of built) {
+    const path = join(OUT, file)
+    const prev = existsSync(path) ? await readFile(path, "utf8") : null
+    if (prev === text) continue
+    const why =
+      prev === null ? "does not exist" : "is out of sync with icons/stroke/"
+    console.error(`  ${c(33, "DRIFT")} previews/${file} ${why}`)
+    drift = true
+  }
+  if (drift) {
+    console.error(`\nRun: node pipeline/build-cover.mjs`)
+    process.exit(1)
+  }
+  const sizes = built.map((b) => `${b.raster[0]}×${b.raster[1]}`).join(", ")
+  console.log(
+    c(
+      32,
+      `previews/ covers are in sync with icons/stroke/ (${sizes}, ${picked.length} glyphs)`
+    )
+  )
+} else {
+  await mkdir(OUT, { recursive: true })
+
+  const chrome = findChrome()
+  for (const { svg: file, png: pngFile, text, raster } of built) {
+    const svgPath = join(OUT, file)
+    await writeFile(svgPath, text, "utf8")
+
+    const [w, h] = raster
+    const pngPath = join(OUT, pngFile)
+    await run(chrome, [
+      "--headless",
+      "--disable-gpu",
+      "--no-sandbox",
+      "--hide-scrollbars",
+      "--force-color-profile=srgb",
+      `--screenshot=${pngPath}`,
+      `--window-size=${w},${h}`,
+      `file://${svgPath}`,
+    ]).catch((e) => {
+      // Chrome chatters on stderr about macOS task policy even on success.
+      if (!existsSync(pngPath)) throw e
+    })
+    if (!existsSync(pngPath))
+      throw new Error(`Chrome produced no PNG for ${pngFile}`)
+
+    const png = await readFile(pngPath)
+    const [gotW, gotH] = [png.readUInt32BE(16), png.readUInt32BE(20)]
+    if (gotW !== w || gotH !== h) {
+      throw new Error(
+        `${pngFile}: expected ${w}x${h}, Chrome gave ${gotW}x${gotH}`
+      )
+    }
+    console.log(`Wrote previews/${pngFile} (${w}×${h})`)
+  }
+
+  console.log(`${built.length} covers, ${picked.length} glyphs`)
+}

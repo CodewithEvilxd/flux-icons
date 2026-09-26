@@ -1,0 +1,2422 @@
+"use client"
+
+import * as React from "react"
+
+import {
+  ArrowRight,
+  BarChart,
+  Bed,
+  Bird,
+  Boy,
+  Bold,
+  Bot,
+  Check,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Circle,
+  Clock,
+  Coffee,
+  Cursor,
+  DiagramProject,
+  Eraser,
+  FaceSmile,
+  File,
+  FlaskConical,
+  GitBranch,
+  Globe,
+  GraduationCap,
+  Leaf,
+  Lungs,
+  Mail,
+  MapPin,
+  Menu,
+  Minus,
+  Palette,
+  PanelLeft,
+  PanelTopCloseDashed,
+  Plane,
+  Play,
+  Plus,
+  RotateCcw,
+  Settings,
+  Shapes,
+  ShoppingCart,
+  SlidersHorizontal,
+  Smartphone,
+  Square,
+  Star,
+  Sun,
+  Trophy,
+  User,
+  Venus,
+  Wallet,
+  Wrench,
+} from "@/components/icons"
+
+import { cn } from "@/lib/utils"
+import { Button, buttonVariants } from "@/components/ui/button"
+import { XLogo } from "@/components/brand-logos"
+import { toast } from "sonner"
+import { snippet } from "@/lib/icon-code"
+import { IconSearch, type SearchSuggestion } from "@/components/icon-search"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
+import {
+  artOf,
+  CONTAINERS,
+  SHARP_BADGE,
+  Glyph,
+  type BrowserIcon,
+  type Corners,
+  type Style,
+} from "@/components/glyph"
+import { IconPreview, useIconPreview } from "@/components/icon-preview"
+import { GRID_PAGE_SIZE, ICONS_SEGMENT, iconHref } from "@/lib/icon-pages"
+import {
+  aliasesFor,
+  CATEGORIES,
+  categoryOf,
+  iconNamedElsewhere,
+  OTHER_CATEGORY,
+} from "@/lib/icon-taxonomy"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { PhoneToggle } from "@/components/phone-toggle"
+import { useBrowserSettings } from "@/hooks/use-browser-settings"
+import { type BrowserSettings, SETTINGS_DEFAULTS } from "@/lib/browser-settings"
+import { SEARCH_MIN_LENGTH, SEARCH_SETTLE_MS, track } from "@/lib/analytics"
+import { nearestWord } from "@/lib/did-you-mean"
+import {
+  NAV_HEIGHT,
+  NAV_HEIGHT_NARROW,
+  SET_REQUEST_URL,
+  SET_X_URL,
+} from "@/lib/site-chrome"
+
+// The renderer and the types live in `components/glyph` because the hero draws
+// the same glyphs at display size and must draw them the same way.
+export type { StyleArt, BrowserIcon } from "@/components/glyph"
+
+/**
+ * The container an icon is drawn in, which is also how the grid is sectioned.
+ *
+ * Order matters twice: it is the order of the menu and the order of the
+ * sections, and the two are kept in sync by reading from this one list.
+ */
+const SHAPES = [
+  { value: "regular", label: "Regular", hint: "No container", icon: Minus },
+  { value: "square", label: "Square", hint: "square- prefix", icon: Square },
+  { value: "circle", label: "Circle", hint: "circle- prefix", icon: Circle },
+] as const
+
+type Shape = (typeof SHAPES)[number]["value"]
+type ShapeFilter = Shape | "all"
+
+/**
+ * A glyph for each category row, so the rail is also a sample of what the row
+ * contains. The labels and patterns themselves live in `lib/icon-taxonomy`,
+ * which the preview panel reads too.
+ */
+const CATEGORY_ICONS: Record<
+  string,
+  React.ComponentType<{ className?: string }>
+> = {
+  // Kept while the shelf is empty. The review row is opened and closed in
+  // `icon-taxonomy.ts` once a batch, and the label comes back with it; dropping
+  // the entry here would make reopening a two-file edit, which is the thing
+  // that row's own comment exists to avoid.
+  New: Star,
+  Arrows: ArrowRight,
+  "Chevrons & Carets": ChevronRight,
+  Git: GitBranch,
+  Files: File,
+  Time: Clock,
+  Mail: Mail,
+  Commerce: ShoppingCart,
+  // Split off Commerce on 9 Sep 2026. The wallet rather than a currency mark:
+  // the rail is read at 16px and a $ there is a letter, not a picture.
+  Finance: Wallet,
+  Maps: MapPin,
+  // Its own bed rather than a house: the rail is read at 16px, and the roof
+  // glyph already stands for Web.
+  Home: Bed,
+  Media: Play,
+  Charts: BarChart,
+  Diagrams: DiagramProject,
+  Emoji: FaceSmile,
+  Devices: Smartphone,
+  Pointers: Cursor,
+  Layout: PanelLeft,
+  Users: User,
+  // Opened 14 Sep 2026. The boy rather than a baby: at 16px the rail wants the
+  // face with the most to read, and a bald dome is a circle.
+  People: Boy,
+  Gender: Venus,
+  Actions: Check,
+  // Every label in CATEGORIES needs a row here, including the ones added since:
+  // the rail maps before it filters, so a label with a count and no icon renders
+  // <undefined /> and takes the whole browser down rather than dropping a row.
+  Controls: SlidersHorizontal,
+  // The formatting shelf, added with the batch that created it. Without this row
+  // the rail rendered <undefined /> and /icons answered 500 — which is the
+  // failure the comment above is about, arriving the very next time a label was.
+  Text: Bold,
+  Weather: Sun,
+  Shapes: Shapes,
+  // A shelf of one, split off Sport on 9 Sep 2026. Its own drawing on the rail
+  // rather than the trophy: the row is the mortarboard and nothing else.
+  Education: GraduationCap,
+  Sport: Trophy,
+  // The two shelves the food and art batch opened. The mug and the palette are
+  // the drawings that read at 16px; a cake is candles at that size and a brush
+  // is a stick.
+  "Food & Drink": Coffee,
+  Art: Palette,
+  Tools: Wrench,
+  // Opened 11 Sep 2026 beside Tools. Its own drawing on the rail rather than a
+  // borrowed pencil, the same call `Education` made with the mortarboard.
+  Stationery: Eraser,
+  Web: Globe,
+  // The three shelves batch D opened, 12 Sep 2026.
+  Transport: Plane,
+  Nature: Leaf,
+  Animals: Bird,
+  // The three shelves batch B opened, 13 Sep 2026.
+  AI: Bot,
+  Science: FlaskConical,
+  Health: Lungs,
+  [OTHER_CATEGORY]: Circle,
+}
+
+/** The row that is not a category: everything. */
+const ALL_ICON = Menu
+
+/**
+ * Below this the category rail is gone, so the drawer has to carry it. Keep it
+ * in step with the `lg:` on the `<aside>` — they are two halves of one switch.
+ */
+const BELOW_SIDEBAR = "(max-width: 1023px)"
+
+/**
+ * The page numbers to draw: always the first and last, always the neighbours of
+ * the current one, and a gap for whatever is skipped. A gap is the list of pages
+ * it stands for, because the ellipsis opens a menu of them: a skipped page
+ * reachable only by stepping Next through its neighbours is not reachable.
+ *
+ * A gap of one is drawn as its number. The ellipsis takes the same room, so
+ * hiding a single page saves nothing and costs the reader a click.
+ */
+function pageNumbers(current: number, total: number): (number | number[])[] {
+  const wanted = new Set([1, total, current - 1, current, current + 1])
+  const out: (number | number[])[] = []
+
+  for (let n = 1; n <= total; n++) {
+    const last = out.at(-1)
+    if (wanted.has(n)) out.push(n)
+    else if (Array.isArray(last)) last.push(n)
+    else out.push([n])
+  }
+
+  return out.flatMap((entry) =>
+    Array.isArray(entry) && entry.length === 1 ? entry : [entry]
+  )
+}
+
+/**
+ * A left click with no modifier held: the one a link here keeps for itself.
+ * Anything else, cmd, ctrl, shift or a middle click, is left to the browser,
+ * which opens the address the way a link under the pointer promises.
+ */
+const plainClick = (event: React.MouseEvent) =>
+  event.button === 0 &&
+  !event.metaKey &&
+  !event.ctrlKey &&
+  !event.shiftKey &&
+  !event.altKey
+
+/**
+ * Sets `key` on the address, or drops it when the value is at its neutral:
+ * the whole set in stroke, rounded, on page 1 is `/icons` and nothing else.
+ */
+const carry = (
+  params: URLSearchParams,
+  key: string,
+  value: string | null,
+  neutral: string
+) => {
+  if (value && value !== neutral) params.set(key, value)
+  else params.delete(key)
+}
+
+/**
+ * What the grid is narrowed by, as one string. A page number only means
+ * something against the same narrowing, so the page resets when this changes.
+ */
+const signatureOf = (
+  query: string,
+  style: Style,
+  shape: ShapeFilter,
+  category: string
+) => `${query}|${style}|${shape}|${category}`
+
+/**
+ * Grid order: by base name, then by container.
+ *
+ * Plain `name` order was what this was, and it files a containered name under
+ * its prefix — every `circle-` drawing in the set sat in one block under C,
+ * away from the drawing it is a boxed copy of. The rest of the set does not
+ * read that way: the icon page's container row, the Figma catalogue's cards and
+ * the Paper boards all put `dollar-sign` and `circle-dollar-sign` side by side,
+ * which is also the order someone scanning for a shape wants, since the two are
+ * the same drawing.
+ */
+const byName = (a: BrowserIcon, b: BrowserIcon) =>
+  a.base === b.base
+    ? CONTAINERS.indexOf(a.container) - CONTAINERS.indexOf(b.container)
+    : a.base.localeCompare(b.base)
+
+/**
+ * A word reduced to its singular, so a plural finds the family.
+ *
+ * Every name in the set is singular: `arrow-down`, `file`, `bar-chart`. Every
+ * heading on the site's category rail is plural. So "Arrows" sat on the screen
+ * while typing `arrows` returned one drawing out of 585, `git-compare-arrows`,
+ * the only name carrying the letter. `charts`, `stars` and `bells` returned
+ * nothing at all. The plural is what someone reads off our own sidebar and
+ * what every other set answers, and here it was the one word that could not
+ * work.
+ *
+ * Applied to both sides, the query word and each word of the haystack, which
+ * also carries the other direction: `chevron` reaches `chevrons-left`, which
+ * whole words alone could not.
+ *
+ * Deliberately blunt: no dictionary, no suffix ladder, one `s`. The guards are
+ * the whole design, and they are read off this vocabulary rather than guessed.
+ * Every `-ss`, `-us` and `-is` word in it is already a word: `progress`,
+ * `compass`, `plus`, `minus`, `status`, `axis`. Past those, `lens`, `atlas`
+ * and `sideways` are the only three that end in `s` without being a plural.
+ * `lens` is the one that mattered. Cut to `len` it lands inside `calendar` and
+ * `silence`, and the word someone types for the camera came back with
+ * seventeen drawings that are not it.
+ *
+ * `arrows` is in the list for the opposite reason. The rule would not damage
+ * it, it would erase it: the plural asks for the drawings carrying more than
+ * one arrowhead, `fullscreen`, `chevrons-up-down`, `refresh-cw`, and folding it
+ * into `arrow` answers with the ninety-nine single arrows instead. The word is
+ * a keyword on those drawings, in lib/icon-aliases.json, and this is what keeps
+ * the two questions apart.
+ *
+ * Same rule as the MCP server, the CLI and the Figma plugin, checked by
+ * pipeline/check-search.mjs.
+ */
+const singular = (w: string) =>
+  w.length < 4 ||
+  !w.endsWith("s") ||
+  /(ss|us|is|arrows|lens|atlas|sideways)$/.test(w)
+    ? w
+    : w.endsWith("ies")
+      ? `${w.slice(0, -3)}y`
+      : /(ch|sh|x|z)es$/.test(w)
+        ? w.slice(0, -2)
+        : w.slice(0, -1)
+
+/** Every word in `hay` singular, delimiters kept so the words stay separate. */
+const stemmed = (hay: string) => hay.replace(/[a-z0-9]+/g, singular)
+
+/**
+ * A word that answers only to itself, never to a piece of itself.
+ *
+ * The grid matches substrings, because someone typing `arro` has not finished
+ * the word yet, and that is exactly what would hand `arrows` to `arrow` too.
+ * The plural is a different question here, so the token is cut out of the
+ * haystack unless the query asked for it whole. Nothing else in the vocabulary
+ * wants this: `users` answers to `user` through the singular rule, which is
+ * what the singular rule is for.
+ *
+ * The packages need no equivalent. They match whole words already, so `arrow`
+ * cannot reach `arrows` there in the first place.
+ *
+ * Same rule as the Figma plugin, the other surface that matches substrings.
+ */
+const CONCEPTS = /(^|[ -])(arrows)(?=$|[ -])/g
+
+/**
+ * Whether one icon's haystack answers every word of a query.
+ *
+ * The raw word first, so nothing that matched before stops matching. The
+ * singular pass is the fallback, and it reads the haystack through the same
+ * rule, so the two forms meet in the middle whichever side carried the `s`.
+ */
+const answers = (haystack: string, words: string[]) => {
+  const hay = haystack.replace(CONCEPTS, (m, lead, word) =>
+    words.includes(word) ? m : lead
+  )
+  const stem = stemmed(hay)
+  return words.every((w) => hay.includes(w) || stem.includes(singular(w)))
+}
+
+/**
+ * Split a query into the words it is actually asking for.
+ *
+ * Names on disk are kebab-case, so a raw substring test made "arrow up right"
+ * find nothing while "arrow-up-right" found the icon: the space is the one
+ * separator nobody types the file name with. Every run of non-alphanumerics is
+ * a separator here, so spaces, dashes and underscores are all the same thing.
+ *
+ * **A camelCase boundary is a separator too**, and it is the one this missed.
+ * Lowercasing first left `CheckCircle2` as `checkcircle2`, a single token with
+ * no separator in it, matching nothing at all. "check-circle" and "check circle"
+ * both worked, which is what made this look fixed: the form that fails is the
+ * one someone pastes out of their editor rather than types, and it is the most
+ * likely thing a person migrating off lucide puts in the box.
+ *
+ * So the case boundary is read before the lowercasing, and a leftover bare digit
+ * is dropped, because lucide's trailing `2` disambiguates inside lucide and
+ * means nothing here. Two shapes count as an identifier: a camelCase boundary,
+ * and a single capitalised word ending in digits. The second was missing, so
+ * `Share2` stayed one word and matched nothing while `share` sat in the set.
+ *
+ * Still guarded, because `clock-3`, `dice-5` and `bar-chart-2` are real names.
+ * A lowercase query keeps its digits and can still reach them.
+ *
+ * A trailing `Icon` comes off first, with the digits in front of it. A month of
+ * empty searches carried `Globe02Icon`, `CheckmarkCircle02Icon`, `FileCodeIcon`
+ * and `SparklesIcon`: names pasted out of a set that suffixes every export, and
+ * not one of them found the drawing it named. The first shape has no case
+ * boundary at all, `e0` and `2I`, so it was never an identifier here and kept
+ * its digits; the others split into a word list ending in `icon`, which nothing
+ * carries. The suffix is the third identifier shape, and the strip runs before
+ * the split so the digits never become a word to drop.
+ *
+ * Same rule as `wordsOf` in the MCP server, the CLI and the Figma plugin. Four
+ * surfaces, one behaviour, and this was the last of them to get it.
+ */
+const terms = (query: string) => {
+  const identifier =
+    /[a-z][A-Z]/.test(query) ||
+    /^[A-Z][A-Za-z]*\d+$/.test(query) ||
+    /^[A-Z][A-Za-z]*\d*Icon$/.test(query)
+  const split = identifier
+    ? query
+        .replace(/\d*Icon$/, "")
+        .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+        .replace(/([a-zA-Z])(\d)/g, "$1 $2")
+    : query
+  return split
+    .toLowerCase()
+    .split(/[^a-z0-9]+/)
+    .filter((w) => w && !(identifier && /^\d+$/.test(w)))
+}
+
+/**
+ * Previous or Next: a link to the neighbouring page, or a disabled button at
+ * either end of the grid, where there is no neighbour to link to.
+ */
+function PagerStep({
+  href,
+  onTurn,
+  children,
+}: {
+  href: string | null
+  onTurn: () => void
+  children: React.ReactNode
+}) {
+  const className = cn(
+    buttonVariants({ variant: "ghost" }),
+    "h-9 disabled:pointer-events-none disabled:opacity-40"
+  )
+
+  if (href === null)
+    return (
+      <button type="button" disabled className={className}>
+        {children}
+      </button>
+    )
+
+  return (
+    <a
+      href={href}
+      onClick={(event) => {
+        if (!plainClick(event)) return
+        event.preventDefault()
+        onTurn()
+      }}
+      className={className}
+    >
+      {children}
+    </a>
+  )
+}
+
+export function IconBrowser({
+  icons,
+  initialSettings,
+  initialStyle = "stroke",
+  initialShape = "all",
+  initialIcon,
+  initialIconStyle,
+  initialIconCorners,
+  initialPage = 1,
+  query,
+  onQueryChange,
+  suggestions = [],
+}: {
+  icons: BrowserIcon[]
+  initialSettings: BrowserSettings
+  /**
+   * Seeded from `?style=`, so a link can arrive at the grid already showing one
+   * weight. Same shape as the search seed: it starts the state and nothing
+   * writes back to the URL afterwards.
+   */
+  initialStyle?: Style
+  /** Seeded from `?shape=`, on the same terms as the style above. */
+  initialShape?: ShapeFilter
+  /**
+   * Seeded from `?icon=`, so a link opens with the dock already on one drawing.
+   *
+   * Unlike the three seeds above, this one is also *written*: see the effect
+   * that keeps the address on the icon being looked at. It is validated on the
+   * server against the set, so an unknown name arrives here as `undefined`
+   * rather than opening a panel with nothing in it.
+   */
+  initialIcon?: string
+  /**
+   * Seeded from `?icon-style=` and `?icon-corners=`: how the dock was showing
+   * that drawing.
+   *
+   * Separate keys from `?style=` and `?corners=` because they are separate
+   * facts. The panel's picks are local by design, so a link where the grid is
+   * rounded and the panel is sharp is a screen that exists and has to be
+   * reproducible.
+   */
+  initialIconStyle?: Style
+  initialIconCorners?: Corners
+  /**
+   * Seeded from `?page=`, and written back like `?icon=`. Each page of the
+   * grid is an address a crawler can reach, which is how the icon pages past
+   * the first 120 get a link from here at all. Validated on the server against
+   * the unfiltered set; a seeded search can still make it too high, and the
+   * clamp below takes it back to the last page there is.
+   */
+  initialPage?: number
+  /** Owned by `IconLibrary` — the field that drives it lives in the hero. */
+  query: string
+  onQueryChange: (next: string) => void
+  suggestions?: readonly SearchSuggestion[]
+}) {
+  /*
+    How the set is drawn survives a reload — the settings ride in a cookie the
+    server reads, so this render starts where you left off.
+
+    What is *shown* does not: the search, the style, the shape and the category
+    all start fresh. They narrow the library, and a narrowed library on arrival
+    looks like a missing one.
+
+    The exception is a link that asks for a narrowing on purpose: `?search=`
+    seeds the search, `?style=` the weight, `?shape=` the container and `?icon=`
+    the open dock. All four arrive as props from the server rather than being
+    read here, so the first paint is already what was asked for, and all four
+    are written back as you use the page, so the link exists to be made. A bare
+    URL still opens the whole set.
+  */
+  const [settings, update] = useBrowserSettings(initialSettings)
+  const { size, stroke, color, showNames, columns, corners } = settings
+
+  const [category, setCategory] = React.useState("all")
+  const [style, setStyle] = React.useState<Style>(initialStyle)
+  const [shape, setShape] = React.useState<ShapeFilter>(initialShape)
+  const [browseOpen, setBrowseOpen] = React.useState(false)
+  const [page, setPage] = React.useState(initialPage)
+  // Starts on the seeded narrowing, or the first render would read it as a
+  // change and put `?page=` back to 1 before anything had changed.
+  const [lastSignature, setLastSignature] = React.useState(() =>
+    signatureOf(query, initialStyle, initialShape, "all")
+  )
+  const gridRef = React.useRef<HTMLDivElement>(null)
+  /** The whole browser: rail, filter row and grid, for the category scroll. */
+  const sectionRef = React.useRef<HTMLDivElement>(null)
+
+  /**
+   * The preview dock: which icon it is showing, and the ones shown before it.
+   *
+   * It is `fixed`, so nothing below it reserves its space — the grid is handed
+   * its measured height and pads itself by that much, otherwise the last row of
+   * icons sits under the panel and cannot be clicked.
+   */
+  const preview = useIconPreview({
+    icon: initialIcon,
+    style: initialIconStyle,
+    corners: initialIconCorners,
+  })
+  const [dockHeight, setDockHeight] = React.useState(0)
+
+  /**
+   * Whether the controls belong in the drawer, decided by an actual media query
+   * rather than by a `hidden` class.
+   *
+   * It is the sidebar's breakpoint, not a smaller one. The rail appears at
+   * `lg`, so anything narrower has to reach the categories through the drawer —
+   * with the drawer cutting off at `md`, everything between 768 and 1023px had
+   * neither, and the categories were simply unreachable.
+   *
+   * Hiding the drawer with CSS is not enough either: only the popup takes the
+   * class, so its modal overlay survives at desktop width as an invisible sheet
+   * over the whole page — `elementFromPoint` in the middle of the page returned
+   * it. Not rendering it is the only version with nothing left behind. SSR
+   * assumes desktop and hydration corrects it.
+   */
+  const isNarrow = React.useSyncExternalStore(
+    (onChange) => {
+      const mq = window.matchMedia(BELOW_SIDEBAR)
+      // `resize` as well as the query itself: a viewport driven from devtools
+      // (or any emulated metrics override) resizes without ever firing the
+      // media query's own change event.
+      mq.addEventListener("change", onChange)
+      window.addEventListener("resize", onChange)
+      return () => {
+        mq.removeEventListener("change", onChange)
+        window.removeEventListener("resize", onChange)
+      }
+    },
+    () => window.matchMedia(BELOW_SIDEBAR).matches,
+    () => false
+  )
+
+  const atDefaults =
+    query === "" &&
+    style === "stroke" &&
+    shape === "all" &&
+    category === "all" &&
+    (
+      Object.keys(SETTINGS_DEFAULTS) as (keyof typeof SETTINGS_DEFAULTS)[]
+    ).every((key) => settings[key] === SETTINGS_DEFAULTS[key])
+
+  const reset = () => {
+    onQueryChange("")
+    setStyle("stroke")
+    setShape("all")
+    setCategory("all")
+    update(SETTINGS_DEFAULTS)
+  }
+  /**
+   * The one tooltip shared by every tile: its label and where it sits.
+   *
+   * It is our own element rather than the Tooltip primitive because the
+   * primitive re-writes its positioner's inline style (`transition: none`
+   * included) on every reposition, which cancels any transition mid-flight —
+   * so a popup that follows a moving anchor can only ever jump.
+   */
+  const [tip, setTip] = React.useState<{
+    name: string
+    x: number
+    y: number
+  } | null>(null)
+  const [tipOpen, setTipOpen] = React.useState(false)
+
+  /**
+   * Bumped on every fresh open, and used as the tooltip's `key`.
+   *
+   * Without it the tooltip flies in across the grid. Leaving the grid fades the
+   * box out where it stood, and coming back somewhere else sets the new
+   * position and re-opens in the *same* commit — so the browser sees one style
+   * change carrying both a new `translate` and the class that transitions
+   * `translate`, and animates the box from the tile you left to the tile you
+   * arrived at, however far apart they are.
+   *
+   * Suppressing the transition for that one commit does not work: the change
+   * lands in a single style recalculation either way, and it is the *new*
+   * `transition-property` that decides whether the old-to-new translate
+   * animates. A new `key` sidesteps it instead. A freshly mounted element has
+   * no previous computed style, so there is nothing to animate from and it
+   * simply appears where it belongs. Moving between tiles while open keeps the
+   * same element, and that is the travel worth animating.
+   *
+   * The ref rather than `tipOpen` itself: this has to know whether the tooltip
+   * was open *at the moment of the event*, and reading state here would need it
+   * in the dependency array, which would rebuild the callback on every open and
+   * close.
+   */
+  const tipWasOpen = React.useRef(false)
+  const [tipKey, setTipKey] = React.useState(0)
+
+  const tipRef = React.useRef<HTMLDivElement>(null)
+  const tipPillRef = React.useRef<HTMLDivElement>(null)
+  const tipArrowRef = React.useRef<HTMLSpanElement>(null)
+
+  /**
+   * Keep the pill inside the grid's box. It is centred on its tile, so a long
+   * name on an edge tile pokes past the grid, and an absolutely positioned
+   * element still counts toward the document's scrollable area: on a viewport
+   * with no spare gutter that overhang *is* a horizontal scrollbar.
+   *
+   * The clamp needs the pill's rendered width, so it runs as a layout effect,
+   * after every render, since any re-render re-applies the unclamped inline
+   * translate. It writes the style directly rather than through state, which
+   * an effect here is not allowed to set. The arrow takes the shift back, so
+   * it stays over the tile the pill was pushed off.
+   */
+  React.useLayoutEffect(() => {
+    const wrapper = tipRef.current
+    const pill = tipPillRef.current
+    const arrow = tipArrowRef.current
+    const grid = gridRef.current
+    if (!wrapper || !pill || !arrow || !grid || !tip) return
+
+    /*
+      A fresh mount is supposed to simply appear (see `tipKey`), and left
+      alone it would, but measuring the pill below forces a style recalc at
+      the unclamped spot, which hands the new element exactly the "previous
+      style" a transition needs, and the clamp's correction plays as a slide.
+      So the mount-time write goes through with transitions off, flushed, and
+      the properties handed back; travels between tiles keep their animation.
+    */
+    const fresh = !("clamped" in wrapper.dataset)
+    if (fresh) {
+      wrapper.dataset.clamped = ""
+      wrapper.style.transitionProperty = "none"
+      arrow.style.transitionProperty = "none"
+    }
+
+    const half = pill.offsetWidth / 2
+    const x = Math.min(
+      Math.max(tip.x, half),
+      Math.max(grid.clientWidth - half, half)
+    )
+
+    wrapper.style.translate = `${x}px ${tip.y}px`
+    arrow.style.left = `calc(50% + ${tip.x - x}px)`
+
+    if (fresh) {
+      void wrapper.offsetHeight
+      wrapper.style.removeProperty("transition-property")
+      arrow.style.removeProperty("transition-property")
+    }
+  })
+
+  const anchorTip = React.useCallback((tile: HTMLElement | null) => {
+    if (!tile) {
+      // Keep the last label and position so it fades out where it stood.
+      tipWasOpen.current = false
+      setTipOpen(false)
+      return
+    }
+
+    if (!tipWasOpen.current) {
+      tipWasOpen.current = true
+      setTipKey((key) => key + 1)
+    }
+
+    setTip({
+      name: tile.dataset.iconName ?? "",
+      x: tile.offsetLeft + tile.offsetWidth / 2,
+      y: tile.offsetTop,
+    })
+    setTipOpen(true)
+  }, [])
+
+  /**
+   * Per-category totals for the sidebar, counted before the category filter so
+   * picking one doesn't zero out every other row. Only the style narrows them —
+   * a category with no fill icons should read 0 while fill is selected.
+   */
+  const perCategory = React.useMemo(() => {
+    const counts = new Map<string, number>()
+    for (const icon of icons) {
+      if (!artOf(icon, style, corners)) continue
+      const label = categoryOf(icon.base)
+      counts.set(label, (counts.get(label) ?? 0) + 1)
+    }
+    return counts
+  }, [icons, style, corners])
+
+  /*
+    A search does not run inside the active category. Typing under a picked
+    category would land on their intersection, which is usually an empty grid
+    that reads as the set missing the icon; the dock's search already drops
+    the category for the same reason, and category picks clear the search in
+    `selectCategory`. Adjusted during render, like the page reset below,
+    because the query lives with the hero's input: no handler in this
+    component sees the keystroke.
+  */
+  const [lastQuery, setLastQuery] = React.useState(query)
+  if (query !== lastQuery) {
+    setLastQuery(query)
+    if (query !== "" && category !== "all") setCategory("all")
+  }
+
+  /*
+    The search's raw material, kept for "Did you mean": every icon's haystack,
+    and each word in them with how often it appears. Per style, so a word that
+    only exists outside the current style is never offered as a fix for a grid
+    it could not fill.
+  */
+  const searchable = React.useMemo(() => {
+    const haystacks: string[] = []
+    const vocabulary = new Map<string, number>()
+    for (const icon of icons) {
+      if (!artOf(icon, style, corners)) continue
+      const haystack = [icon.name, ...aliasesFor(icon.base)].join(" ")
+      haystacks.push(haystack)
+      for (const token of haystack.split(/[^a-z0-9]+/)) {
+        if (token) vocabulary.set(token, (vocabulary.get(token) ?? 0) + 1)
+      }
+    }
+    return { haystacks, vocabulary }
+  }, [icons, style, corners])
+
+  // Everything the style, the search and the category allow, before the shape
+  // filter — the shape menu counts read off this, so they stay honest about
+  // what picking a shape would actually show.
+  const matches = React.useMemo(() => {
+    const words = terms(query)
+    return icons.filter((i) => {
+      if (!artOf(i, style, corners)) return false
+      if (category !== "all" && categoryOf(i.base) !== category) return false
+      /*
+        Every word has to land somewhere in the name, in any order: "up arrow"
+        and "arrow up" ask the same question.
+
+        The aliases are searched with it, so "email" finds `mail` and "gear"
+        finds `settings` — the words people reach for before they learn what we
+        called it. They are appended to the haystack rather than matched
+        separately, so "email plus" still works across both.
+      */
+      /*
+        A name from another set answers on its own, matched whole: someone
+        migrating types `message-square`, and the drawing here is `message`.
+        Kept out of the haystack on purpose — see `FOREIGN` in
+        lib/icon-taxonomy.ts for what putting it in there did to `square`.
+      */
+      if (iconNamedElsewhere(query) === i.base) return true
+      return answers([i.name, ...aliasesFor(i.base)].join(" "), words)
+    })
+  }, [icons, query, style, category, corners])
+
+  /**
+   * Drawings this search would have found in one of the other two styles.
+   *
+   * The empty state used to test a per-style set count for zero, which counts the
+   * whole set rather than this query's matches: it is 503, 415 and 368, so it
+   * is never zero and the branch it guarded was unreachable. Searching `wifi`
+   * in fill therefore said "try another word" while ten wifi icons sat one tab
+   * away, which reads as a missing drawing rather than a missing variant.
+   *
+   * The Figma plugin fixed the same case and named this exact query in its own
+   * comment. This is the site catching up.
+   */
+  const matchesElsewhere = React.useMemo(() => {
+    if (matches.length > 0) return 0
+    const words = terms(query)
+    if (words.length === 0 && category === "all") return 0
+    return icons.filter((i) => {
+      if (artOf(i, style, corners)) return false
+      if (category !== "all" && categoryOf(i.base) !== category) return false
+      return answers([i.name, ...aliasesFor(i.base)].join(" "), words)
+    }).length
+  }, [icons, query, style, category, corners, matches.length])
+
+  /*
+    The corrected query, when the search missed and a small spelling slip
+    explains it. Word by word, mirroring the search itself: words that match
+    somewhere are kept, the rest are pulled to their nearest vocabulary word,
+    and the result is only offered if the corrected words land together on at
+    least one icon. A "did you mean" that opens another empty grid is worse
+    than none.
+  */
+  const suggestion = React.useMemo(() => {
+    if (matches.length > 0) return null
+    const words = terms(query)
+    if (words.length === 0) return null
+
+    const { haystacks, vocabulary } = searchable
+    const corrected: (string | null)[] = words.map((word) =>
+      haystacks.some((h) => answers(h, [word]))
+        ? word
+        : nearestWord(word, vocabulary)
+    )
+    if (corrected.includes(null)) return null
+    if (corrected.every((w, i) => w === words[i])) return null
+
+    const fixed = corrected as string[]
+    return haystacks.some((h) => answers(h, fixed)) ? fixed.join(" ") : null
+  }, [matches, query, searchable])
+
+  const perShape = React.useMemo(() => {
+    const c = { regular: 0, square: 0, circle: 0 } as Record<Shape, number>
+    for (const i of matches) c[i.container] += 1
+    return c
+  }, [matches])
+
+  const shown = React.useMemo(
+    () =>
+      shape === "all" ? matches : matches.filter((i) => i.container === shape),
+    [matches, shape]
+  )
+
+  /**
+   * Drawings this search found that the shape or category filter is hiding.
+   *
+   * `matches` runs before the shape filter, so `file` under Circle has eleven
+   * matches and an empty grid, and the empty state said "No icons match file"
+   * over a set that has every one of them, with `elsewhere` at 0 because that
+   * count only looks at other styles. The category is the same trap one level
+   * up: typing clears it, but a link can arrive carrying both. (The first
+   * write-up of this cited `file` and `move` as the month's most searched
+   * misses; those rows were the `suggestion` export, not typed queries. The
+   * case stands on the code, not on that evidence.)
+   *
+   * So this is the count with both filters off, in the style on show, and the
+   * empty state offers it as one click. Only when the grid is empty and a
+   * filter is on, so the ordinary case costs nothing.
+   */
+  const hiddenByFilter = React.useMemo(() => {
+    if (shown.length > 0) return 0
+    if (shape === "all" && category === "all") return 0
+    const words = terms(query)
+    if (words.length === 0) return 0
+    return icons.filter((i) => {
+      if (!artOf(i, style, corners)) return false
+      if (iconNamedElsewhere(query) === i.base) return true
+      return answers([i.name, ...aliasesFor(i.base)].join(" "), words)
+    }).length
+  }, [icons, query, style, shape, category, corners, shown.length])
+
+  /**
+   * A search that found nothing, reported once the typing stops.
+   *
+   * This is the one number on the site that says what to draw next. An empty
+   * result is a request for an icon from someone who is never going to file
+   * one, and the wording they used is the name they expect it to have.
+   *
+   * Three things keep it honest:
+   *
+   * - **It waits.** The grid filters on every keystroke, so "arrow" renders
+   *   empty at "a", "ar" and "arr" on the way to matching. Counting the render
+   *   would report prefixes of words that worked, and drown the queries that
+   *   did not.
+   * - **It carries the filters.** A miss under `duotone` with 40 matches in
+   *   another style is not a gap in the set, it is a filter doing its job.
+   *   `elsewhere` and `suggestion` are what separate "we have not drawn this"
+   *   from "you were two keystrokes away", and only the first is work.
+   * - **It reports a combination once.** The ref holds the last signature
+   *   sent, so backspacing into a query already counted does not count it
+   *   twice. That is the same string the pager resets on, deliberately: what
+   *   makes a result different is exactly what makes it a different search.
+   */
+  /**
+   * What makes this result the result it is.
+   *
+   * One string, read twice: the pager resets on it, because filtering changes
+   * what a page number means, and the miss report keys on it, because two
+   * searches that differ in any of these four are two searches. Kept as one
+   * const so those two can never disagree about what "the same search" means.
+   */
+  const searchSignature = signatureOf(query, style, shape, category)
+
+  const emptySearch =
+    shown.length === 0 && query.trim().length >= SEARCH_MIN_LENGTH
+  const reportedSearch = React.useRef("")
+
+  React.useEffect(() => {
+    if (!emptySearch || reportedSearch.current === searchSignature) return
+
+    const timer = window.setTimeout(() => {
+      reportedSearch.current = searchSignature
+      track("search_empty", {
+        query: query.trim(),
+        style,
+        shape,
+        category,
+        elsewhere: matchesElsewhere,
+        hidden: hiddenByFilter,
+        suggestion,
+      })
+    }, SEARCH_SETTLE_MS)
+
+    return () => window.clearTimeout(timer)
+  }, [
+    emptySearch,
+    searchSignature,
+    query,
+    style,
+    shape,
+    category,
+    matchesElsewhere,
+    hiddenByFilter,
+    suggestion,
+  ])
+
+  /**
+   * The page's slice, ordered before it is cut — page 2 has to be sorted
+   * against the whole result, not against whatever landed on it.
+   */
+  const ordered = React.useMemo(() => [...shown].sort(byName), [shown])
+
+  const pageCount = Math.max(1, Math.ceil(ordered.length / GRID_PAGE_SIZE))
+
+  /*
+    Filtering changes what a page number means, so the page resets when the
+    filters do — adjusted during render rather than in an effect, which would
+    paint the wrong page first and correct it after.
+  */
+  if (searchSignature !== lastSignature) {
+    setLastSignature(searchSignature)
+    setPage(1)
+  }
+  const currentPage = Math.min(
+    searchSignature === lastSignature ? page : 1,
+    pageCount
+  )
+
+  const paged = React.useMemo(
+    () =>
+      ordered.slice(
+        (currentPage - 1) * GRID_PAGE_SIZE,
+        currentPage * GRID_PAGE_SIZE
+      ),
+    [ordered, currentPage]
+  )
+
+  /**
+   * Where a page falls in the alphabet, from its first drawing to its last. The
+   * grid is in name order, so this is what tells a reader which hidden page
+   * holds the icon they are after. Bases, because that is what the sort reads:
+   * a page that opens on `circle-dollar-sign` opens at D.
+   */
+  const pageSpan = (n: number) => {
+    const first = ordered[(n - 1) * GRID_PAGE_SIZE]
+    const last = ordered[Math.min(n * GRID_PAGE_SIZE, ordered.length) - 1]
+    return `${first.base} to ${last.base}`
+  }
+
+  /** Set by the pager so only a page turn scrolls, not every re-render. */
+  const scrollPending = React.useRef(false)
+
+  const goToPage = (next: number) => {
+    setPage(Math.min(Math.max(next, 1), pageCount))
+    scrollPending.current = true
+  }
+
+  /**
+   * Turning the page puts the top of the grid just under the site nav.
+   *
+   * This has to run *after* the new page is in the DOM. Scrolling straight from
+   * the click measured the old page: the last page holds 81 tiles against 120,
+   * so the document shrank under the moving scroll and the browser clamped it
+   * partway, leaving the view stuck mid-grid.
+   *
+   * The offset is the nav's, because `scrollIntoView` aligns to the viewport's
+   * top — which is behind the nav — and lands the first row underneath it.
+   */
+  React.useEffect(() => {
+    if (!scrollPending.current) return
+    scrollPending.current = false
+
+    const grid = gridRef.current
+    if (!grid) return
+
+    /*
+      Below `lg` there is more chrome to clear: the bar is 52px and the Browse
+      row sticks under it, so the first tile has to land beneath both. The
+      row's stuck box ends 96px down: `top-11` (44) plus its 36px of controls
+      and the 8px of padding bled below them.
+    */
+    const chrome = isNarrow ? NAV_HEIGHT_NARROW + 44 : NAV_HEIGHT
+    const top = grid.getBoundingClientRect().top + window.scrollY - chrome - 12
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+
+    window.scrollTo({
+      top: Math.max(0, top),
+      behavior: still ? "auto" : "smooth",
+    })
+  }, [currentPage, isNarrow])
+
+  /** Set by a category pick, so re-filtering is what scrolls, not resizes. */
+  const categoryScrollPending = React.useRef(false)
+  /** A pick made inside the drawer, which has to outwait the drawer. */
+  const scrollAfterDrawer = React.useRef(false)
+
+  const selectCategory = (next: string) => {
+    // A category never opens under a live search; see the query adjuster
+    // above. Every pick clears it: rail, drawer and dock alike.
+    onQueryChange("")
+    setCategory(next)
+    /*
+      Two routes to one scroll. A pick in the drawer cannot scroll on the
+      spot: the drawer's scroll lock pins the page at 0 until the close
+      animation ends and then puts the old position back; a scroll issued
+      during it is measured against the lock and undone by the restore. So
+      the drawer path waits for `onOpenChangeComplete`; everything else
+      scrolls as soon as the new rows are in the DOM.
+
+      `isNarrow &&` because `browseOpen` can be stale-true: widening past
+      `lg` closes the drawer through its `open` expression, and Base UI does
+      not report a controlled-prop close back through `onOpenChange`. Routed
+      on the stale flag alone, a desktop pick would park its scroll on a
+      callback that never fires.
+
+      Re-picking the current category takes neither deferred route. The
+      setState bails out on a same value, so the effect below never runs and
+      a pending flag would sit stranded until `reset()` or the dock's search
+      changed the category and inherited a scroll nobody asked for. Nothing
+      re-renders either, so it is scrolled right here.
+    */
+    if (isNarrow && browseOpen) scrollAfterDrawer.current = true
+    else if (next === category) scrollToBrowserTop()
+    else categoryScrollPending.current = true
+  }
+
+  /**
+   * Picking a category puts the top of the browser, the filter row and not
+   * just the grid, back under the site bar.
+   *
+   * Same offset arithmetic as the pager's scroll above. It only ever scrolls
+   * *up*: deep in Actions, the switch to Files would otherwise leave you
+   * mid-list, but if the filter row is already fully on screen there is
+   * nothing to correct. The breakpoint is read off the media query rather
+   * than `isNarrow` so the callback needs no dependencies.
+   */
+  const scrollToBrowserTop = React.useCallback(() => {
+    const section = sectionRef.current
+    if (!section) return
+
+    const bar = window.matchMedia(BELOW_SIDEBAR).matches
+      ? NAV_HEIGHT_NARROW
+      : NAV_HEIGHT
+    const top = section.getBoundingClientRect().top + window.scrollY - bar - 12
+    if (window.scrollY <= top) return
+
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+
+    window.scrollTo({
+      top: Math.max(0, top),
+      behavior: still ? "auto" : "smooth",
+    })
+  }, [])
+
+  /*
+    After the category change is in the DOM, for the same reason the pager
+    scrolls in an effect: a shorter category shrinks the document under a
+    scroll measured off the old one.
+  */
+  React.useEffect(() => {
+    if (!categoryScrollPending.current) return
+    categoryScrollPending.current = false
+    scrollToBrowserTop()
+  }, [category, scrollToBrowserTop])
+
+  /*
+    A drawer pick's scroll can strand: resizing past `lg` mid-close unmounts
+    the popup, and a close whose popup is already gone never reaches
+    `onOpenChangeComplete`. The flag would then fire on some later drawer
+    dismissal: a scroll long since forgotten. Drop it with the drawer.
+  */
+  React.useEffect(() => {
+    if (!isNarrow) scrollAfterDrawer.current = false
+  }, [isNarrow])
+
+  /**
+   * The address follows what is on screen: the query, the drawing the dock is
+   * showing, the three axes the filter row sets and the page of the grid.
+   *
+   * Every one of these was already a seed a link could carry *in*. This is the
+   * other direction, and it is the whole point: what you narrowed to and what
+   * you opened can now be copied out of the address bar and sent to someone,
+   * and what comes back is the same screen. A parameter that can only be read
+   * is a URL nobody can produce.
+   *
+   * Five decisions in it:
+   *
+   * - **`replaceState`, not `push`.** A click is not a page, and a visit that
+   *   compares six icons would otherwise take seven presses of Back to leave.
+   *   The address stays copyable; the history stays one entry long.
+   * - **Written through the native history API rather than `router.replace`.**
+   *   This route is dynamic, because it reads the settings cookie, so a router
+   *   call would re-render it on the server on every keystroke to produce the
+   *   grid that is already on screen. Next keeps its own router state in step
+   *   with the native call.
+   * - **Debounced.** Typing would otherwise call it per keystroke, which some
+   *   browsers rate-limit and all of them do for nothing: the URL is read when
+   *   it is copied, not while it is being typed into.
+   * - **A value at its neutral is dropped rather than spelled out.** The whole
+   *   set in stroke, every shape, rounded corners: that is `/icons`, and a bare
+   *   address is what it should say. `?style=stroke&shape=all&corners=regular`
+   *   is three parameters that mean "no filters".
+   * - **Neutral means the shipped default, not the cookie.** `corners` is a
+   *   persisted setting, so a reader who prefers sharp sees a `?corners=sharp`
+   *   appear on arrival without touching anything. That is correct: the link
+   *   has to reproduce the screen for someone whose cookie says otherwise, and
+   *   a link that quietly drew rounded for them is the failure this fixes.
+   *   It still does not write the cookie, so their preference is theirs.
+   *
+   * Anything else already in the query string is left alone.
+   *
+   * A closing dock drops its name immediately rather than at the end of the
+   * exit: the panel is on its way out, and an address naming it for another
+   * fifth of a second is an address that can be copied wrong.
+   */
+  const openIcon = preview.closing ? null : preview.name
+
+  /*
+    The grid's half of the address: what it is narrowed by and which page of it
+    is on screen. The effect below writes it to the address bar and the pager
+    builds its links from it, so a page link carries the narrowing the screen
+    does, and a cmd-click on page 3 of a search opens page 3 of that search.
+  */
+  const carryView = React.useCallback(
+    (params: URLSearchParams, pageNumber: number) => {
+      carry(params, "search", query, "")
+      carry(params, "style", style, "stroke")
+      carry(params, "shape", shape, "all")
+      carry(params, "corners", corners, SETTINGS_DEFAULTS.corners)
+      carry(params, "page", String(pageNumber), "1")
+      return params
+    },
+    [query, style, shape, corners]
+  )
+
+  const pageHref = (pageNumber: number) => {
+    const search = carryView(new URLSearchParams(), pageNumber).toString()
+    return `${ICONS_SEGMENT}${search ? `?${search}` : ""}`
+  }
+
+  React.useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const params = carryView(
+        new URLSearchParams(window.location.search),
+        currentPage
+      )
+      carry(params, "icon", openIcon, "")
+
+      /*
+        The dock's own two picks, and only where they say something the grid
+        does not: a panel showing what the grid shows needs no parameter,
+        because a freshly opened panel starts on the grid anyway. They go
+        nowhere while the dock is closed, there being no panel to describe.
+      */
+      carry(params, "icon-style", openIcon ? preview.picked : null, style)
+      carry(
+        params,
+        "icon-corners",
+        openIcon ? preview.pickedCorners : null,
+        corners
+      )
+
+      const search = params.toString()
+      window.history.replaceState(
+        null,
+        "",
+        // The hash rides along: `#icons` is how the nav's "Get started" lands
+        // here, and dropping it would jump the page back to the top.
+        `${window.location.pathname}${search ? `?${search}` : ""}${window.location.hash}`
+      )
+
+      // The server titles pages 2 and on "…, page 3 of 9 · Keyline Icons".
+      // A page turned in place never reaches the server, so the tab would go
+      // on naming the page the visit arrived on.
+      document.title = document.title.replace(
+        /(, page \d+ of \d+)? · /,
+        currentPage > 1 ? `, page ${currentPage} of ${pageCount} · ` : " · "
+      )
+    }, 250)
+
+    return () => window.clearTimeout(timer)
+  }, [
+    carryView,
+    currentPage,
+    pageCount,
+    openIcon,
+    style,
+    corners,
+    preview.picked,
+    preview.pickedCorners,
+  ])
+
+  /**
+   * The category list: the sidebar on a wide screen, the head of the drawer on
+   * a narrow one. Rows whose count is zero under the current style are dropped
+   * rather than shown as dead ends.
+   */
+  const categoriesData = React.useMemo(
+    () => [
+      {
+        label: "All",
+        value: "all",
+        icon: ALL_ICON,
+        count: [...perCategory.values()].reduce((a, b) => a + b, 0),
+      },
+      ...[
+        ...CATEGORIES.map((c) => c.label).sort((a, b) => a.localeCompare(b)),
+        OTHER_CATEGORY,
+      ]
+        .map((label) => ({
+          label,
+          value: label,
+          icon: CATEGORY_ICONS[label],
+          count: perCategory.get(label) ?? 0,
+        }))
+        .filter((c) => c.count > 0),
+    ],
+    [perCategory]
+  )
+
+  const categoryChips = (
+    <div className="no-scrollbar -mx-6 flex items-center gap-1.5 overflow-x-auto px-6 py-1 lg:mx-0 lg:px-0">
+      {categoriesData.map((c) => {
+        const active = category === c.value
+        return (
+          <button
+            key={c.value}
+            type="button"
+            onClick={() => selectCategory(c.value)}
+            className={cn(
+              "inline-flex h-8 shrink-0 items-center gap-2 rounded-lg px-3 text-xs font-sans font-medium transition-all border",
+              active
+                ? "bg-amber-500 text-black border-amber-500 font-bold shadow-xs"
+                : "bg-card text-muted-foreground border-border/70 hover:border-border hover:text-foreground hover:bg-muted/50"
+            )}
+          >
+            <c.icon
+              aria-hidden="true"
+              className={cn(
+                "size-3.5 shrink-0 transition-colors",
+                active ? "text-black" : "text-muted-foreground"
+              )}
+            />
+            <span>{c.label}</span>
+            <span
+              className={cn(
+                "rounded px-1 text-[10px] font-mono tabular-nums",
+                active
+                  ? "bg-black/20 text-black font-bold"
+                  : "bg-muted text-muted-foreground"
+              )}
+            >
+              {c.count}
+            </span>
+          </button>
+        )
+      })}
+    </div>
+  )
+
+  const categoryList = (
+    <ul className="flex flex-col gap-0.5">
+      {categoriesData.map((c) => (
+        <li key={c.value}>
+          <button
+            type="button"
+            onClick={() => {
+              selectCategory(c.value)
+              setBrowseOpen(false)
+            }}
+            className={cn(
+              "flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-sm transition-all font-sans font-medium",
+              category === c.value
+                ? "bg-amber-500 text-black font-bold shadow-xs"
+                : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
+            )}
+          >
+            <span className="flex items-center gap-2">
+              <c.icon
+                aria-hidden="true"
+                className={cn(
+                  "size-4 shrink-0 transition-colors",
+                  category === c.value ? "text-black" : "text-muted-foreground"
+                )}
+              />
+              {c.label}
+            </span>
+            <span
+              className={cn(
+                "text-xs font-mono font-semibold tabular-nums px-1.5 py-0.5 rounded-md",
+                category === c.value
+                  ? "bg-black/20 text-black"
+                  : "bg-muted text-muted-foreground"
+              )}
+            >
+              [{c.count}]
+            </span>
+          </button>
+        </li>
+      ))}
+    </ul>
+  )
+
+  /**
+   * The filter controls, rendered twice: inline on wide screens and inside the
+   * drawer below `lg`. Only one copy is ever visible, and both drive the same
+   * state, so there is no version of this that can disagree with itself.
+   *
+   * The layout is the same in both — one wrapping row. `stacked` only drops the
+   * labels from the two controls that read fine as a glyph, so a phone fits the
+   * row in fewer lines.
+   */
+
+
+    const STYLE_SPECS = [
+      {
+        id: "stroke" as const,
+        label: "Stroke",
+        specimen: (
+          <svg className="size-3.5 shrink-0" viewBox="0 0 16 16" fill="none">
+            <rect x="2.5" y="2.5" width="11" height="11" rx="2.5" stroke="currentColor" strokeWidth="2" />
+          </svg>
+        ),
+      },
+      {
+        id: "two-tone" as const,
+        label: "Two-Tone",
+        specimen: (
+          <svg className="size-3.5 shrink-0" viewBox="0 0 16 16" fill="none">
+            <rect x="2.5" y="2.5" width="11" height="11" rx="2.5" stroke="currentColor" strokeWidth="1.75" />
+            <path d="M2.5 8h11" stroke="currentColor" strokeWidth="1.75" strokeDasharray="2 1.5" className="opacity-60" />
+          </svg>
+        ),
+      },
+      {
+        id: "duotone" as const,
+        label: "Duotone",
+        specimen: (
+          <svg className="size-3.5 shrink-0" viewBox="0 0 16 16" fill="none">
+            <rect x="2.5" y="2.5" width="11" height="11" rx="2.5" fill="currentColor" fillOpacity="0.25" stroke="currentColor" strokeWidth="1.75" />
+            <circle cx="8" cy="8" r="2.5" fill="currentColor" />
+          </svg>
+        ),
+      },
+      {
+        id: "fill" as const,
+        label: "Fill",
+        specimen: (
+          <svg className="size-3.5 shrink-0" viewBox="0 0 16 16">
+            <rect x="2.5" y="2.5" width="11" height="11" rx="2.5" fill="currentColor" />
+          </svg>
+        ),
+      },
+    ]
+
+    const CORNER_SPECS = [
+      {
+        id: "regular" as const,
+        label: "Rounded",
+        specimen: (
+          <svg className="size-3.5 shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
+            <rect x="2.5" y="2.5" width="11" height="11" rx="4" />
+          </svg>
+        ),
+      },
+      {
+        id: "sharp" as const,
+        label: "Sharp",
+        badge: SHARP_BADGE ?? "PRO",
+        specimen: (
+          <svg className="size-3.5 shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
+            <rect x="2.5" y="2.5" width="11" height="11" rx="0" />
+          </svg>
+        ),
+      },
+    ]
+
+    const styleMatrix = (
+      <div className="flex items-center gap-1 rounded-xl border border-border/80 bg-muted/50 p-1 backdrop-blur-sm shadow-xs">
+        {STYLE_SPECS.map((spec) => {
+          const isActive = style === spec.id
+          return (
+            <button
+              key={spec.id}
+              type="button"
+              aria-pressed={isActive}
+              onClick={() => setStyle(spec.id)}
+              className={cn(
+                "flex h-7 items-center gap-1.5 px-2.5 rounded-lg text-xs font-semibold tracking-tight transition-all cursor-pointer",
+                isActive
+                  ? "bg-amber-500 text-black shadow-xs font-bold"
+                  : "text-muted-foreground hover:text-foreground hover:bg-background/60"
+              )}
+            >
+              {spec.specimen}
+              <span>{spec.label}</span>
+            </button>
+          )
+        })}
+      </div>
+    )
+
+    const cornerMatrix = (
+      <div className="flex items-center gap-1 rounded-xl border border-border/80 bg-muted/50 p-1 backdrop-blur-sm shadow-xs">
+        {CORNER_SPECS.map((spec) => {
+          const isActive = corners === spec.id
+          return (
+            <button
+              key={spec.id}
+              type="button"
+              aria-pressed={isActive}
+              onClick={() => update({ corners: spec.id })}
+              className={cn(
+                "relative flex h-7 items-center gap-1.5 px-2.5 rounded-lg text-xs font-semibold tracking-tight transition-all cursor-pointer",
+                isActive
+                  ? "bg-amber-500 text-black shadow-xs font-bold"
+                  : "text-muted-foreground hover:text-foreground hover:bg-background/60"
+              )}
+            >
+              {spec.specimen}
+              <span>{spec.label}</span>
+              {spec.badge && (
+                <span
+                  className={cn(
+                    "rounded px-1 py-0.2 text-[9px] font-mono font-black uppercase tracking-wider",
+                    isActive
+                      ? "bg-black/20 text-black"
+                      : "bg-amber-500/20 text-amber-500"
+                  )}
+                >
+                  {spec.badge}
+                </span>
+              )}
+            </button>
+          )
+        })}
+      </div>
+    )
+
+    const sizeControl = (
+      <div className="flex h-9 items-center gap-1.5 rounded-xl border border-border/80 bg-muted/50 px-2 py-1 backdrop-blur-sm shadow-xs">
+        <span className="flex items-center gap-1 text-[11px] font-mono font-bold uppercase tracking-wider text-muted-foreground">
+          <SlidersHorizontal className="size-3 text-amber-500" />
+          <span className="hidden sm:inline">Size</span>
+        </span>
+
+        <button
+          type="button"
+          onClick={() => update({ size: Math.max(16, size - 4) })}
+          disabled={size <= 16}
+          aria-label="Decrease size"
+          className="flex size-6 items-center justify-center rounded-md text-muted-foreground transition-all hover:bg-background hover:text-foreground disabled:opacity-30 cursor-pointer"
+        >
+          <Minus className="size-3" />
+        </button>
+
+        <div className="flex items-baseline justify-center min-w-9.5 px-1 font-mono text-xs font-bold text-foreground bg-background/90 rounded-md border border-border/60 py-0.5 shadow-2xs">
+          <span>{size}</span>
+          <span className="text-[9px] text-muted-foreground ml-0.5">px</span>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => update({ size: Math.min(48, size + 4) })}
+          disabled={size >= 48}
+          aria-label="Increase size"
+          className="flex size-6 items-center justify-center rounded-md text-muted-foreground transition-all hover:bg-background hover:text-foreground disabled:opacity-30 cursor-pointer"
+        >
+          <Plus className="size-3" />
+        </button>
+
+        <div className="flex items-center gap-0.5 border-l border-border/60 pl-1.5 ml-0.5">
+          {[16, 20, 24, 32, 40].map((s) => (
+            <button
+              key={s}
+              type="button"
+              onClick={() => update({ size: s })}
+              className={cn(
+                "h-6 px-1.5 font-mono text-[11px] rounded-md transition-all cursor-pointer",
+                size === s
+                  ? "bg-amber-500 text-black font-black shadow-xs"
+                  : "text-muted-foreground hover:text-foreground hover:bg-background/60"
+              )}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+      </div>
+    )
+
+    const strokeControl = (
+      <div className="flex h-9 items-center gap-1.5 rounded-xl border border-border/80 bg-muted/50 px-2 py-1 backdrop-blur-sm shadow-xs">
+        <span className="flex items-center gap-1 text-[11px] font-mono font-bold uppercase tracking-wider text-muted-foreground">
+          <span className="hidden sm:inline">Stroke</span>
+        </span>
+
+        <button
+          type="button"
+          onClick={() => update({ stroke: Math.max(1, +(stroke - 0.25).toFixed(2)) })}
+          disabled={stroke <= 1}
+          aria-label="Decrease stroke width"
+          className="flex size-6 items-center justify-center rounded-md text-muted-foreground transition-all hover:bg-background hover:text-foreground disabled:opacity-30 cursor-pointer"
+        >
+          <Minus className="size-3" />
+        </button>
+
+        <div className="flex items-baseline justify-center min-w-10.5 px-1 font-mono text-xs font-bold text-foreground bg-background/90 rounded-md border border-border/60 py-0.5 shadow-2xs">
+          <span>{stroke.toFixed(stroke % 1 === 0 ? 0 : 1)}</span>
+          <span className="text-[9px] text-muted-foreground ml-0.5">px</span>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => update({ stroke: Math.min(3, +(stroke + 0.25).toFixed(2)) })}
+          disabled={stroke >= 3}
+          aria-label="Increase stroke width"
+          className="flex size-6 items-center justify-center rounded-md text-muted-foreground transition-all hover:bg-background hover:text-foreground disabled:opacity-30 cursor-pointer"
+        >
+          <Plus className="size-3" />
+        </button>
+
+        <div className="flex items-center gap-1 border-l border-border/60 pl-1.5 ml-0.5">
+          {[1, 1.5, 2, 2.5].map((w) => {
+            const isActive = Math.abs(stroke - w) < 0.1
+            return (
+              <button
+                key={w}
+                type="button"
+                title={`${w}px stroke`}
+                onClick={() => update({ stroke: w })}
+                className={cn(
+                  "flex flex-col items-center justify-center h-6 px-1.5 min-w-6 rounded-md transition-all cursor-pointer",
+                  isActive
+                    ? "bg-amber-500 text-black font-black shadow-xs"
+                    : "text-muted-foreground hover:text-foreground hover:bg-background/60"
+                )}
+              >
+                <span
+                  className={cn(
+                    "w-3 rounded-full mb-0.5",
+                    isActive ? "bg-black" : "bg-muted-foreground"
+                  )}
+                  style={{ height: `${Math.max(1, w)}px` }}
+                />
+                <span className="font-mono text-[9px] leading-none">{w}</span>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+    )
+
+    const shapeMenu = (
+      <DropdownMenu>
+        <DropdownMenuTrigger className="flex h-9 items-center gap-2 rounded-xl border border-border/80 bg-muted/50 px-3 text-xs font-semibold tracking-tight backdrop-blur-sm shadow-xs transition-all hover:bg-background/80 hover:text-foreground cursor-pointer">
+          <span className="text-muted-foreground font-mono uppercase text-[10px]">Shape:</span>
+          <span className="font-bold text-foreground">
+            {shape === "all"
+              ? "All"
+              : SHAPES.find((s) => s.value === shape)!.label}
+          </span>
+          <ChevronDown className="size-3.5 text-muted-foreground" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" className="w-56">
+          <DropdownMenuRadioGroup
+            value={shape}
+            onValueChange={(value) => setShape(value as ShapeFilter)}
+          >
+            <DropdownMenuRadioItem value="all" closeOnClick className="gap-3">
+              <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-muted">
+                <Shapes className="size-4 text-muted-foreground" />
+              </span>
+              All shapes
+              <span className="ml-auto text-xs text-muted-foreground tabular-nums">
+                {matches.length.toLocaleString("en-US")}
+              </span>
+            </DropdownMenuRadioItem>
+            {SHAPES.map((s) => (
+              <DropdownMenuRadioItem
+                key={s.value}
+                value={s.value}
+                closeOnClick
+                className="gap-3"
+              >
+                <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-muted">
+                  <s.icon className="size-4 text-muted-foreground" />
+                </span>
+                <span className="flex flex-col gap-0.5">
+                  <span>{s.label}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {s.hint}
+                  </span>
+                </span>
+                <span className="ml-auto text-xs text-muted-foreground tabular-nums">
+                  {perShape[s.value].toLocaleString("en-US")}
+                </span>
+              </DropdownMenuRadioItem>
+            ))}
+          </DropdownMenuRadioGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )
+
+    const COLOR_PRESETS = [
+      { label: "Default", value: null, bg: "currentColor" },
+      { label: "Amber", value: "#f59e0b", bg: "#f59e0b" },
+      { label: "Emerald", value: "#10b981", bg: "#10b981" },
+      { label: "Cyan", value: "#06b6d4", bg: "#06b6d4" },
+      { label: "Violet", value: "#8b5cf6", bg: "#8b5cf6" },
+      { label: "Rose", value: "#f43f5e", bg: "#f43f5e" },
+    ] as const
+
+    const colorPicker = (
+      <div className="flex h-9 items-center gap-1.5 rounded-xl border border-border/80 bg-muted/50 px-2.5 py-1 backdrop-blur-sm shadow-xs">
+        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-muted-foreground mr-0.5 hidden xl:inline">
+          Theme
+        </span>
+        <div className="flex items-center gap-1.5">
+          {COLOR_PRESETS.map((p) => {
+            const isSelected = p.value === color || (p.value === null && color === null)
+            return (
+              <button
+                key={p.label}
+                type="button"
+                title={`Theme: ${p.label}`}
+                onClick={() => update({ color: p.value })}
+                className={cn(
+                  "size-3.5 rounded-full border transition-all cursor-pointer",
+                  isSelected
+                    ? "ring-2 ring-amber-500 scale-125 border-background shadow-xs"
+                    : "border-border/60 hover:scale-115 opacity-70 hover:opacity-100"
+                )}
+                style={{ background: p.bg }}
+              />
+            )
+          })}
+        </div>
+
+        <span className="h-3.5 w-px bg-border/60 mx-0.5" />
+
+        <label
+          title={color ? `Custom: ${color}` : "Custom color"}
+          className="relative cursor-pointer flex items-center justify-center size-5 rounded-md hover:bg-background/80 transition-colors"
+        >
+          <Palette className="size-3.5 text-muted-foreground hover:text-foreground" />
+          <input
+            type="color"
+            value={color ?? "#f59e0b"}
+            onChange={(event) => update({ color: event.currentTarget.value })}
+            aria-label="Icon colour"
+            className="absolute inset-0 cursor-pointer opacity-0"
+          />
+        </label>
+      </div>
+    )
+
+    const settingsMenu = (
+      <DropdownMenu>
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <DropdownMenuTrigger
+                aria-label="Grid settings"
+                className="flex size-9 items-center justify-center rounded-xl border border-border/80 bg-muted/50 text-muted-foreground hover:bg-background/80 hover:text-foreground transition-all cursor-pointer shadow-xs"
+              />
+            }
+          >
+            <Settings className="size-4" />
+          </TooltipTrigger>
+          <TooltipContent>Grid settings</TooltipContent>
+        </Tooltip>
+        <DropdownMenuContent align="end" className="w-72 p-3">
+          <div className="flex items-center justify-between gap-4">
+            <span className="flex flex-col gap-0.5">
+              <span className="text-sm font-medium">Icon names</span>
+              <span className="text-xs text-muted-foreground">
+                The label under each glyph
+              </span>
+            </span>
+            <PhoneToggle
+              on={showNames}
+              label="Show icon names"
+              onChange={(next) => update({ showNames: next })}
+            />
+          </div>
+
+          <DropdownMenuSeparator className="my-3" />
+
+          <div className="flex flex-col gap-2">
+            <span className="flex items-baseline justify-between">
+              <span className="text-sm font-medium">Grid columns</span>
+              <span className="text-xs text-muted-foreground tabular-nums">
+                {columns} per row
+              </span>
+            </span>
+            <div className="flex items-center gap-1.5 pt-1">
+              {[4, 6, 8, 10, 12, 16].map((col) => (
+                <button
+                  key={col}
+                  type="button"
+                  onClick={() => update({ columns: col })}
+                  className={cn(
+                    "flex-1 h-7 rounded-md font-mono text-xs font-bold transition-all cursor-pointer",
+                    columns === col
+                      ? "bg-amber-500 text-black shadow-xs font-black"
+                      : "bg-muted text-muted-foreground hover:text-foreground hover:bg-background"
+                  )}
+                >
+                  {col}
+                </button>
+              ))}
+            </div>
+          </div>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )
+
+    const resetButton = (
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <button
+              type="button"
+              onClick={reset}
+              disabled={atDefaults}
+              aria-label="Reset to defaults"
+              className={cn(
+                "flex size-9 items-center justify-center rounded-xl border border-border/80 bg-muted/50 text-muted-foreground hover:bg-background/80 hover:text-foreground transition-all cursor-pointer shadow-xs disabled:pointer-events-none disabled:opacity-40"
+              )}
+            />
+          }
+        >
+          <RotateCcw className="size-4" />
+        </TooltipTrigger>
+        <TooltipContent>Reset to defaults</TooltipContent>
+      </Tooltip>
+    )
+
+    const telemetryBadge = (
+      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-xs font-mono font-bold tracking-tight shadow-xs whitespace-nowrap">
+        <span className="relative flex size-2">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+          <span className="relative inline-flex rounded-full size-2 bg-amber-500" />
+        </span>
+        <span>{shown.length.toLocaleString("en-US")} GLYPHS</span>
+      </div>
+    )
+
+    const sliders = (
+      <>
+        {sizeControl}
+        {strokeControl}
+        {shapeMenu}
+        {colorPicker}
+        {settingsMenu}
+        {resetButton}
+      </>
+    )
+
+    const filters = () => (
+      <>
+        {styleMatrix}
+        {cornerMatrix}
+        {sliders}
+      </>
+    )
+
+  return (
+    <Drawer>
+      <div ref={sectionRef} className="flex w-full flex-col gap-5">
+        {/* Studio Master Command Console */}
+        <div className="relative overflow-hidden rounded-2xl border border-border/80 bg-card/90 backdrop-blur-2xl p-3.5 md:p-4 shadow-xl shadow-black/10 flex flex-col gap-3">
+          {/* Top specular highlight line */}
+          <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-amber-500/60 to-transparent" />
+
+          {/* Row 1: Integrated Omni-Search & Visual Spec Matrix */}
+          <div className="flex flex-col lg:flex-row lg:items-center gap-3">
+            {/* Search expands to take all left/center room */}
+            <div className="flex-1 min-w-65">
+              <IconSearch
+                value={query}
+                onValueChange={onQueryChange}
+                suggestions={suggestions}
+                className="w-full text-left"
+              />
+            </div>
+
+            {/* Mobile trigger */}
+            <div className="flex items-center gap-2 lg:hidden">
+              <DrawerTrigger
+                className={cn(
+                  buttonVariants({ variant: "outline" }),
+                  "relative h-10 w-full"
+                )}
+              >
+                <PanelTopCloseDashed
+                  data-icon="inline-start"
+                  className="size-4"
+                />
+                Filter & Configure Studio
+                {!atDefaults && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute -top-0.5 -right-0.5 size-2 rounded-full bg-primary"
+                  />
+                )}
+              </DrawerTrigger>
+            </div>
+
+            {/* Desktop Spec Matrix: Visual Glyphs for Style & Corners */}
+            <div className="hidden lg:flex items-center gap-2 shrink-0">
+              {styleMatrix}
+              <div className="h-5 w-px bg-border/60" />
+              {cornerMatrix}
+            </div>
+          </div>
+
+          {/* Row 2: Precision Engineering Bar (Zero Dead Space!) */}
+          <div className="hidden lg:flex items-center justify-between gap-3 border-t border-border/60 pt-3">
+            {/* Module 1: Geometry (Size & Stroke) */}
+            <div className="flex items-center gap-2 flex-wrap">
+              {sizeControl}
+              {strokeControl}
+            </div>
+
+            {/* Module 2: Filtering & Theme (Shape & Color) */}
+            <div className="flex items-center gap-2 flex-wrap">
+              {shapeMenu}
+              {colorPicker}
+            </div>
+
+            {/* Module 3: System Telemetry & Viewport */}
+            <div className="flex items-center gap-2 shrink-0">
+              {settingsMenu}
+              {resetButton}
+              {telemetryBadge}
+            </div>
+          </div>
+        </div>
+
+        {/* Horizontal Category Filter Strip */}
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between px-1">
+            <span className="font-mono text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+              <span className="size-1.5 rounded-full bg-amber-500" />
+              Filter by Category
+            </span>
+            {category !== "all" && (
+              <button
+                type="button"
+                onClick={() => selectCategory("all")}
+                className="font-mono text-xs font-bold text-amber-500 hover:underline cursor-pointer"
+              >
+                Reset to All ({categoriesData[0]?.count ?? 0})
+              </button>
+            )}
+          </div>
+          {categoryChips}
+        </div>
+
+        <div className="flex min-w-0 flex-1 flex-col gap-6">
+
+          {isNarrow && (
+            <DrawerContent>
+              <DrawerHeader>
+                <DrawerTitle>Browse</DrawerTitle>
+                <DrawerDescription>
+                  Categories, style, size, stroke, shape and colour.
+                </DrawerDescription>
+              </DrawerHeader>
+              <div className="flex flex-col gap-4 overflow-y-auto px-4 pt-4 pb-6">
+                <div className="flex flex-wrap items-center gap-2">
+                  {filters()}
+                </div>
+                <h3 className="px-2 pt-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                  Categories
+                </h3>
+                {categoryList}
+              </div>
+            </DrawerContent>
+          )}
+
+          {shown.length === 0 ? (
+            /*
+              A search that finds nothing is the one moment the set's gaps are
+              visible to the person who cares about them, so it asks for the
+              drawing rather than apologising: the wording someone would use to
+              file it is right there, and so is the issue tracker.
+
+              It states what was searched, because the query has scrolled out of
+              view by the time you read this on a phone, and it offers the way
+              back — Reset is a 36px ghost icon up in the filter row, which is
+              not a thing you find while reading a sentence about no results.
+            */
+            <div className="flex flex-col items-center px-6 py-16 text-center">
+              <p className="text-lg font-medium">
+                No icons match{query ? ` “${query}”` : " these filters"}
+              </p>
+
+              <p className="mt-2 max-w-md text-sm text-muted-foreground">
+                {/*
+                  The suggestion takes the subtitle's place rather than adding
+                  a line: it is the "try another word" advice, made specific.
+                */}
+                {/*
+                  Worded exactly as the plugin words it, down to the full stop.
+                  Not pluralised on purpose: "1 match in another style" reads as
+                  a noun and "10 match in another style" as a verb, and both
+                  parse, where the conditional it replaced produced "1 matches".
+                */}
+                {/*
+                  In the order of how sure each one is. A filter hiding the
+                  drawing is a fact about this grid; another style holding it
+                  is a fact about the set; a spelling is a guess.
+                */}
+                {hiddenByFilter > 0 ? (
+                  <>
+                    {shape !== "all"
+                      ? `Nothing in ${SHAPES.find((s) => s.value === shape)!.label.toLowerCase()}. ${hiddenByFilter} match in another shape.`
+                      : `Nothing under ${category}. ${hiddenByFilter} match on another shelf.`}{" "}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShape("all")
+                        setCategory("all")
+                      }}
+                      className="rounded-sm font-medium text-foreground underline underline-offset-4 hover:no-underline"
+                    >
+                      Show all {hiddenByFilter}
+                    </button>
+                  </>
+                ) : matchesElsewhere > 0 ? (
+                  `Nothing in ${style}. ${matchesElsewhere} match in another style.`
+                ) : suggestion ? (
+                  <>
+                    Did you mean{" "}
+                    <button
+                      type="button"
+                      onClick={() => onQueryChange(suggestion)}
+                      className="rounded-sm font-medium text-foreground underline underline-offset-4 hover:no-underline"
+                    >
+                      {suggestion}
+                    </button>
+                    ?
+                  </>
+                ) : (
+                  "Try another word for it, or ask for the drawing if the set is missing one."
+                )}
+              </p>
+
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+                {/*
+                  The same glyph the Reset control in the filter row wears, so
+                  the two read as one action reached two ways rather than as
+                  two different ones.
+                */}
+                <Button size="lg" variant="secondary" onClick={reset}>
+                  <RotateCcw className="size-4" />
+                  Clear filters
+                </Button>
+
+                <Button
+                  size="lg"
+                  render={
+                    <a
+                      href={SET_REQUEST_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    />
+                  }
+                  nativeButton={false}
+                >
+                  <Plus className="size-4" />
+                  Request an icon
+                </Button>
+
+                <Button
+                  size="lg"
+                  variant="ghost"
+                  render={
+                    <a
+                      href={SET_X_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    />
+                  }
+                  nativeButton={false}
+                >
+                  {/*
+                    The mark, not the letter. "X" typed in the label is a
+                    capital ex in the page's own typeface, which next to a
+                    button that says "Request an icon" reads as a close button
+                    rather than as the name of a place to send a message.
+                  */}
+                  Message on <XLogo className="size-3.5" />
+                </Button>
+              </div>
+            </div>
+          ) : (
+            /*
+          One tooltip for the whole grid, re-anchored to whatever tile the
+          pointer is on: a tooltip per tile can only blink out and back, while
+          a single element that stays mounted can travel between them.
+        */
+            <div
+              ref={gridRef}
+              className="relative flex flex-col gap-6"
+              onPointerOver={(event) => {
+                const tile = (event.target as HTMLElement).closest<HTMLElement>(
+                  "[data-icon-name]"
+                )
+
+                // Ignore the gaps between tiles — dropping the anchor there is what
+                // makes a swept pointer flicker.
+                if (tile) anchorTip(tile)
+              }}
+              onPointerLeave={() => anchorTip(null)}
+              onFocus={(event) => {
+                const tile = (event.target as HTMLElement).closest<HTMLElement>(
+                  "[data-icon-name]"
+                )
+
+                if (tile) anchorTip(tile)
+              }}
+              onBlur={(event) => {
+                if (!event.currentTarget.contains(event.relatedTarget)) {
+                  anchorTip(null)
+                }
+              }}
+            >
+              {/*
+                One grid, in sort order. Splitting it into Regular/Square/Circle
+                blocks left ragged part-rows wherever a block ended, and with a
+                page of 120 the split landed mid-block anyway. The shape is a
+                filter, not a heading.
+              */}
+              {/*
+                The column count is a setting on a wide screen and a fit on a
+                narrow one: ten columns across a phone would be 30px tiles.
+
+                Decided by the stylesheet, not by `isNarrow`: the server
+                snapshot assumes desktop, so an inline `gridTemplateColumns`
+                laid a phone's first paint out at the cookie's count and
+                re-flowed it at hydration. The count rides a custom property
+                instead: an inline `grid-template-columns` would beat the
+                `max-lg:` class, being inline style against a stylesheet rule.
+              */}
+              <div
+                className="grid gap-2 max-lg:grid-cols-[repeat(auto-fill,minmax(104px,1fr))] lg:grid-cols-(--browser-columns)"
+                style={
+                  {
+                    "--browser-columns": `repeat(${columns}, minmax(0, 1fr))`,
+                  } as React.CSSProperties
+                }
+              >
+                {paged.map((icon) => (
+                  /*
+                    A link to the icon's page that a plain click keeps in the
+                    dock. As a `<button>` the tile gave a crawler nothing to
+                    follow: `/icons` linked to none of the icon pages, and the
+                    dock's "Open page" only exists after a click. Search
+                    Console had 150 icon pages discovered and not indexed on
+                    14 Sep 2026, with 363 of 1,000 linked from no page but the
+                    sitemap. A modified or middle click opens the page, which
+                    is what a link under the pointer promises anyway.
+                  */
+                  <a
+                    key={icon.name}
+                    href={iconHref(icon.name)}
+                    data-icon-name={icon.name}
+                    /* Opens the dock. Copying moved in there with it: the panel
+                       offers four formats, and a click that silently put one of
+                       them on the clipboard was a guess about which. */
+                    onClick={(event) => {
+                      if (!plainClick(event)) return
+                      event.preventDefault()
+                      preview.select(icon.name)
+                    }}
+                    // Space pressed a button; on a link it scrolls the page.
+                    onKeyDown={(event) => {
+                      if (event.key !== " ") return
+                      event.preventDefault()
+                      preview.select(icon.name)
+                    }}
+                    aria-label={icon.name}
+                    aria-haspopup="dialog"
+                    className={cn(
+                      "group relative flex aspect-square flex-col items-center justify-center gap-2 rounded-xl p-2.5 transition-all duration-200 border border-dashed font-handwritten select-none",
+                      preview.name === icon.name
+                        ? "bg-amber-500/15 border-amber-500 text-amber-600 dark:text-amber-400 shadow-md shadow-amber-500/10 ring-1.5 ring-amber-500/60 scale-[1.02]"
+                        : "bg-card/90 border-border/70 hover:border-amber-500/70 hover:bg-linear-to-b hover:from-amber-500/10 hover:to-card hover:shadow-xl hover:shadow-amber-500/10 hover:-translate-y-1"
+                    )}
+                  >
+                    {/* Technical blueprint corner marks */}
+                    <span aria-hidden="true" className="pointer-events-none absolute top-1 left-1 select-none font-mono text-[9px] leading-none text-muted-foreground/30 transition-colors group-hover:text-amber-500/70">+</span>
+                    <span aria-hidden="true" className="pointer-events-none absolute top-1 right-1 select-none font-mono text-[9px] leading-none text-muted-foreground/30 transition-colors group-hover:text-amber-500/70">+</span>
+                    <span aria-hidden="true" className="pointer-events-none absolute bottom-1 left-1 select-none font-mono text-[9px] leading-none text-muted-foreground/30 transition-colors group-hover:text-amber-500/70">+</span>
+                    <span aria-hidden="true" className="pointer-events-none absolute bottom-1 right-1 select-none font-mono text-[9px] leading-none text-muted-foreground/30 transition-colors group-hover:text-amber-500/70">+</span>
+
+                    {/* Quick copy overlay actions on hover */}
+                    <div className="absolute top-1.5 right-1.5 z-10 flex items-center gap-1 opacity-0 transition-all duration-150 group-hover:opacity-100 group-hover:translate-y-0 translate-y-0.5">
+                      <button
+                        type="button"
+                        title="Copy SVG"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          e.preventDefault()
+                          const art = artOf(icon, style, corners)
+                          if (!art) return
+                          const code = snippet("svg", icon.name, style, art, { size, stroke, pm: "pnpm", corners })
+                          navigator.clipboard.writeText(code)
+                          toast.success(`Copied SVG: ${icon.name}`)
+                        }}
+                        className="rounded-md bg-background/95 px-1.5 py-0.5 font-mono text-[9px] font-bold text-foreground shadow-xs ring-1 ring-border/80 hover:bg-amber-500 hover:text-white dark:hover:text-black hover:ring-amber-500 transition-all cursor-pointer"
+                      >
+                        SVG
+                      </button>
+                      <button
+                        type="button"
+                        title="Copy React JSX"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          e.preventDefault()
+                          const art = artOf(icon, style, corners)
+                          if (!art) return
+                          const code = snippet("jsx", icon.name, style, art, { size, stroke, pm: "pnpm", corners })
+                          navigator.clipboard.writeText(code)
+                          toast.success(`Copied JSX: ${icon.name}`)
+                        }}
+                        className="rounded-md bg-background/95 px-1.5 py-0.5 font-mono text-[9px] font-bold text-foreground shadow-xs ring-1 ring-border/80 hover:bg-amber-500 hover:text-white dark:hover:text-black hover:ring-amber-500 transition-all cursor-pointer"
+                      >
+                        JSX
+                      </button>
+                    </div>
+
+                    {/* `currentColor` all the way down, so the picked colour
+                        reaches the glyph without touching its markup. */}
+                    <span
+                      className="flex h-12 w-12 items-center justify-center text-foreground transition-transform duration-200 ease-out group-hover:scale-110"
+                      style={color ? { color } : undefined}
+                    >
+                      <Glyph
+                        art={artOf(icon, style, corners)!}
+                        size={size}
+                        stroke={stroke}
+                      />
+                    </span>
+                    {/*
+                      The label is the truncated one; the tooltip carries the
+                      name in full either way, so hiding these loses nothing
+                      but the wall of text.
+                    */}
+                    {showNames && (
+                      <span className="w-full truncate text-center text-[11px] font-bold leading-tight text-muted-foreground group-hover:text-foreground">
+                        {icon.name}
+                      </span>
+                    )}
+                    {icon.isNew && (
+                      <span
+                        aria-hidden="true"
+                        className="pointer-events-none absolute top-1.5 left-1.5 size-1.5 rounded-full bg-primary"
+                      />
+                    )}
+                  </a>
+                ))}
+              </div>
+
+              {tip && (
+                <div
+                  // A fresh element per open, so a re-open lands on its tile
+                  // instead of travelling there from the last one. See
+                  // `tipKey`.
+                  key={tipKey}
+                  ref={tipRef}
+                  aria-hidden="true"
+                  className={cn(
+                    // Above every tile and the sticky Browse row's z-10,
+                    // since a top-row name paints across that band; below
+                    // the site nav's z-30.
+                    "pointer-events-none absolute top-0 left-0 z-20 duration-150 ease-out",
+                    // Open, the box follows the pointer from tile to tile and
+                    // both properties animate. Closed, only the fade does: the
+                    // position is held where it stood so it fades out in place.
+                    tipOpen
+                      ? "opacity-100 transition-[translate,opacity]"
+                      : "opacity-0 transition-opacity",
+                    "motion-reduce:transition-none"
+                  )}
+                  style={{ translate: `${tip.x}px ${tip.y}px` }}
+                >
+                  {/*
+                    The pill is out of flow on purpose. In flow it hands the
+                    wrapper its own width, and that box sits at the anchor
+                    *before* the centring translate; the browser counts the
+                    untranslated box toward the document's scrollable area, so
+                    a long name on a right-edge tile widened the page even
+                    with the pill painted safely inside it.
+                  */}
+                  <div
+                    ref={tipPillRef}
+                    className="absolute top-0 left-0 -translate-x-1/2 -translate-y-[calc(100%+8px)] rounded-md bg-foreground px-3 py-1.5 text-xs whitespace-nowrap text-background"
+                  >
+                    {tip.name}
+                    {/* Centred on the pill's bottom edge, so half of it reads as
+                    the point aimed at the tile. The `left` transition matches
+                    the pill's travel, for when the clamp above shifts it. */}
+                    <span
+                      ref={tipArrowRef}
+                      className="absolute top-full left-1/2 size-2.5 -translate-x-1/2 -translate-y-1/2 rotate-45 rounded-xs bg-foreground transition-[left] duration-150 ease-out motion-reduce:transition-none"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {pageCount > 1 && (
+            <nav
+              aria-label="Pages"
+              className="flex flex-wrap items-center justify-center gap-1 pt-2 pb-6"
+            >
+              {/*
+                Links, not buttons, for the reason the tiles are: a crawler
+                follows an `href` and never presses anything. Only the first
+                120 tiles are in the HTML of `/icons`, so these are how the
+                icon pages on pages 2 to 9 get a link from the grid at all. A
+                plain click still turns the page in place. Previous and Next
+                stay buttons at the ends, since a disabled link is not a thing.
+              */}
+              <PagerStep
+                href={currentPage > 1 ? pageHref(currentPage - 1) : null}
+                onTurn={() => goToPage(currentPage - 1)}
+              >
+                <ChevronLeft data-icon="inline-start" className="size-4" />
+                Previous
+              </PagerStep>
+
+              {pageNumbers(currentPage, pageCount).map((entry) =>
+                Array.isArray(entry) ? (
+                  <DropdownMenu key={`gap-${entry[0]}`}>
+                    {/* Opens on hover as well as on click; the click is what a
+                    touch screen and a keyboard still have. `delay` is zero
+                    because Base UI's is a rest timer, restarted by every mouse
+                    move, so its default 100 waits for the pointer to stop and
+                    reads as half a second. */}
+                    <DropdownMenuTrigger
+                      openOnHover
+                      delay={0}
+                      closeDelay={150}
+                      aria-label={`Pages ${entry[0]} to ${entry.at(-1)}`}
+                      className={cn(
+                        buttonVariants({ variant: "ghost" }),
+                        "h-9 w-9 text-muted-foreground"
+                      )}
+                    >
+                      …
+                    </DropdownMenuTrigger>
+                    {/* Upward: the pager is the foot of the grid, with the
+                    dock under it. */}
+                    <DropdownMenuContent
+                      side="top"
+                      align="center"
+                      className="w-auto max-w-80"
+                    >
+                      {entry.map((n) => (
+                        <DropdownMenuItem
+                          key={n}
+                          onClick={() => goToPage(n)}
+                          className="gap-3 py-1.5"
+                        >
+                          <span className="w-5 text-right font-medium tabular-nums">
+                            {n}
+                          </span>
+                          <span className="truncate text-muted-foreground">
+                            {pageSpan(n)}
+                          </span>
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : (
+                  <a
+                    key={entry}
+                    href={pageHref(entry)}
+                    onClick={(event) => {
+                      if (!plainClick(event)) return
+                      event.preventDefault()
+                      goToPage(entry)
+                    }}
+                    aria-current={entry === currentPage ? "page" : undefined}
+                    className={cn(
+                      buttonVariants({
+                        variant: entry === currentPage ? "default" : "ghost",
+                      }),
+                      "h-9 w-9 tabular-nums"
+                    )}
+                  >
+                    {entry}
+                  </a>
+                )
+              )}
+
+              <PagerStep
+                href={
+                  currentPage < pageCount ? pageHref(currentPage + 1) : null
+                }
+                onTurn={() => goToPage(currentPage + 1)}
+              >
+                Next
+                <ChevronRight data-icon="inline-end" className="size-4" />
+              </PagerStep>
+            </nav>
+          )}
+
+          {/*
+            The room the dock takes. Its own height, measured, rather than a
+            guess: the panel is three columns on a wide screen and a stack on a
+            phone, and the last row of icons has to stay clickable in both.
+          */}
+          <div aria-hidden="true" style={{ height: dockHeight }} />
+        </div>
+      </div>
+
+      <IconPreview
+        icons={icons}
+        name={preview.name}
+        recents={preview.recents}
+        closing={preview.closing}
+        // Grid order, so the arrow keys walk what you can see.
+        order={paged.map((icon) => icon.name)}
+        gridStyle={style}
+        gridCorners={corners}
+        picked={preview.picked}
+        setPicked={preview.setPicked}
+        pickedCorners={preview.pickedCorners}
+        setPickedCorners={preview.setPickedCorners}
+        size={size}
+        stroke={stroke}
+        color={color}
+        onSelect={preview.select}
+        onClose={preview.close}
+        /*
+          Both of these clear the other filter on the way out. A synonym
+          searched inside a category, or a category opened under a live search,
+          lands on the intersection of two things you did not ask for together
+          — usually an empty grid, which reads as the link being broken. The
+          category half lives in `selectCategory`; the search half is stated
+          here as well as in the render adjuster, because an alias click can
+          re-send the query it is already showing.
+        */
+        onSearch={(next) => {
+          setCategory("all")
+          onQueryChange(next)
+        }}
+        onCategory={selectCategory}
+        onHeightChange={setDockHeight}
+      />
+    </Drawer>
+  )
+}

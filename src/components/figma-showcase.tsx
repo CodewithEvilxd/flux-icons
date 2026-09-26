@@ -1,0 +1,444 @@
+import Image, { type StaticImageData } from "next/image"
+
+import figmaMockup from "@/public/mockups/figma.png"
+import pluginMockup from "@/public/mockups/figma-plugin.png"
+import paperMockup from "@/public/mockups/paper.png"
+
+import { DesignFileTabs } from "@/components/design-file-tabs"
+import { Glyph } from "@/components/glyph"
+import type { Icon } from "@/lib/icons"
+import {
+  DESIGN_NOTE_ICON_NAMES,
+  PAPER_NOTE_ICON_NAMES,
+  PLUGIN_NOTE_ICON_NAMES,
+} from "@/lib/home"
+import { PAPER_FILES } from "@/lib/paper-files"
+import { SET_FIGMA_PLUGIN_URL, SET_FIGMA_URL } from "@/lib/site-chrome"
+
+/**
+ * Where the set comes from, which is now two design files rather than one.
+ *
+ * Every other section on the landing page is about the drawings. This one is
+ * about the files they are drawn in, and it exists because the set's own claims
+ * only hold if those files and this repository are the same set: the names, the
+ * variants and the geometry all have to agree, and each of those is a mechanism
+ * rather than a promise.
+ *
+ * **The two files are not peers, and the copy should not pretend they are.**
+ * Figma is where the icons are drawn: component sets, variant properties, the
+ * descriptions the search reads. Paper is generated from `icons/` by
+ * `pipeline/build-paper.mjs` and written in by an importer, so it is downstream
+ * of the repository in a way the Figma file is not. Anything added here has to
+ * keep that difference legible, because "available in both" is true and "drawn
+ * in both" is not.
+ *
+ * **What the Figma button opens.** `SET_FIGMA_URL` is the published Community
+ * file. It was the `@fluxicons` profile for as long as the file was
+ * unpublished, and this section carried a line under the button saying so; that
+ * line came out early, on the basis that the file was coming, leaving the claim
+ * with the two FAQ answers that owned it. The file is published, so those
+ * answers and this note moved together, which is what the arrangement was for.
+ * **What the Paper button opens.** Not one file: `PAPER_FILES` is the two the
+ * set is split across, so the button is a menu of them named by the shelves
+ * each holds. The split is Paper's ceiling rather than a decision — a single
+ * file at this size answers every call, reads included, with a warning that
+ * further changes will lose data — and the copy says so in one clause rather
+ * than explaining it, because a reader of this section wants the drawings and
+ * not the storage.
+ *
+ * **The plugin has a panel of its own now, and this note used to argue against
+ * it.** It read: one sentence under the Figma notes rather than a panel,
+ * because the section is about where the set is drawn and not about ways to get
+ * it, with anything more belonging on `/install`. That was overruled on
+ * 27 Aug 2026, and the argument against it was weaker than it looked: the
+ * plugin *is* where the set is drawn from, for anyone drawing in Figma who will
+ * never open the library file, and a sentence under someone else's four notes
+ * is not where a reader looks for it. The sentence is gone, since the tab says
+ * the same thing louder.
+ *
+ * It is still not a third design file, and the copy should not imply one. Figma
+ * is authored, Paper is generated from `icons/`, and the plugin is a reader of
+ * what the repository publishes: three different relationships to the same set,
+ * which is what the notes under each picture have to keep legible.
+ *
+ * There is still no kit or download offered in here, which is why each panel is
+ * a screenshot and four sentences rather than a pricing block.
+ *
+ * What this section had before the screenshot: a `Container` × `Style` matrix
+ * built from `check`, `square-check` and `circle-check`, drawn with `Glyph` off
+ * `loadIcons()`. It is worth knowing why that came out, because it was the one
+ * thing here that could not go stale. It said what the screenshot says, the
+ * variant properties and one set per drawing, and said it with nine tiles against
+ * a picture of the actual file, so the two together read as the same fact twice.
+ * If the image is ever dropped, `FIGMA_SAMPLE_ICON_NAMES` and that component are
+ * in the history of this file rather than lost.
+ */
+
+/**
+ * The Figma screenshot, and the one thing on this page that is not read off
+ * disk.
+ *
+ * It is a placeholder, supplied to sit here until there is a better one, and its
+ * costs are worth stating rather than discovering. A raster of the file freezes
+ * whatever the file said the day it was taken: the category cards in it carry
+ * their own counts, so those numbers will drift from the set while every number
+ * in the page's own copy stays live. Nothing checks it, the way nothing checked
+ * the favicon before `brand:check` existed. And it cannot follow the theme, so in
+ * dark mode it is a lit panel on a dark page.
+ *
+ * All three are acceptable for a screenshot of a design file, which is a picture
+ * of a place rather than a statement about the set. None of them would be
+ * acceptable for a figure.
+ *
+ * Swapping it is dropping a new file in. The size comes from the import, and so
+ * does the cache key: a static import lands the file at
+ * `/_next/static/media/figma.<content hash>.png`, so replacing the picture
+ * changes the URL and nothing anywhere can serve the old one.
+ *
+ * That is not a detail. This was `<Image src="/mockups/figma.png">` with the
+ * dimensions typed out beside it, and both halves bit within a day. The typed
+ * height went stale the moment the file was replaced with one 78px taller, and
+ * the page drew it at the wrong aspect silently. Then the cropped files went in
+ * and the site kept serving the uncropped ones, because Next keys its optimiser
+ * cache on the source URL, `/mockups/figma.png` had not changed, and the cache
+ * outlives the file. A version query does not help: the optimiser answers a
+ * local `url` carrying a query string with a 400.
+ */
+const MOCKUP = {
+  image: figmaMockup,
+  /*
+    Alt text describes the arrangement, not the pixels. A screen reader user
+    gets nothing from "screenshot of Figma"; what the picture is evidence *of* is
+    that the set lives in one file as named component sets on a catalogue page,
+    and that is what the sentence says.
+  */
+  alt:
+    "The Flux Icons file open in Figma: a Catalog page of category boards, " +
+    "each listing its icons by name, with the layer tree beside it showing one " +
+    "component set per drawing.",
+}
+
+/**
+ * The plugin screenshot, imported the same way and for the same reasons.
+ *
+ * It is the same window as the Figma shot with the plugin open over the canvas,
+ * rather than a capture of the 400x560 panel on its own. A panel photographed
+ * alone is a picture of a widget; what a reader needs to see is that it runs
+ * inside the file they are already in, and at what size relative to it.
+ *
+ * Cropped to 3436x1968 to match the other two exactly, which is not cosmetic:
+ * the three sit behind one picker, and a switch between tabs that changes the
+ * picture's height moves everything under it. macOS hands you the window with
+ * its rounded corners and a strip of desktop behind them, so the crop is 10px
+ * off every edge, taken until all four corners read the window's own fill. The
+ * two older files were made the same way and land on the same numbers.
+ */
+const PLUGIN_MOCKUP = {
+  image: pluginMockup,
+  /*
+    What this picture is evidence *of* is that the set is reachable from inside
+    a file without opening the library: a search field, the three styles, and a
+    grid of the whole set in a panel floating over the catalogue.
+  */
+  alt:
+    "The Flux Icons plugin open in Figma: a panel floating over the " +
+    "catalogue with a search field, a Stroke, Two-tone, Duotone and Fill switch, and a " +
+    "grid of the whole set, with the library file's own Catalog page behind it.",
+}
+
+/**
+ * The Paper screenshot, imported the same way and for the same reasons.
+ */
+const PAPER_MOCKUP = {
+  image: paperMockup,
+  /*
+    What this picture is evidence *of* is that the Paper file is the set rather
+    than a sample of it: a cover stating the totals, a board per category, and a
+    layer tree in which every drawing is named.
+  */
+  alt:
+    "The Flux Icons file open in Paper: a Catalog page whose cover states " +
+    "the totals, then one board per category listing its icons by name with " +
+    "each icon's containered and filled forms beside it, and a layer tree " +
+    "down the left naming every category and drawing.",
+}
+
+/**
+ * A screenshot on its mat.
+ *
+ * `bg-muted` with 8px of padding around the image: a mat rather than a border.
+ * A screenshot of an editor is a light document on a light page, so without
+ * something behind it the picture has no edge at all on the left and right where
+ * its own background is white; the mat is the same recessed grey as the terminal
+ * above it, and it gives the image an edge in both themes.
+ *
+ * `overflow-hidden` because the rounding is on this element and the image inside
+ * it is square-cornered. `rounded-xl` outside, `rounded-lg` inside, which is the
+ * concentric pair the browser's tiles use.
+ */
+function Mockup({
+  mockup,
+}: {
+  mockup: { image: StaticImageData; alt: string }
+}) {
+  return (
+    <div className="overflow-hidden rounded-xl bg-muted p-2">
+      {/*
+        `next/image` rather than an `img`: these are 3000px-wide PNGs, and what
+        the page needs is the resized WebP for the width it is actually drawn at.
+
+        `sizes` has to be told the truth or the browser assumes 100vw and
+        fetches the largest candidate on every screen. Measured rather than
+        reasoned: the page column tops out at 1376px (`max-w-360` is 1440 less
+        the 32px of `lg:px-8` on each side), the mat takes 8px off each edge of
+        that, so 1360px is the widest either image is ever drawn.
+
+        Not `priority`. It sits five sections down the page and preloading it
+        would compete with the hero for the first bytes.
+      */}
+      {/* No width or height: a static import carries its own, so they cannot
+          disagree with the file the way a typed pair did. */}
+      <Image
+        src={mockup.image}
+        alt={mockup.alt}
+        sizes="(min-width: 1440px) 1360px, 100vw"
+        className="h-auto w-full rounded-lg"
+      />
+    </div>
+  )
+}
+
+/**
+ * One of the four notes under a picture.
+ *
+ * A glyph, then a title, then one line. The left rule each of these carried is
+ * gone: four vertical rules under a full-width screenshot drew four columns on a
+ * block that already reads as four columns, and the rule was the only border in
+ * the section on a page whose surfaces are fills.
+ *
+ * The glyph is the hero fact card's device without the card: the same 2px
+ * keyline from the same set, one step down at 24px because the type under it is
+ * `sm` rather than `lg`. It is also what replaces the rule as the thing that
+ * starts each column: a drawing carries the alignment a hairline was doing, and
+ * says something while it is there.
+ */
+function Note({
+  icon,
+  title,
+  children,
+}: {
+  icon?: Icon
+  title: string
+  children: React.ReactNode
+}) {
+  return (
+    <div className="rounded-2xl border border-border/80 bg-card/60 p-5 transition-all hover:border-primary/50 hover:shadow-xs">
+      {icon?.art.stroke && (
+        <div className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20">
+          <Glyph art={icon.art.stroke} size={20} stroke={2} />
+        </div>
+      )}
+      <h3 className="mt-3 text-sm font-bold tracking-tight text-foreground">{title}</h3>
+      <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
+        {children}
+      </p>
+    </div>
+  )
+}
+
+/**
+ * The row of four notes under a picture.
+ *
+ * Four across at `lg`, two at `sm`, one on a phone. Not four across at `sm`:
+ * these are sentences, and a quarter of a 640px screen is a column eleven
+ * characters wide.
+ *
+ * `mt-5 lg:mt-6` on top of the block's own gap, so the two gaps in this section
+ * are deliberately unequal: the picker sits tight against the picture it labels,
+ * and the notes stand off it, because they are commentary on the picture rather
+ * than part of it. One even gap down the whole block made the four glyphs read
+ * as a row inside the mat above them.
+ */
+function Notes({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="mt-5 grid gap-8 sm:grid-cols-2 lg:mt-6 lg:grid-cols-4">
+      {children}
+    </div>
+  )
+}
+
+/**
+ * A path, a property or a command inside a sentence.
+ *
+ * `components/keyline-showcase.tsx` sets prose code the same way. In full-
+ * strength ink against the muted paragraph around it, because the point of it is
+ * that these are literal names: `raw/` is a directory, `Container` is a property,
+ * and a reader should be able to tell which words they could type.
+ */
+function Code({ children }: { children: React.ReactNode }) {
+  return (
+    <code className="font-mono text-[0.9em] text-foreground">{children}</code>
+  )
+}
+
+/**
+ * The section's body: a header row, then whichever file's panel is chosen.
+ *
+ * The row across the top is the two things a reader does with this section —
+ * choose the tool, or go and open the file — put at opposite ends of the page
+ * column. The button was centred under the notes at the foot of the block, which
+ * is where a section ends rather than where a toolbar goes, and it left the
+ * picker floating alone above a full-width picture.
+ *
+ * Each picture runs the full width of the column because it is the evidence and
+ * everything else here is annotation. It was a panel in the right-hand half of a
+ * two-column block first, with the notes stacked down the left; at half width a
+ * screenshot of an editor is a picture of an editor with nothing legible in it.
+ *
+ * `gap-3 lg:gap-4` down the block, a quarter of what it started at. The picture
+ * is a big flat rectangle and the two rows around it are small, so air between
+ * them read as three separate blocks that happened to land in one section rather
+ * than as one block with a picture in it. The section's own `py-16 lg:py-24` is
+ * what holds it off the page; nothing inside needs to repeat that job at half
+ * strength.
+ */
+export function FigmaShowcase({ icons }: { icons: Icon[] }) {
+  /* One drawing per note, in the order the notes appear, resolved here so every
+     name this component renders comes from the two lists `check-demos` reads. */
+  const glyph = (name: string) => icons.find((icon) => icon.name === name)
+  const [setGlyph, exportGlyph, searchGlyph, checkGlyph] =
+    DESIGN_NOTE_ICON_NAMES.map(glyph)
+  const [boardGlyph, layerGlyph, builtGlyph, sheetGlyph] =
+    PAPER_NOTE_ICON_NAMES.map(glyph)
+  const [findGlyph, dropGlyph, editorGlyph, freshGlyph] =
+    PLUGIN_NOTE_ICON_NAMES.map(glyph)
+
+  return (
+    <div className="flex flex-col gap-3 lg:gap-4">
+      <DesignFileTabs
+        urls={{
+          figma: SET_FIGMA_URL,
+          /* Two entries, so the button becomes a menu: the set outgrew one
+             Paper file and each is named by the shelves it holds. */
+          paper: PAPER_FILES.map((file) => ({
+            url: file.url,
+            label: file.label,
+          })),
+          plugin: SET_FIGMA_PLUGIN_URL,
+        }}
+        /*
+          Only Paper needs one. It renders a file in Chrome and in its own
+          desktop app, and answers Safari with a download card saying view and
+          comment is coming "in the future", so a visitor on the Mac default
+          browser gets no file at all from a button that promises one. Delete
+          this the day Safari renders the file: it is a statement about Paper on
+          a date, not about the set.
+        */
+        caveats={{
+          paper: "Opens in Chrome or the Paper desktop app, not Safari.",
+          plugin: "Opens the Figma Community listing, in Figma or the browser.",
+        }}
+        panels={{
+          figma: (
+            <>
+              <Mockup mockup={MOCKUP} />
+              <Notes>
+                <Note icon={setGlyph} title="One component set per icon">
+                  Three variant properties on it, <Code>Container</Code>,{" "}
+                  <Code>Style</Code> and <Code>Corners</Code>, and nothing else.
+                  The names in Figma are the names on disk.
+                </Note>
+
+                <Note icon={exportGlyph} title="Exports land untouched">
+                  <Code>raw/</Code> holds what came out of Figma, one file per
+                  variant, under the name Figma gives it:{" "}
+                  <Code>
+                    Container=circle, Style=duotone, Corners=sharp.svg
+                  </Code>
+                  .
+                </Note>
+
+                <Note
+                  icon={searchGlyph}
+                  title="Search words come from the file"
+                >
+                  Each set&rsquo;s own description in Figma is the alias list
+                  the browser searches, baked out by the keyword step rather
+                  than kept in a second table.
+                </Note>
+
+                <Note icon={checkGlyph} title="Checked against the repository">
+                  <Code>icons:figma</Code> hashes every segment of every variant
+                  in the file and diffs it against <Code>raw/</Code>. Twelve
+                  blank phones were found that way.
+                </Note>
+              </Notes>
+            </>
+          ),
+          paper: (
+            <>
+              <Mockup mockup={PAPER_MOCKUP} />
+              <Notes>
+                <Note icon={boardGlyph} title="One artboard per category">
+                  The canvas is the catalogue: a board per section, split across
+                  a few when a section carries more drawings than one board
+                  should, and across two files because one file is more than
+                  Paper will hold.
+                </Note>
+
+                <Note icon={layerGlyph} title="Layers carry the icon's name">
+                  Every drawing is named in the layer tree the way it is named
+                  on disk, down to the variant:{" "}
+                  <Code>circle-check duotone</Code>.
+                </Note>
+
+                <Note icon={builtGlyph} title="Generated, not redrawn">
+                  <Code>paper:build</Code> composes the whole set out of{" "}
+                  <Code>icons/</Code>, so the Paper file is downstream of the
+                  same drawings the packages ship.
+                </Note>
+
+                <Note icon={sheetGlyph} title="The sheets are checked in CI">
+                  <Code>paper:check</Code> re-composes them and fails on any
+                  difference, so what the file was built from cannot go stale
+                  without the build saying so.
+                </Note>
+              </Notes>
+            </>
+          ),
+          plugin: (
+            <>
+              <Mockup mockup={PLUGIN_MOCKUP} />
+              <Notes>
+                <Note icon={findGlyph} title="The same search, one more place">
+                  A query is ranked the way the CLI and the MCP server rank it:
+                  exact name, then prefix, then word, then a word someone
+                  curated in Figma. Four surfaces, one vocabulary.
+                </Note>
+
+                <Note icon={dropGlyph} title="One click puts it on the canvas">
+                  Centred in the frame you have selected, or in the middle of
+                  the viewport when nothing is. <Code>currentColor</Code> is
+                  swapped for real ink on the way in, because Figma&rsquo;s
+                  importer cannot resolve it.
+                </Note>
+
+                <Note icon={editorGlyph} title="Figma and FigJam both">
+                  The same plugin in both editors. An insert becomes a group in
+                  FigJam rather than a frame, which is what makes recolouring it
+                  there land on the drawing instead of on a wrapper.
+                </Note>
+
+                <Note icon={freshGlyph} title="It reads the published set">
+                  The icons come over the network from this repository, not from
+                  the plugin&rsquo;s own bundle, so a release reaches everyone
+                  without a plugin update going through review.
+                </Note>
+              </Notes>
+            </>
+          ),
+        }}
+      />
+    </div>
+  )
+}

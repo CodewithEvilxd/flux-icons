@@ -1,0 +1,1045 @@
+// Bake each icon's dates and release into lib/icon-history.json.
+//
+//   node pipeline/build-history.mjs [--check]
+//
+// The preview panel states when an icon was added, when it last changed and
+// which version it ships in. Git is not there at runtime, because a deployed
+// image is the build output rather than the repository, so they are resolved
+// here, once, and committed like every other generated artefact.
+//
+// This file is generated from two inputs, not one: this repository's git log,
+// and its own previous contents. The second exists because the public history
+// starts on 20 August 2026 and the set was drawn over the fortnight before it.
+// See the merge below for what that means and why it is safe to re-run.
+//
+// Deliberately NOT in `icons:ci`. Every commit that touches a drawing changes
+// its date, so a check would fail on the commit that makes the change and pass
+// only after a second commit regenerating this — a loop that teaches people to
+// ignore it. Run it with the icon build when you have changed drawings.
+
+import { readdir, readFile, writeFile } from "node:fs/promises"
+import { existsSync, readdirSync, readFileSync } from "node:fs"
+import { execFileSync } from "node:child_process"
+import { join } from "node:path"
+import { fileURLToPath } from "node:url"
+
+const ROOT = fileURLToPath(new URL("..", import.meta.url))
+const OUT = join(ROOT, "src", "lib", "icon-history.json")
+
+/**
+ * The hand-written half of the changelog, keyed by version plus `unreleased`.
+ *
+ * Everything else this file bakes is read off git, which is right for drawings:
+ * a list of what was added or redrawn should never be typed. A release is not
+ * always drawings, though. The corner treatment added a whole axis without
+ * adding a single name, so git had nothing to report about it and the page
+ * would have announced the redraws it happened to carry and nothing else.
+ *
+ * Read here rather than in the page, so the site, the Paper board and anything
+ * else downstream all take the sentence from one place. Missing is fine and
+ * common: most releases are drawings and describe themselves.
+ */
+const NOTES = JSON.parse(
+  readFileSync(join(ROOT, "src", "lib", "icon-release-notes.json"), "utf8")
+)
+
+/**
+ * The counts a note is allowed to quote, filled in here rather than typed.
+ *
+ * A number in a sentence is a claim with an expiry date, and this repository
+ * has shipped three stale ones on the install page and built a checker to stop
+ * the fourth. The prose is the part a person writes; the arithmetic is not.
+ *
+ * `{names}` is drawings and `{files}` is SVGs on disk across both corner
+ * treatments, which are different questions and the reason a note wants both:
+ * the set gained no names at all when sharp landed and doubled its files.
+ */
+function fill(note) {
+  if (!note) return null
+  const names = Object.keys(icons).length
+  let files = 0
+  for (const corners of ["", "sharp/"])
+    for (const style of STYLES) {
+      const dir = join(ROOT, "icons", corners, style)
+      if (!existsSync(dir)) continue
+      files += readdirSync(dir).filter((f) => f.endsWith(".svg")).length
+    }
+  const values = { names, files }
+  return note.replace(/\{(\w+)\}/g, (whole, key) =>
+    key in values ? values[key].toLocaleString("en-US") : whole
+  )
+}
+const check = process.argv.includes("--check")
+
+const c = (n, s) => `\x1b[${n}m${s}\x1b[0m`
+
+const git = (...args) =>
+  execFileSync("git", args, {
+    cwd: ROOT,
+    encoding: "utf8",
+    maxBuffer: 64 << 20,
+  })
+
+/** The style folders. `two-tone` since 1.0.0, see `continues` below. */
+const STYLES = ["stroke", "two-tone", "duotone", "fill"]
+
+/**
+ * Every file one name has, in the order a redraw is looked for.
+ *
+ * Eight of them, not four: a drawing owes the same styles in both corner
+ * treatments, and `icons/sharp/` is as much the icon as `icons/stroke/` is.
+ * A redraw that a reader can see is a redraw whatever folder it happened in.
+ *
+ * **Rounded first, and the order is the whole of the labelling.** `redrawn`
+ * stops at the first file that genuinely differs, so a correction that moved
+ * both treatments shows the rounded pair — the drawing the set is named for
+ * and the one a reader recognises — and sharp is reached only where the three
+ * rounded files are identical across the window. Which is exactly the case
+ * this list was widened for: a change confined to the sharp treatment, whose
+ * pair is the only pair there is.
+ */
+const DRAWINGS = [
+  ...STYLES.map((style) => ({ corners: "regular", style, dir: `icons/${style}` })),
+  ...STYLES.map((style) => ({ corners: "sharp", style, dir: `icons/sharp/${style}` })),
+]
+
+/**
+ * One file as a given ref had it, or null where that ref did not carry it.
+ *
+ * Quiet on purpose: a miss is an ordinary answer here, not a failure. An icon
+ * can have gained a style inside the window being measured, and `git show` on a
+ * path a tag never held exits non-zero and prints to stderr, which would fill
+ * the build's output with lines that mean "no".
+ */
+const fileAt = (ref, path) => {
+  try {
+    return execFileSync("git", ["show", `${ref}:${path}`], {
+      cwd: ROOT,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+    })
+  } catch {
+    return null
+  }
+}
+
+/**
+ * What `icons/stroke/` actually held at a ref.
+ *
+ * **A release's membership is a fact about its tree, not about dates.** The
+ * arithmetic this replaced asked whether each drawing's `added` date fell
+ * inside the window, which is only the same question while no drawing is ever
+ * retired. `megaphone` was drawn on 24 August, retired forty minutes before
+ * v0.1.2 was tagged and drawn again on the 25th; its `added` is deliberately
+ * held at the earlier date by the merge below, so the window counted it into
+ * v0.1.2, v0.1.3 and v0.1.4 — three releases whose trees do not contain it, and
+ * three published counts one too high. The Figma Changelog page, written by
+ * hand off the tags, was right where all the generated surfaces were wrong.
+ *
+ * `git ls-tree` answers it exactly, at one subprocess per tag.
+ */
+const held = (ref) =>
+  new Set(
+    git("ls-tree", "-r", "--name-only", `${ref}:icons/stroke`)
+      .split("\n")
+      .filter((f) => f.endsWith(".svg"))
+      .map((f) => f.slice(0, -4))
+  )
+
+/**
+ * How many drawings a release actually shipped, across the whole of `icons/`.
+ *
+ * `held` counts *names*, off `icons/stroke/` alone, and that is the right unit
+ * for "what is in the set" — but it is not the unit for "what landed". v0.3.0
+ * added 1,497 drawings and not one new name, so every surface counting names
+ * announced the largest release the set has had as "No new drawings", directly
+ * under a note saying the file count had doubled.
+ *
+ * A treatment is the case that breaks the equivalence, and there will be
+ * others: anything that draws the existing names a new way adds drawings
+ * without adding names. So the entry carries both, and the sentence picks.
+ */
+const drawings = (ref) =>
+  git("ls-tree", "-r", "--name-only", `${ref}:icons`)
+    .split("\n")
+    .filter((f) => f.endsWith(".svg")).length
+
+
+/**
+ * Whether a ref (null: the working tree) carries the four-style split.
+ *
+ * Until 0.9.0 `duotone` was the stroke drawing over a 40% plate, and 1.0.0
+ * renamed that style `two-tone` and gave `duotone` to a new, ringless drawing
+ * made per icon. Read naively, a window across the split nominates every
+ * duotone in the set as redrawn and lists every two-tone as nothing at all,
+ * which is a thousand pairs announcing a rename.
+ */
+const splitAt = new Map()
+const isSplit = (ref) => {
+  if (!ref) return existsSync(join(ROOT, "icons", "two-tone"))
+  if (!splitAt.has(ref)) {
+    let has = false
+    try {
+      has = git("ls-tree", "--name-only", ref, "icons/").includes("icons/two-tone")
+    } catch {}
+    splitAt.set(ref, has)
+  }
+  return splitAt.get(ref)
+}
+
+/**
+ * The old duotone file across the split, and whether it is still in the set.
+ *
+ * **A drawing continues where the same document still ships.** The outlined
+ * majority is byte for byte the two-tone it became, and the ringless container
+ * duotones are byte for byte their duotone, so neither is a redraw: the note
+ * announces the rename, and a new duotone is a new style rather than a
+ * correction to anything. Only an old file that matches neither was drawn
+ * again, and it is paired with the style it became, which is the one sharing
+ * more of its lines: the plate usually survives a redraw where the outline
+ * does not. A tie goes to two-tone, which is what the old name meant.
+ */
+const continues = (old, twoTone, duotone) => {
+  if (old === twoTone || old === duotone) return null
+  const lines = (svg) => new Set((svg ?? "").split("\n").map((l) => l.trim()))
+  const was = lines(old)
+  const shared = (svg) => [...lines(svg)].filter((l) => was.has(l)).length
+  return shared(duotone) > shared(twoTone) ? "duotone" : "two-tone"
+}
+
+/**
+ * A redrawn icon as the two drawings a reader is being asked to compare.
+ *
+ * A changelog that only *names* what was redrawn is asking the reader to
+ * remember what the icon used to look like, which nobody can do — and the
+ * whole reason to publish a correction is that the drawing changed visibly.
+ * So each redraw carries both documents, whole, and every surface prints them
+ * side by side.
+ *
+ * **Both sides come out of the refs that bound the window, never off disk for
+ * a released entry.** The "after" of v0.1.3 is the drawing v0.1.3 shipped; if
+ * the same icon is redrawn again in v0.1.6, the earlier entry still has to
+ * show the pair it was published with. Reading the working tree instead would
+ * rewrite every past entry the moment an icon is touched twice, which is the
+ * same class of defect as a rebuild that drops a release.
+ *
+ * `to` is null for the unreleased window, whose "after" is the working tree,
+ * because that is what has actually been drawn and what the site renders.
+ *
+ * The pair is the first of the six files in `DRAWINGS` that genuinely differs
+ * across the window, and `corners` with `style` say which one it is. A drawing
+ * can be committed without changing — a rename, a reformat, a change confined
+ * to one style — and printing two identical tiles under "before" and "after"
+ * reads as a broken page rather than as a small change. Where nothing differs,
+ * the pair is left null and the surfaces fall back to naming it.
+ *
+ * **`corners` is not decoration.** A sharp pair drawn without it reads as a
+ * correction to the rounded drawing, which for the 315 names the diagonal end
+ * cut moved is the opposite of what happened: the rounded drawings are
+ * untouched and the whole change is in the treatment. Every surface that
+ * prints a pair prints the treatment with it.
+ *
+ * **Null means the window did not open with this drawing**, which makes it an
+ * addition rather than a redraw however its dates read. `megaphone` is the
+ * case: it was drawn on 24 August, retired the same day and drawn again on the
+ * 25th, and the merge below holds `added` at the earlier date on purpose, so
+ * the window arithmetic files it as changed. v0.1.4 does not carry it at all,
+ * so calling it redrawn would put a "before" on the page that never shipped.
+ */
+const redrawn = (name, from, to) => {
+  let existed = false
+  /* Across the split the old duotone is read once, under `two-tone`, and
+     `duotone` has no "before" of its own. See `continues`. */
+  const across = !isSplit(from) && isSplit(to)
+  const latest = (path) =>
+    to
+      ? fileAt(to, path)
+      : (() => {
+          try {
+            return readFileSync(join(ROOT, path), "utf8")
+          } catch {
+            return null
+          }
+        })()
+  for (const { corners, style, dir } of DRAWINGS) {
+    const path = `${dir}/${name}.svg`
+    if (across && style === "duotone") continue
+    if (across && style === "two-tone") {
+      const root = corners === "sharp" ? "icons/sharp" : "icons"
+      const old = fileAt(from, `${root}/duotone/${name}.svg`)
+      if (!old) continue
+      existed = true
+      const twoTone = latest(path)
+      const duotone = latest(`${root}/duotone/${name}.svg`)
+      const became = continues(old, twoTone, duotone)
+      const after = became === "two-tone" ? twoTone : duotone
+      if (!became || !after) continue
+      return { name, style: became, corners, before: old.trim(), after: after.trim() }
+    }
+    const before = fileAt(from, path)
+    if (!before) continue
+    existed = true
+    const after = latest(path)
+    if (!after || before === after) continue
+    return { name, style, corners, before: before.trim(), after: after.trim() }
+  }
+  /* Reached across the split, where a duotone file nominated by the diff
+     turns out to continue as its two-tone: nothing was redrawn, so nothing is
+     listed. Before the split `changedBetween` nominated modifications only and
+     this was unreachable, so no published entry ever took the caption-only
+     form this used to return. */
+  return across || !existed
+    ? null
+    : { name, style: null, corners: null, before: null, after: null }
+}
+
+/**
+ * The drawings whose files differ between two refs.
+ *
+ * Candidates used to be nominated from each icon's `updated` date, the window
+ * its *latest* commit falls in. That reads the past wrong the second time a
+ * drawing is corrected: redrawing `credit-card` on 4 September 2026 moved its
+ * date out of v0.3.0's window, so the entry v0.3.0 had already published came
+ * back one redraw shorter and the guard below stopped the build. A date
+ * answers "when was this last touched"; the question here is "what changed
+ * between these two trees", which git answers exactly, once per release, for
+ * about what the heuristic was buying. The same lesson as reading release
+ * membership off `ls-tree` rather than off dates, one level down.
+ *
+ * `to` is null for the unreleased window, and the diff then runs against the
+ * working tree — which is where `redrawn` takes that window's "after" from, so
+ * the two are asking one question. Nominating it off dates instead was the gap
+ * that let a release confined to `icons/sharp/` announce nothing: an icon's
+ * `updated` is read off a log filtered to the three rounded folders, so a
+ * sharp-only commit never moved it and never nominated the name.
+ */
+const changedBetween = (from, to) =>
+  new Set(
+    git(
+      "diff",
+      "--name-only",
+      /*
+       * Modifications only, which is what makes it safe to nominate from all
+       * six folders.
+       *
+       * An added file is not a redraw and has no "before" to put beside the
+       * "after". v0.3.0 *added* a sharp drawing for every name in the set, so
+       * an unfiltered diff over `icons/sharp/` nominates all 629 of them and
+       * `redrawn` finds no pair for the 581 whose rounded files never moved —
+       * every one named with nothing to look at, which is the failure this
+       * function was narrowed to avoid.
+       *
+       * `M` is exactly "both trees carry this file and it differs", which is
+       * the definition of a redraw the entries are built on. Nominating from
+       * it means every candidate has a pair before `redrawn` is even called.
+       */
+      "--diff-filter=M",
+      from,
+      ...(to ? [to] : []),
+      "--",
+      /* Exactly the paths `redrawn` reads, and no others: nominate from what
+         will be compared. */
+      ...DRAWINGS.map((d) => d.dir)
+    )
+      .split("\n")
+      /* The name is the leaf either way — `icons/stroke/bell.svg` is three
+         segments and `icons/sharp/stroke/bell.svg` is four. */
+      .map((path) => path.match(/^icons\/.+\/([^/]+)\.svg$/)?.[1])
+      .filter(Boolean)
+  )
+
+/** The redraws of a window, sorted, with anything the window did not carry dropped. */
+const redraws = (candidates, from, to) =>
+  candidates
+    .map((name) => redrawn(name, from, to))
+    .filter(Boolean)
+    .sort((a, b) => a.name.localeCompare(b.name))
+
+/** The version an unreleased icon will first appear in. */
+const current = JSON.parse(
+  await readFile(join(ROOT, "packages", "react", "package.json"), "utf8")
+).version
+
+/**
+ * Release tags with their dates, oldest first.
+ *
+ * Only semver-shaped tags count. This repo also carries `backup/pre-scrub`
+ * tags, and a branch parked as a tag is not a release.
+ */
+const releases = git(
+  "tag",
+  "--list",
+  "--format=%(refname:short) %(creatordate:iso-strict)"
+)
+  .split("\n")
+  .filter(Boolean)
+  .map((line) => {
+    const [tag, date] = line.split(" ")
+    return { tag, date, version: tag.replace(/^v/, "") }
+  })
+  .filter((r) => /^\d+\.\d+\.\d+$/.test(r.version))
+  .sort((a, b) => a.date.localeCompare(b.date))
+
+/** Every tag's inventory, oldest first, resolved once. */
+const inventory = new Map(releases.map((r) => [r.version, held(r.tag)]))
+
+/**
+ * One pass over the log, newest commit first.
+ *
+ * A `git log` per file would be 1,242 subprocesses. Walking one stream instead
+ * means the first time a path appears is its newest commit and the last time is
+ * its oldest, which is exactly `updated` and `added`.
+ */
+const log = git(
+  "log",
+  "--diff-filter=AMR",
+  "--name-only",
+  "--format=commit %cI%x09%an%x09%ae",
+  "--",
+  "icons"
+)
+
+/** name -> { added, updated, by: Set<"name\temail"> }. Dates are ISO 8601. */
+const dates = new Map()
+let at = null
+let who = null
+
+for (const line of log.split("\n")) {
+  if (line.startsWith("commit ")) {
+    const [date, author, email] = line.slice(7).split("\t")
+    at = date.trim()
+    // Tab-separated, because a name can contain anything but a tab.
+    who = `${author}\t${email}`
+    continue
+  }
+
+  const name = /^icons\/(?:stroke|two-tone|duotone|fill)\/(.+)\.svg$/.exec(line)?.[1]
+  if (!name || !at) continue
+
+  const entry = dates.get(name)
+  if (!entry) dates.set(name, { added: at, updated: at, by: new Set([who]) })
+  else {
+    // Newest first, so anything later in the stream is older.
+    entry.added = at
+    entry.by.add(who)
+  }
+}
+
+/**
+ * The first release whose tree actually holds the drawing, or null if none does.
+ *
+ * It used to answer `current` for a drawing no tag covers, and that reads as a
+ * fact rather than as a placeholder: `grip-vertical` was drawn twelve hours
+ * after v0.1.4 was tagged and every surface said it shipped in v0.1.4, which
+ * anyone installing that version from npm would find untrue. A drawing that is
+ * in no release has no version, and the surfaces print "Unreleased".
+ *
+ * Asked of the tag's tree rather than of the dates, for the reason under
+ * `held`: `megaphone` was drawn before v0.1.2 and retired before it was cut,
+ * so a date comparison named a version whose tarball does not contain it —
+ * which is the same untruth one drawing further along.
+ */
+const releaseFor = (name) =>
+  releases.find((r) => inventory.get(r.version).has(name))?.version ?? null
+
+/**
+ * Formatted here rather than in the browser.
+ *
+ * `toLocaleDateString` gives the server and the client different answers when
+ * their locales differ, which React reports as a hydration mismatch on a date
+ * nobody looks at twice. One string, decided at build, cannot disagree.
+ */
+const show = (iso) => {
+  /*
+   * The date as it was in the zone the thing happened in, which `iso` already
+   * carries as its offset. Converting to UTC first was deterministic and
+   * wrong: v0.1.3 was tagged at 04:44 +05:00, which is 23:44 the previous day
+   * in UTC, and the release went out labelled a day before it was cut. Anyone
+   * working past midnight gets the day before on everything they touch.
+   *
+   * Taking the date straight off the string keeps the one property UTC was
+   * there for — one string, decided at build, that the server and the client
+   * cannot disagree about — without the shift.
+   */
+  const [y, m, d] = iso.slice(0, 10).split("-").map(Number)
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(Date.UTC(y, m - 1, d)))
+}
+
+/**
+ * Only names that still exist.
+ *
+ * The log remembers every icon this repo ever had, including the ones renamed
+ * or dropped along the way — 58 of them — and a history entry for a drawing
+ * nobody can find is dead weight in a file the page ships.
+ */
+const live = new Set(
+  (await readdir(join(ROOT, "icons", "stroke")))
+    .filter((f) => f.endsWith(".svg"))
+    .map((f) => f.slice(0, -4))
+)
+
+/**
+ * The list a container prefix does not make a container.
+ *
+ * The same file `containerOf` in `lib/icons.ts` reads, and every pipeline
+ * script that resolves a base reads it too, so all of them count the set the
+ * same way. `square-full` is a filled square, not a boxed `full`.
+ */
+const NOT_CONTAINERS = new Set(
+  JSON.parse(
+    readFileSync(join(ROOT, "src", "lib", "icon-not-containers.json"), "utf8")
+  ).names
+)
+
+/** `regular` first, then the two boxes, which is the order every surface uses. */
+const CONTAINER_ORDER = ["regular", "square", "circle"]
+
+const containerOf = (name) => {
+  if (NOT_CONTAINERS.has(name)) return "regular"
+  const m = /^(square|circle)-(.+)$/.exec(name)
+  return m && live.has(m[2]) ? m[1] : "regular"
+}
+
+/**
+ * The order each release lists its drawings in, where the design file states one.
+ *
+ * The Figma Changelog page is hand-built, and some of its entries are ordered by
+ * family rather than by name: 0.6.0 opens on the singles and then walks the money
+ * through each base and its circled half. Deriving that is not possible, and the
+ * three surfaces disagreeing about the order of one list is exactly the drift the
+ * generated changelog exists to prevent, so the sequence is read off the design
+ * file and pinned in `lib/icon-release-order.json`.
+ *
+ * Nothing is ever dropped by it. A name the list does not mention is appended in
+ * the derived order and reported, so the entry can only ever gain a drawing from
+ * a stale list, never lose one.
+ */
+const ORDER = JSON.parse(
+  readFileSync(join(ROOT, "src", "lib", "icon-release-order.json"), "utf8")
+).releases
+
+/**
+ * A release read section by section, where `lib/icon-release-topics.json` gives them.
+ *
+ * Each section is a shelf with a title, a sentence, what it added and what it
+ * redrew; Zafar asked for the sections to be categorised and titled rather than
+ * sentences alone.
+ *
+ * The note used to lead and every tile follow it, so a sentence about the
+ * phone's calls sat forty tiles above the phones. Zafar, 17 Sep 2026: "topic >
+ * icons, topic > icons. not all topics first and then all icons after that".
+ * Each topic keeps its own drawings and redraws, in the order the file lists
+ * them, and only the ones this entry actually carries.
+ *
+ * Nothing is dropped by a stale list, the same promise `inFigmaOrder` makes:
+ * whatever no topic claims lands in a last group with no sentence, and is
+ * reported. Null where the version has no topics, and the surfaces fall back
+ * to the note and one strip.
+ */
+const TOPICS = JSON.parse(
+  readFileSync(join(ROOT, "src", "lib", "icon-release-topics.json"), "utf8")
+).releases
+
+/**
+ * The fragment a section is linked by: `v1.0.0-people`, `v1.0.0-redrawn-files`.
+ *
+ * Built here so the site and anything else that prints a link agree on it, and
+ * from the version rather than from "unreleased", so a link shared before the
+ * tag still lands after it.
+ */
+const slug = (s) =>
+  s.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
+
+const titleFor = (version) => TOPICS[version]?.title ?? null
+
+const topicsFor = (version, names, updatedNames) => {
+  const want = TOPICS[version]?.sections
+  if (!want) return null
+  const added = new Set(names)
+  const redrawn = new Set(updatedNames)
+  const claimed = new Set()
+  const own = (list, pool) =>
+    (list ?? []).filter((n) => pool.has(n) && !claimed.has(n) && claimed.add(n))
+  /* One level of nesting is all a release needs: the `Redrawn` section holds
+     its shelves. Written recursively anyway, so a second level costs nothing. */
+  const section = (topic, parent) => {
+    const anchor = topic.title
+      ? `v${version}-${parent ? `${parent}-` : ""}${slug(topic.title)}`
+      : null
+    return {
+      title: topic.title ?? null,
+      icon: topic.icon ?? null,
+      anchor,
+      text: fill(topic.text ?? null),
+      names: own(topic.names, added),
+      updatedNames: own(topic.redraws, redrawn),
+      sections: (topic.sections ?? []).map((sub) =>
+        section(sub, anchor?.replace(`v${version}-`, ""))
+      ),
+    }
+  }
+  const topics = want.map((topic) => section(topic, null))
+  const rest = {
+    title: null,
+    icon: null,
+    anchor: null,
+    text: null,
+    names: names.filter((n) => !claimed.has(n)),
+    updatedNames: updatedNames.filter((n) => !claimed.has(n)),
+    sections: [],
+  }
+  if (rest.names.length || rest.updatedNames.length) {
+    console.log(
+      `  ${c(33, "!")} ${version}: ${[...rest.names, ...rest.updatedNames].join(", ")} ` +
+        `in no section of lib/icon-release-topics.json, appended.`
+    )
+    topics.push(rest)
+  }
+  return topics
+}
+
+const inFigmaOrder = (version, names) => {
+  const want = ORDER[version]
+  if (!want) return names
+  const have = new Set(names)
+  const out = want.filter((n) => have.has(n))
+  const rest = names.filter((n) => !want.includes(n))
+  if (rest.length) {
+    console.log(
+      `  ${c(33, "!")} ${version}: ${rest.join(", ")} not in lib/icon-release-order.json,` +
+        ` appended. Re-read the Figma entry.`
+    )
+  }
+  return [...out, ...rest]
+}
+
+/**
+ * How a release lists its drawings: by base name, then by container.
+ *
+ * Plain alphabetical order was what this used to be, and it files a containered
+ * name under its prefix — `circle-dollar-sign` lands between `buildings` and
+ * `cpu`, six rows from the `dollar-sign` it is a boxed copy of. Every other
+ * surface keeps the two together: the icon page's container row, the Paper
+ * category boards and the Figma catalogue's cards all read
+ * `dollar-sign, circle-dollar-sign`, and Figma's own changelog entry for v0.6.0
+ * lists each circled half directly under its letter. The changelog was the one
+ * place a container stood on its own, and it is the surface where a reader is
+ * being shown what a release added, which is where the pairing says the most.
+ */
+const byFiling = (a, b) => {
+  const ca = containerOf(a)
+  const cb = containerOf(b)
+  const ba = ca === "regular" ? a : a.slice(ca.length + 1)
+  const bb = cb === "regular" ? b : b.slice(cb.length + 1)
+  return ba === bb
+    ? CONTAINER_ORDER.indexOf(ca) - CONTAINER_ORDER.indexOf(cb)
+    : ba.localeCompare(bb)
+}
+
+/**
+ * Everyone who has touched a drawing, once each, with the icons pointing at
+ * them by index.
+ *
+ * By index because the alternative is writing the same name and address into
+ * 414 entries, and this file is imported by the page — every repetition is
+ * payload. One list, and `lib/icon-contributors.ts` decides what each git
+ * identity is called on screen.
+ */
+const people = []
+const indexOf = (who) => {
+  const at = people.indexOf(who)
+  return at === -1 ? people.push(who) - 1 : at
+}
+
+/**
+ * What the previous run recorded, which is older than this repository's git.
+ *
+ * The set was drawn over 404 commits between 8 and 19 August 2026, and the
+ * public repository opens with one commit dated the 20th: the history was
+ * replaced for the open-source release, deliberately, and the drawing dates
+ * went with it. Every icon's `added` collapsed to one day, and 503 drawings
+ * claiming to have appeared simultaneously is not a fact about anything.
+ *
+ * So git is not the only input any more. This file's own previous answer is the
+ * other, and the two are merged rather than one overwriting the other:
+ *
+ *   added   = the earlier of the two, because an icon cannot have been added
+ *             after the first time anyone recorded it
+ *   updated = the later, but only counting commits after the root, for the
+ *             reason below
+ *   by      = the union, so the rewrite does not drop a contributor
+ *
+ * **The root commit is not an edit.** It wrote all 1,286 SVGs at once, so git
+ * reports every icon as modified on 20 August. Taking that as `updated` would
+ * move all 503 to the same day and lose the fortnight a second time, in the
+ * other column. It is a history replacement rather than anyone touching a
+ * drawing, so it is ignored for icons that were already recorded. A commit
+ * after it is a real edit and does count.
+ *
+ * That makes the merge idempotent and self-maintaining. An icon drawn tomorrow
+ * has no recorded entry and takes git's dates unchanged; an icon edited
+ * tomorrow is changed by a commit later than the root, so it takes the new
+ * `updated` and keeps its true `added`. Nobody has to remember to freeze
+ * anything, and `--check` still passes, because merging twice gives the same
+ * answer as merging once.
+ *
+ * The dates are recoverable, not invented: `archive/pre-release-history` on the
+ * archive remote still holds all 404 commits. If this file is ever lost, that
+ * branch is where it comes back from, not this repository's log.
+ */
+const prior = JSON.parse(
+  await readFile(OUT, "utf8").catch(() => '{"icons":{}}')
+)
+const priorPeople = prior.people ?? []
+
+/** The commit the public history opens with. Everything predates it. */
+const rootDate = git("log", "--reverse", "--format=%cI").split("\n")[0].trim()
+
+for (const [name, was] of Object.entries(prior.icons ?? {})) {
+  const now = dates.get(name)
+  if (!now) continue
+
+  if (was.added && was.added < now.added) now.added = was.added
+
+  // Only a commit later than the root is someone actually editing the drawing.
+  if (was.updated) {
+    now.updated =
+      now.updated > rootDate && now.updated > was.updated
+        ? now.updated
+        : was.updated
+  }
+
+  for (const i of was.by ?? []) {
+    const p = priorPeople[i]
+    if (p) now.by.add(`${p.name}\t${p.email}`)
+  }
+}
+
+const entries = [...dates.entries()]
+  .filter(([name]) => live.has(name))
+  .sort(([a], [b]) => a.localeCompare(b))
+
+const icons = Object.fromEntries(
+  entries.map(([name, { added, updated, by }]) => [
+    name,
+    {
+      added,
+      addedLabel: show(added),
+      updated,
+      updatedLabel: show(updated),
+      version: releaseFor(name),
+      by: [...by].map(indexOf),
+    },
+  ])
+)
+
+/**
+ * When the current version was actually cut, from its tag.
+ *
+ * The Paper boards used to date themselves by the newest drawing change and
+ * print it under both "Last updated" and "Released", which made the second one
+ * false the moment a release was tagged a day after the last icon was touched.
+ * That is exactly what happened: the last drawing changed on 19 August and
+ * v0.1.0 was tagged on the 20th.
+ *
+ * It is resolved here rather than there because this script already reads the
+ * tags, and the boards already read this file. Giving `build-paper.mjs` its own
+ * git access to answer a question this one has already answered would be a
+ * second source for one fact.
+ *
+ * Null before the first tag, and the surfaces fall back to the drawing date,
+ * which is the best available answer when nothing has been released.
+ */
+const cut = releases.find((r) => r.version === current) ?? releases.at(-1)
+
+/**
+ * The release before the current one, which is what "new" is measured against.
+ *
+ * Not a refinement: measuring against `cut` is what made a release erase the
+ * drawings it had just shipped. `isNewSince` asks whether a drawing arrived
+ * after a release, so handing it the release being cut answers "no" for
+ * everything, every time, the instant the tag lands. The 24 drawings v0.1.1
+ * announced lost their dot at the moment v0.1.1 was published.
+ *
+ * Against the *previous* tag it means what the badge is for: what this release
+ * added. It still clears itself, one release later than before, which is the
+ * whole reason the badge is derived rather than a list someone empties.
+ *
+ * Null before the second tag. Everything downstream falls back to `releasedAt`,
+ * so a set with one release marks whatever has landed since it, which is the
+ * best answer available when there is no earlier release to compare with.
+ */
+const previous = cut ? releases[releases.indexOf(cut) - 1] : undefined
+
+const out =
+  JSON.stringify(
+    {
+      $comment: "GENERATED BY pipeline/build-history.mjs — DO NOT EDIT.",
+      version: current,
+      released: releases.length > 0,
+      /* The version that tag actually cut, which is not `version` once work
+         has started on the next one: the surfaces head one entry by each. */
+      releasedVersion: cut?.version ?? null,
+      releasedAt: cut?.date ?? null,
+      releasedLabel: cut ? show(cut.date) : null,
+      /* What "new" is measured against. See the note on `previous`. */
+      previousReleasedAt: previous?.date ?? null,
+      previousReleasedVersion: previous?.version ?? null,
+      previousReleasedLabel: previous ? show(previous.date) : null,
+      /**
+       * Every release, newest first, with what each one added.
+       *
+       * The scalars above are this release and the one before it, and for a
+       * long time that was the whole file. It reads as sufficient right up to
+       * the third release, when the surfaces built on it start dropping the
+       * oldest entry off the bottom and relabelling whatever is left as the
+       * initial one. Cutting v0.1.2 deleted v0.1.0 from the changelog and
+       * announced v0.1.1 as the first cut of the set.
+       *
+       * **A changelog only ever grows.** Nothing here may narrow with age: an
+       * entry that has been published is a record of what happened, and a
+       * generator that recomputes the whole board from the current tag has to
+       * be able to rebuild every earlier entry exactly as it was published.
+       * That is what this array is for, and why the counts are as-of each tag
+       * rather than today.
+       *
+       * Windows are half-open on the left, so a drawing belongs to exactly one
+       * release: after the previous tag, up to and including this one. Every
+       * window is closed at its tag, the newest included.
+       *
+       * The newest used to be left open above, so that work committed after
+       * the tag showed against the release it was heading for. That is the
+       * right idea and the wrong place for it: the entry is already headed
+       * "Released" with the tag's own date, so an icon drawn hours later was
+       * announced as part of a version that had shipped without it. Work after
+       * the newest tag goes in `unreleased` below, which says exactly that.
+       */
+      releases: [...releases]
+        .reverse()
+        .map((r, i, all) => {
+          const before = all[i + 1]
+          /* What each tag's tree actually holds, which is the only honest
+             answer to what a release contained. See `held`. */
+          const now = inventory.get(r.version)
+          const was = before ? inventory.get(before.version) : new Set()
+          /*
+           * Drawings that already existed and were redrawn in this release.
+           *
+           * A release is not always drawings added. v0.1.3 adds none at all
+           * and is entirely corrections — queue resized, repeat-1's numeral —
+           * and an entry that could only count what was *added* announced it
+           * as "0 drawings added", which is true and tells the reader nothing
+           * about what they are being asked to upgrade for.
+           *
+           * `changedBetween` nominates candidates here: a redraw is a drawing
+           * both tags carry whose file differs between them, and `redrawn` is
+           * what settles it. Running `redrawn` over all 629 names would be
+           * 3,800 subprocesses to answer what one `git diff` rules out.
+           */
+          const updated = redraws(
+            before
+              ? [...changedBetween(before.tag, r.tag)].filter(
+                  (name) => was.has(name) && now.has(name)
+                )
+              : [],
+            before?.tag,
+            r.tag
+          )
+          /* Named only where the drawing still exists, since the surfaces draw
+             it; `count` below is the whole tree, retired drawings included,
+             because that is what the release actually shipped. */
+          const names = inFigmaOrder(
+            r.version,
+            [...now].filter((name) => !was.has(name) && live.has(name)).sort(byFiling)
+          )
+          return {
+            version: r.version,
+            date: r.date,
+            label: show(r.date),
+            /* Absent unless someone wrote one; every surface treats it as
+               optional prose above the tiles rather than instead of them. */
+            note: fill(NOTES[r.version]),
+            /* The oldest tag, and only ever the oldest. The surfaces print
+               "Initial release" off this instead of assuming the second entry
+               on the board is the first one that happened. */
+            initial: !before,
+            /* What the set held at that tag, not what it holds now. */
+            count: now.size,
+            /* Drawings rather than names: the two moved together until the
+               corners axis, and a surface that only has `count` cannot tell a
+               release that added a treatment from one that added nothing. */
+            files: drawings(r.tag),
+            previousFiles: before ? drawings(before.tag) : 0,
+            names,
+            /* The headline the page heads the entry by. See `titleFor`. */
+            title: titleFor(r.version),
+            /* The entry read topic by topic, or null. See `topicsFor`. */
+            topics: topicsFor(r.version, names, updated.map((u) => u.name)),
+            /* Kept beside `updated` because five surfaces already count off it
+               and a name is all a count needs. */
+            updatedNames: updated.map((u) => u.name),
+            /*
+             * The redraws with both drawings attached — what the icon looked
+             * like at the previous tag and what it looked like at this one, so
+             * the entry can show the change rather than assert it.
+             */
+            updated,
+          }
+        }),
+      /**
+       * Work since the newest tag, which belongs to no release yet.
+       *
+       * Every release window closes at its own tag, so this is where a drawing
+       * lands between a release and the next one. It is deliberately not an
+       * entry in `releases`: that array is the published record, every item of
+       * it has a version and a date, and anything looking a version up in it
+       * would find a row that is neither.
+       *
+       * `count` is the set as it stands, which is what a reader of an
+       * unreleased entry is asking about — not what any tag holds.
+       */
+      unreleased: (() => {
+        const since = releases.at(-1)
+        const was = since ? inventory.get(since.version) : new Set()
+        /* "After" is the working tree here rather than a tag, because nothing
+           has tagged it yet — so `changedBetween` diffs the tag against the
+           working tree, and nominates the same window `redrawn` then reads.
+           It used to nominate off `updated` dates, and that column is built
+           from a log filtered to the three rounded folders: a stretch of work
+           spent entirely in `icons/sharp/` moved nobody's date, so the section
+           listed eleven rounded corrections under a note announcing that every
+           sharp diagonal end in the set had been cut back. */
+        const updated = redraws(
+          since
+            ? [...changedBetween(since.tag, null)].filter(
+                (name) => was.has(name) && live.has(name)
+              )
+            : [],
+          since?.tag,
+          null
+        )
+        /* Pinned to the Figma entry the same way a released one is, keyed by
+           the version this work is heading for: the design file lists a batch
+           by family and the other two surfaces ran alphabetical against it. */
+        const names = inFigmaOrder(
+          current,
+          Object.keys(icons)
+            .filter((name) => !was.has(name))
+            .sort(byFiling)
+        )
+        /* A note keeps the section alive on its own. Work that adds an axis
+           rather than a drawing leaves both lists empty, and returning null
+           there would drop the announcement along with them. */
+        const note = fill(NOTES.unreleased)
+        if (!names.length && !updated.length && !note) return null
+        return {
+          note,
+          since: since?.version ?? null,
+          sinceDate: since?.date ?? null,
+          sinceLabel: since ? show(since.date) : null,
+          count: Object.keys(icons).length,
+          names,
+          title: titleFor(current),
+          topics: topicsFor(current, names, updated.map((u) => u.name)),
+          updatedNames: updated.map((u) => u.name),
+          updated,
+        }
+      })(),
+      people: people.map((who) => {
+        const [name, email] = who.split("\t")
+        return { name, email }
+      }),
+      icons,
+    },
+    null,
+    0
+  ) + "\n"
+
+/**
+ * A changelog only ever grows.
+ *
+ * Every surface that prints releases is generated, which means every release
+ * is redrawn from scratch on every build, which means a bug in the shape of
+ * the data silently deletes history rather than failing. That is exactly what
+ * happened: the file carried the current release and the previous one, the
+ * board drew those two, and cutting v0.1.2 erased v0.1.0 and announced v0.1.1
+ * as the initial release. Nobody sees a deletion in a regenerated file.
+ *
+ * So the file that is already committed is the record, and the rebuild has to
+ * account for every release in it. A tag is not allowed to quietly disappear
+ * from the history — if one is genuinely being retracted, delete the entry
+ * here deliberately and say so in the commit, which is a decision with a name
+ * on it rather than a diff nobody reads.
+ */
+const before = JSON.parse(await readFile(OUT, "utf8").catch(() => "{}"))
+const lost = (before.releases ?? [])
+  .map((r) => r.version)
+  .filter((v) => !releases.some((r) => r.version === v))
+if (lost.length) {
+  console.error(
+    c(31, "✗") +
+      ` lib/icon-history.json already records ${lost.join(", ")}, and this ` +
+      `build does not.\n  A published release cannot be dropped by a rebuild. ` +
+      `Restore the tag (\`git tag v${lost[0]} <commit>\`), or retract the ` +
+      `entry deliberately.`
+  )
+  process.exit(1)
+}
+
+/**
+ * Nor can a published release lose a redraw.
+ *
+ * The same argument one level down: an entry's redraws are read off git every
+ * build, so anything that makes a window unreadable — a tag moved, a style
+ * file renamed, a bug in `redrawn` — quietly publishes an entry announcing
+ * fewer corrections than it announced yesterday, in a generated diff nobody
+ * reads. The written file is the record for these too.
+ */
+const written = JSON.parse(out).releases ?? []
+const thinned = (before.releases ?? [])
+  .map((was) => ({
+    version: was.version,
+    was: (was.updated ?? []).length,
+    now: (written.find((r) => r.version === was.version)?.updated ?? []).length,
+  }))
+  .filter((r) => r.now < r.was)
+if (thinned.length) {
+  console.error(
+    c(31, "✗") +
+      ` lib/icon-history.json would publish fewer redraws than it already ` +
+      `records:\n` +
+      thinned
+        .map((r) => `  ${r.version}: ${r.was} recorded, ${r.now} rebuilt`)
+        .join("\n") +
+      `\n  A published entry keeps what it announced. Find what stopped ` +
+      `reading, rather than committing the shorter file.`
+  )
+  process.exit(1)
+}
+
+if (check) {
+  const have = await readFile(OUT, "utf8").catch(() => "")
+  if (have !== out) {
+    console.error(
+      c(31, "✗") +
+        ` lib/icon-history.json is stale — run \`npm run history:build\``
+    )
+    process.exit(1)
+  }
+  console.log(
+    c(32, "✓") +
+      ` lib/icon-history.json up to date (${Object.keys(icons).length} icons)`
+  )
+} else {
+  await writeFile(OUT, out)
+  console.log(
+    c(32, "✓") +
+      ` lib/icon-history.json — ${Object.keys(icons).length} icons, ` +
+      `${releases.length} release${releases.length === 1 ? "" : "s"}, current ${current}`
+  )
+}

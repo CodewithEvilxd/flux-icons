@@ -1,0 +1,140 @@
+// The plugin's main thread. It owns the document and nothing else.
+//
+// Search, ranking and the grid all live in ui.html, because the iframe is the
+// only side with a DOM and the only side that can reach the network: this
+// sandbox has no `fetch`. So the set never passes through here. The UI hands
+// over one assembled SVG per insert and this side decides where it lands.
+
+figma.showUI(__html__, { width: 400, height: 560, themeColors: true })
+
+/**
+ * Figma's SVG importer does not resolve `currentColor`. It is a CSS keyword with
+ * no cascade to resolve against once the markup leaves a page, so every path
+ * arrives unpainted and the insert looks empty. The exports carry it on purpose,
+ * it is what makes an icon take the colour of the text around it, so it is
+ * swapped for real ink on the way onto the canvas.
+ */
+const INK = "#000000"
+
+/**
+ * Every node this plugin has inserted this session, by id.
+ *
+ * A plain object rather than a Set because the ids are only ever read back by
+ * `place`, and it needs one lookup per insert. Stale entries from deleted nodes
+ * cost nothing: an id that no longer resolves is never the current selection.
+ */
+const OURS = Object.create(null)
+
+/**
+ * Centre the node in the selected frame, or in the viewport when nothing usable
+ * is selected.
+ *
+ * Only FRAME and COMPONENT are accepted as parents. Both establish a coordinate
+ * space, so `x`/`y` mean what they look like they mean. A section's children
+ * keep absolute page coordinates and an instance refuses `appendChild`
+ * altogether, so those fall through to the viewport rather than landing
+ * somewhere surprising.
+ */
+function place(node) {
+  let [sel] = figma.currentPage.selection
+
+  /*
+    Step out of our own icons before choosing a parent.
+
+    An inserted icon is a 24x24 frame and it stays selected, so clicking two
+    icons in a row put the second one inside the first, centred at 0,0, where it
+    sat exactly on top and showed up only in the layer tree. Twenty in a row
+    nested twenty deep.
+
+    Its parent is what the user actually meant: a second icon lands beside the
+    first, in the same frame, or on the page if the first was on the page. An
+    icon is never a useful container, so this applies however the selection got
+    there, not only to the most recent insert.
+
+    FigJam never had this. An insert becomes a group there, and a group is not an
+    accepted parent, so the second icon already fell through to the viewport.
+  */
+  while (sel && OURS[sel.id]) sel = sel.parent
+
+  const box = sel && (sel.type === "FRAME" || sel.type === "COMPONENT") ? sel : null
+
+  if (box) {
+    box.appendChild(node)
+    node.x = Math.round((box.width - node.width) / 2)
+    node.y = Math.round((box.height - node.height) / 2)
+    return
+  }
+
+  figma.currentPage.appendChild(node)
+  node.x = Math.round(figma.viewport.center.x - node.width / 2)
+  node.y = Math.round(figma.viewport.center.y - node.height / 2)
+}
+
+/**
+ * Dissolve the wrapper frame into a group, which is what FigJam needs.
+ *
+ * The frame is why colour did not work there. Picking a colour with a frame
+ * selected paints the frame's own background, so the drawing never changed and
+ * a coloured square appeared around it instead. Duotone read as "not editable
+ * at all", because every attempt landed on the wrapper. One cause, both
+ * symptoms.
+ *
+ * A group has no fill of its own, so the colour reaches the paths, and duotone
+ * keeps both tones because each path carries its own opacity.
+ *
+ * Flattening was the other option and is wrong: it merges every path into one
+ * shape, so duotone's 40% plate and the line above it become a single tone. The
+ * style would not survive its own insert.
+ */
+function toGroup(frame, name) {
+  const parent = frame.parent
+  const index = parent.children.indexOf(frame)
+  const group = figma.group([...frame.children], parent, index)
+  group.name = name
+  frame.remove()
+  return group
+}
+
+figma.ui.onmessage = (msg) => {
+  if (!msg || msg.type !== "insert") return
+
+  const frame = figma.createNodeFromSvg(String(msg.svg).replace(/currentColor/g, INK))
+  const name = String(msg.name)
+  // Figma names the import `svg`. The icon name is the only useful label, and it
+  // is what a later export or a Code Connect mapping reads back.
+  frame.name = name
+
+  /**
+   * The wrapper arrives with a white fill, which the drawing does not carry:
+   * the SVG root says `fill="none"`. Invisible on a white canvas and a white
+   * square everywhere else, so it survives every test done on a default page.
+   */
+  if ("fills" in frame) frame.fills = []
+
+  place(frame)
+
+  /**
+   * The frame survives in a design file and is dissolved in FigJam, which is
+   * not a hedge: the two editors want different things and only one of them
+   * has a problem.
+   *
+   * A design file wants the 24×24 box. It is what makes a row of inserted icons
+   * line up, and dropping it would hand back a group sized to the ink instead,
+   * so `check` would arrive as roughly 14×10 and align with nothing. Colour is
+   * already fine there, because the design panel lists every distinct colour in
+   * the selection and edits each one, which is how duotone's two tones showed
+   * as 100% and 40% and stayed editable.
+   *
+   * FigJam has neither the alignment discipline that makes the box worth
+   * keeping nor the panel that makes the frame survivable. Its colour control
+   * is one swatch, and one swatch aimed at a frame paints the frame.
+   */
+  const node = figma.editorType === "figjam" ? toGroup(frame, name) : frame
+
+  // After toGroup, so FigJam registers the group rather than the frame it
+  // dissolved. Registering the wrong one would leave the real node unrecognised.
+  OURS[node.id] = true
+
+  figma.currentPage.selection = [node]
+  figma.notify(`Inserted ${name}`)
+}

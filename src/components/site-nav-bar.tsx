@@ -1,0 +1,536 @@
+"use client"
+
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+
+import {
+  Camera,
+  Check,
+  ChevronDown,
+  Menu,
+  PanelLeft,
+  Smartphone,
+} from "@/components/icons"
+
+import { BrandMark } from "@/components/brand-mark"
+import { FigmaLogo, GitHubLogo, XLogo } from "@/components/brand-logos"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { ShareDialog } from "@/components/share-dialog"
+import type { ShareCounts } from "@/lib/share"
+import { ThemeToggle } from "@/components/theme-toggle"
+import { formatStars } from "@/lib/github"
+import {
+  currentHref,
+  SET_FIGMA_PROFILE_URL,
+  SET_REPO_URL,
+  SET_TITLE,
+  SET_X_URL,
+  SITE_BAR_LINKS,
+  SITE_BAR_MENUS,
+  SITE_NAV_LINKS,
+} from "@/lib/site-chrome"
+import { cn } from "@/lib/utils"
+
+/**
+ * Every destination in the bar — and, from the same constant, in the footer.
+ * Add a row in `lib/site-chrome.ts` to add a link to both.
+ *
+ * The bar reads it in two pieces: the routes that stand on their own, and the
+ * ones gathered under a menu name. The footer and the sitemap still read the
+ * whole flat list, which is the point of grouping in the data rather than here.
+ */
+const links = SITE_BAR_LINKS
+const menus = [...SITE_BAR_MENUS]
+
+/**
+ * A glyph per grouped route, keyed by href.
+ *
+ * It lives here rather than in `lib/site-chrome.ts` because that file is read
+ * by `app/sitemap.ts`, and a sitemap has no business importing React
+ * components. The mapping is small enough that the indirection costs nothing;
+ * an href with no entry simply gets no glyph.
+ */
+const MENU_ICONS: Record<
+  string,
+  React.ComponentType<{ className?: string }>
+> = {
+  "/demo": PanelLeft,
+  "/demo/mobile": Smartphone,
+  "/examples": Camera,
+}
+
+/**
+ * The bar itself. `site-nav.tsx` is the server half that feeds it the count.
+ *
+ * Split in two because the star count has to be fetched on the server and this
+ * half cannot be: it reads `usePathname` and owns a menu. Rather than every
+ * page fetching a number and passing it in, the server component wraps this
+ * one, so the four pages that render a bar still render `<SiteNav />` and know
+ * nothing about GitHub.
+ */
+export function SiteNavBar({
+  stars,
+  counts,
+}: {
+  stars: number | null
+  counts: ShareCounts
+}) {
+  const pathname = usePathname()
+  const active = currentHref(pathname)
+  const isCurrent = (href: string) => href === active
+  const isExtendedPage = pathname.startsWith("/extended")
+  const isMotionPage = pathname.startsWith("/motion")
+  const isEcosystemPage = pathname === "/" || pathname.startsWith("/browse")
+
+  const headerTheme = isMotionPage
+    ? {
+        brandBorder: "border-purple-500/50",
+        markColor: "text-purple-500",
+        tagClass: "ann-tag-purple",
+        tagLabel: "[ 467 MOTION ]",
+        activeLinkClass:
+          "bg-purple-500/15 text-purple-600 dark:text-purple-400 border border-dashed border-purple-500/50",
+      }
+    : isExtendedPage
+      ? {
+          brandBorder: "border-blue-500/50",
+          markColor: "text-blue-500",
+          tagClass: "ann-tag-blue",
+          tagLabel: "[ 2,242 EXTENDED ]",
+          activeLinkClass:
+            "bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-dashed border-blue-500/50",
+        }
+      : isEcosystemPage
+        ? {
+            brandBorder: "border-amber-500/50",
+            markColor: "text-amber-500",
+            tagClass: "ann-tag-amber",
+            tagLabel: "[ 3,700+ ICONS ]",
+            activeLinkClass:
+              "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-dashed border-amber-500/50",
+          }
+        : {
+            brandBorder: "border-amber-500/50",
+            markColor: "text-amber-500",
+            tagClass: "ann-tag-amber",
+            tagLabel: `[ ${counts?.icons ? `${counts.icons.toLocaleString()} KEYLINE` : "1,000 KEYLINE"} ]`,
+            activeLinkClass:
+              "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-dashed border-amber-500/50",
+          }
+
+  return (
+    <>
+      <header className="fixed inset-x-0 top-0 z-30 bg-background/95 backdrop-blur-xs border-b border-dashed border-border/70">
+        {/* The page's exact box, so the two ends line up with the content. */}
+        <div className="mx-auto flex w-full max-w-360 items-center justify-between px-6 py-2 lg:px-8 lg:py-3">
+          <Link
+            href="/"
+            className={cn(
+              "flex shrink-0 items-center gap-2.5 rounded-xl border-1.5 border-dashed bg-card px-3.5 py-1.5 shadow-sm transition-colors",
+              headerTheme.brandBorder
+            )}
+          >
+            <BrandMark className={cn("size-6", headerTheme.markColor)} />
+            <span className="font-display text-lg font-black tracking-wider uppercase text-foreground">
+              {SET_TITLE}
+            </span>
+            <span className={cn(headerTheme.tagClass, "hidden sm:inline-flex text-[11px] font-bold py-0.5 px-1.5")}>
+              {headerTheme.tagLabel}
+            </span>
+          </Link>
+
+          <nav className="flex items-center gap-1.5 rounded-xl p-1 text-sm font-handwritten font-bold">
+            <div className="hidden items-center gap-1 md:flex">
+              {links.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  aria-current={isCurrent(link.href) ? "page" : undefined}
+                  className={cn(
+                    "rounded-lg px-3 py-1.5 font-bold transition-all text-sm",
+                    isCurrent(link.href)
+                      ? headerTheme.activeLinkClass
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/70"
+                  )}
+                >
+                  {link.label}
+                </Link>
+              ))}
+
+              {/*
+                The grouped routes, one menu each. Today that is "Examples" over
+                the two demos.
+
+                The trigger lights as the current page whenever anything inside
+                it is, so the bar still says where you are with the menu shut,
+                and `button.tsx`'s `aria-expanded` styling lights it while open
+                — the same idiom every other menu trigger on the site uses.
+
+                The menu is wider than its trigger, which is the one thing to
+                know if another is added: `DropdownMenuContent` defaults to
+                `w-(--anchor-width)`, so a popup carrying descriptions has to say
+                a width or it comes out as narrow as the word "Examples".
+              */}
+              {menus.map(([name, entries]) => {
+                const inMenu = entries.some((entry) => isCurrent(entry.href))
+
+                return (
+                  <DropdownMenu key={name}>
+                    <DropdownMenuTrigger
+                      className={cn(
+                        "flex items-center gap-1 rounded-lg px-3 py-2 transition-colors",
+                        inMenu
+                          ? "bg-muted text-foreground"
+                          : "text-muted-foreground hover:text-foreground data-popup-open:text-foreground"
+                      )}
+                    >
+                      {name}
+                      <ChevronDown className="size-3.5 opacity-60" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-72">
+                      {entries.map((entry) => {
+                        const Icon = MENU_ICONS[entry.href]
+
+                        return (
+                          <DropdownMenuItem
+                            key={entry.href}
+                            render={<Link href={entry.href} />}
+                            // `items-start` and the padding: a row with two
+                            // lines in it is no longer a menu item's default
+                            // shape, and centred glyphs float beside the gap
+                            // between the lines rather than sitting with the
+                            // name.
+                            className="items-start gap-3 p-2"
+                          >
+                            {Icon && (
+                              <Icon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+                            )}
+                            {/*
+                              `min-w-0`, or the description does not wrap: a
+                              flex child sizes to its max-content by default, so
+                              the sentence runs past the popup's edge and is
+                              clipped instead of breaking onto a second line.
+                            */}
+                            <span className="flex min-w-0 flex-col gap-0.5">
+                              <span className="flex items-center gap-2 leading-none">
+                                {entry.label}
+                                {isCurrent(entry.href) && (
+                                  <Check
+                                    aria-hidden="true"
+                                    className="size-3.5 text-muted-foreground"
+                                  />
+                                )}
+                              </span>
+                              {entry.description && (
+                                <span className="text-xs leading-snug text-muted-foreground">
+                                  {entry.description}
+                                </span>
+                              )}
+                            </span>
+                          </DropdownMenuItem>
+                        )
+                      })}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )
+              })}
+
+              {/*
+                A hairline, not a gap: the pages and the two outbound links are
+                different kinds of destination, and without something between
+                them the X mark reads as a fifth page. `h-5` against 36px
+                controls leaves the rule clearly shorter than what it separates,
+                which is what stops it reading as a border.
+              */}
+              {/*
+                `max-lg:hidden` here and on the three marks below, which is the
+                bar's second fold and the reason it needs one.
+
+                Everything in this row wants 775px next to the brand, and the
+                page's own box only offers that from about 820 — so between
+                `md` and `lg` the bar was full to both edges, and before the
+                brand was pinned it was over them. Something has to go, and it
+                is these: the routes are what a reader came for, while X,
+                GitHub and Figma are where *we* are, they are all three in the
+                menu one control to the right, and the footer lists them again
+                at the bottom of every page.
+
+                So the bar folds in two steps rather than one. Below `lg` the
+                marks go and the routes stay; below `md` the routes follow them
+                into the menu. Change either half here and the menu's own
+                `md:hidden` rows have to move with it, or a route is offered
+                twice at once, or not at all.
+              */}
+              <span
+                aria-hidden="true"
+                className="mx-1.5 h-5 w-px shrink-0 bg-border max-lg:hidden"
+              />
+
+              {/*
+                The outbound links are icon-only, so the accessible name is the
+                only name they have. It states the destination and the new tab,
+                because the marks carry `aria-hidden` and contribute nothing.
+
+                All three take a `--muted` fill on hover, unlike the page links
+                to their left. A colour change alone left the target ambiguous,
+                because these buttons carry no label and no border, so nothing
+                said where one ended and the next began until the cursor was on
+                it. The fill is also the only hover the Figma mark can take: its
+                five brand colours cannot shift with the row, but the box behind
+                them can.
+
+                Note that `--accent` and `--secondary` are both the same value
+                as `--muted` in this theme, so the stock `hover:bg-accent` would
+                be a no-op here and is not what these use.
+              */}
+              <a
+                href={SET_X_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Follow on X (opens in a new tab)"
+                className="flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground max-lg:hidden"
+              >
+                <XLogo className="size-4" />
+              </a>
+
+              {/*
+                The count sits inside the link rather than beside it, so the
+                number is part of the same target and the pair cannot be split
+                across a wrap.
+
+                `stars` is null whenever GitHub does not answer, which since
+                the repo went public is a rate limit rather than the 404 a
+                private repo used to return. It is common in `next dev` and
+                rare in production; see the note on `repoStars`.
+
+                The link stays either way, and with the count gone the padded
+                box measures exactly 36px, the same square as the X mark next
+                to it. So the null state is a layout the bar already wears
+                rather than a hole in it.
+              */}
+              <a
+                href={SET_REPO_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={
+                  stars === null
+                    ? "View the source on GitHub (opens in a new tab)"
+                    : `Star on GitHub, ${stars} stars (opens in a new tab)`
+                }
+                className="flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground max-lg:hidden"
+              >
+                <GitHubLogo className="size-4" />
+                {stars !== null && (
+                  // `tabular-nums` so a count ticking over from 999 to 1k does
+                  // not resize the bar under the cursor.
+                  <span aria-hidden="true" className="tabular-nums">
+                    {formatStars(stars)}
+                  </span>
+                )}
+              </a>
+
+              {/*
+                The Figma profile, which is where the drawings come from. Not
+                `SET_FIGMA_URL`: that constant is the published Community file,
+                it is still empty, and the icon page's button is what waits on
+                it.
+
+                Last in the group, and the only mark here that keeps its own
+                colours — see `brand-logos.tsx` for why it cannot be drawn in
+                one ink. The mark itself therefore does not respond to hover;
+                the fill behind it does, which is the same fill the other two
+                take, so the three read as one row of controls despite one of
+                them being in colour.
+
+                At the end of the row that spot of colour reads as a logo;
+                between two grey marks it reads as the one control that is lit
+                up.
+              */}
+              {Boolean(SET_FIGMA_PROFILE_URL) && (
+                <a
+                  href={SET_FIGMA_PROFILE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Figma profile (opens in a new tab)"
+                  className="flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-muted max-lg:hidden"
+                >
+                  <FigmaLogo className="size-4" />
+                </a>
+              )}
+            </div>
+
+            {/*
+              A second hairline, and the same one: everything above it is a
+              destination, everything below it is something to do here. At `lg`
+              that is the routes and the three marks on one side; between `md`
+              and `lg` the marks have folded and it separates the routes alone,
+              which is the same distinction and still worth drawing.
+
+              Only at `md` and up, because below it the whole link row is in the
+              menu and there is nothing on this side of the rule to separate
+              from.
+            */}
+            <span
+              aria-hidden="true"
+              className="mx-1.5 hidden h-5 w-px shrink-0 bg-border md:block"
+            />
+
+            {/*
+              Outside the `md:` group on purpose, unlike everything above it.
+
+              That group is the bar's link row and it folds into the menu, in
+              two steps. This is not a link, it is the one thing on the bar
+              asking the reader to do something, and an ask that disappears
+              below `md` is an ask missed by every visitor who found the set on
+              a phone, which is most of them.
+            */}
+            <ShareDialog counts={counts} />
+
+            {/*
+              Where both folds land, which is why it is `lg:hidden` and not
+              `md:hidden`: below `lg` it carries the three marks, and below `md`
+              it carries them under the routes as well. Its rows are gated to
+              match, so nothing in it is ever offered twice.
+            */}
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                aria-label="Menu"
+                // The same square and the same hover as the three marks above,
+                // which it never shares a row with: it is the phone's version
+                // of that group, so it should not be the one icon button in the
+                // bar that behaves differently.
+                className="flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden"
+              >
+                <Menu className="size-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-52">
+                {/*
+                  Every route the bar offers, flat. The grouping upstairs is a
+                  way of spending horizontal room this menu does not lack:
+                  nesting a submenu inside a menu to save two rows would cost a
+                  tap to reach either demo.
+
+                  `SITE_NAV_LINKS` rather than the whole list, so the home row
+                  stays out of here for the same reason it stays out of the bar:
+                  the brand is two inches to the left, on screen, at all times.
+                */}
+                {SITE_NAV_LINKS.map((link) => (
+                  <DropdownMenuItem
+                    key={link.href}
+                    render={<Link href={link.href} />}
+                    // Gone at `md`, where the bar draws these itself. A row in
+                    // a menu whose trigger sits beside the same link, lit as
+                    // the current page, is a second way to reach a place the
+                    // reader can already see.
+                    className="md:hidden"
+                  >
+                    {link.label}
+                    {isCurrent(link.href) && (
+                      <Check
+                        aria-hidden="true"
+                        className="ml-auto size-4 text-muted-foreground"
+                      />
+                    )}
+                  </DropdownMenuItem>
+                ))}
+
+                {/*
+                  The outbound trio again, because the row that holds them is
+                  `lg:` only and this menu is where they go below it. Left out,
+                  X and the repo would be reachable on a wide screen and nowhere
+                  at all on a tablet or a phone.
+
+                  Labelled here rather than icon-only: a menu row has the space
+                  for a word, and "GitHub" plus a count says what the number is
+                  counting, which the bar's version leaves to its aria-label.
+                */}
+                {/* Nothing above it at `md`, so the rule goes with the rows. */}
+                <DropdownMenuSeparator className="md:hidden" />
+                <DropdownMenuItem
+                  render={
+                    <a
+                      href={SET_X_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    />
+                  }
+                >
+                  <XLogo className="size-4 text-muted-foreground" />X
+                  <span className="sr-only">{" (opens in a new tab)"}</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  render={
+                    <a
+                      href={SET_REPO_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    />
+                  }
+                >
+                  <GitHubLogo className="size-4 text-muted-foreground" />
+                  GitHub
+                  {stars !== null && (
+                    <span className="ml-auto text-muted-foreground tabular-nums">
+                      {formatStars(stars)}
+                    </span>
+                  )}
+                  <span className="sr-only">{" (opens in a new tab)"}</span>
+                </DropdownMenuItem>
+                {Boolean(SET_FIGMA_PROFILE_URL) && (
+                  <DropdownMenuItem
+                    render={
+                      <a
+                        href={SET_FIGMA_PROFILE_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      />
+                    }
+                  >
+                    <FigmaLogo className="size-4" />
+                    Figma
+                    <span className="sr-only">{" (opens in a new tab)"}</span>
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/*
+              The end of the bar, and the only control in it that is for the
+              reader rather than for us.
+
+              A primary button stood here: "Sponsor", and "Get started" before
+              that. The first pointed at the grid one scroll below the bar on
+              the page most visitors are already on; the second is a real ask,
+              and a one-word ask in the loudest control on the page is the
+              weakest way to make it. Both are gone. Sponsorship now asks in the
+              closing block of the landing page, in `app/page.tsx`, alongside
+              the licence, where it has room for the sentence that explains it.
+
+              So the bar carries no primary at all now, deliberately. Nothing
+              here is trying to be clicked before anything else.
+            */}
+            <ThemeToggle />
+          </nav>
+        </div>
+      </header>
+
+      {/*
+        `fixed` takes the bar out of flow, so nothing below it knows it is
+        there. This holds its height open on every page that renders the nav,
+        rather than each of them remembering to pad its own top.
+
+        Classes rather than `NAV_HEIGHT` inline, because the height is a media
+        query now: 52px below `lg`, 68 above, matching the bar's own `py-1
+        lg:py-3`. The constants still carry the numbers for everything that has
+        to scroll against them.
+      */}
+      <div aria-hidden="true" className="h-13 lg:h-17" />
+    </>
+  )
+}

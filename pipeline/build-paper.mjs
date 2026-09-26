@@ -1,0 +1,1634 @@
+// Compose the set as HTML sheets, ready to write into a paper.design file.
+//
+//   node pipeline/build-paper.mjs [--check]
+//
+// Writes previews/paper/*.html plus a manifest, one sheet per catalogue
+// section, and each sheet is one artboard's worth of markup.
+//
+// **A card is a matrix, because the set has three axes now.** Since the Corners
+// property landed in Figma, a row is one *name* and carries the same three
+// styles twice, rounded against sharp, in six 24px cells under two headings. It
+// used to be one row per *set* with every variant of it laid out in a line,
+// which worked while a drawing had one corner treatment: eighteen tiles on a
+// line cannot say which of them are the same drawing differently cornered, and
+// six cells in two labelled groups say it by position. A style a name does not
+// own is drawn as an empty cell rather than skipped, so the columns hold and
+// the gap is legible as coverage rather than as a layout accident.
+//
+// **Why HTML and not SVG.** Paper's canvas is HTML and CSS rather than a scene
+// graph, and the only write its MCP server exposes is `write_html`. So the unit
+// a Paper file imports is a document, not a folder of assets: there is no
+// "import 1,231 SVGs" call to aim at, and a sheet of inline drawings is what
+// the tool actually accepts. That is also why this generator exists at all
+// rather than pointing the migration at `icons/`.
+//
+// **These are fragments, not documents, and every rule is inline.** No doctype,
+// no `<html>`, and no `<style>` block: what `write_html` wants is markup to
+// place inside a node, and it parses inline styles only. The first import that
+// carried a stylesheet arrived as one unstyled column of drawings, which is the
+// note under SHEET below. A browser wraps a fragment on its own, so these still
+// open locally for review.
+//
+// **Sheets are chunked by bytes, not by category.** Media alone is 348 drawings
+// and over 250KB of path data, which is more than one MCP call should carry.
+// Pages break on a row boundary and never inside one, so a name's six cells
+// always land on the same artboard as each other, and the stripe is numbered
+// across the whole card rather than per part so no seam shows.
+//
+// **The manifest is the import script's input.** Driving the migration means a
+// `create_artboard` and a `write_html` per sheet, in order, with a name for
+// each; that list is exactly `manifest.json`, so the loop reads it rather than
+// re-deriving the grouping from filenames.
+//
+// --check re-composes everything and compares, the same contract as
+// build-cover.mjs and build-data.mjs: a redrawn icon or a renamed category
+// fails here rather than being noticed as a Paper file that no longer matches
+// the set.
+
+import { existsSync } from "node:fs"
+import { mkdir, readdir, readFile, unlink, writeFile } from "node:fs/promises"
+import { join } from "node:path"
+import { fileURLToPath } from "node:url"
+
+const ROOT = fileURLToPath(new URL("..", import.meta.url))
+const ICONS = join(ROOT, "icons")
+const OUT = join(ROOT, "previews", "paper")
+const STYLES = ["stroke", "two-tone", "duotone", "fill"]
+const CONTAINERS = ["regular", "square", "circle"]
+/**
+ * The corner treatments, in the order the cards read left to right.
+ *
+ * Figma's third variant property, `Corners: regular | sharp`, and its two words
+ * rather than the site's. The site's prose calls the first one "rounded"; these
+ * boards are the design file's own cards drawn a second time, so where the two
+ * vocabularies differ the file's wins.
+ */
+const CORNERS = ["regular", "sharp"]
+const check = process.argv.includes("--check")
+
+const c = (n, s) => `\x1b[${n}m${s}\x1b[0m`
+
+/**
+ * How much drawing one sheet may carry, measured on the tiles rather than the
+ * whole file so the section wrapper and its heading are not part of the budget.
+ *
+ * 40KB is a judgement call about what a single MCP write should move, not a
+ * limit anything enforces. Raising it makes fewer, heavier artboards; the
+ * failure it guards against is a call that times out halfway through a
+ * category, which leaves a Paper file nobody can tell is incomplete.
+ */
+const BUDGET = 40 * 1024
+
+/**
+ * Measured off the Figma catalogue's own cards, not resolved from the site's
+ * tokens, because the two surfaces are meant to be the same drawing and Figma
+ * is the one that decides. That is why the ink is `#111111` rather than the
+ * site's `#0a0a0a`: a hair lighter, and the difference is visible when the two
+ * are put side by side, which is exactly what this file is for.
+ */
+const BG = "#ffffff"
+const INK = "#111111"
+const MUTED = "#737373"
+const HAIRLINE = "#e5e5e5"
+const STRIPE = "#f5f5f5"
+
+const FONT =
+  "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+
+/**
+ * Read the site's own category table out of lib/icon-taxonomy.ts.
+ *
+ * Parsed rather than duplicated, because a second copy of eighteen regexes is a
+ * second thing to keep in step, and the one that drifts is always the copy
+ * nobody renders. check-demos.mjs reads lib/*.ts the same way and for the same
+ * reason.
+ *
+ * The guard is the label count: every entry declares a `label`, so a `match`
+ * this parse fails to pick up shows as a pair count short of the labels, and
+ * the script stops. Without it a regex written across two lines would silently
+ * hand its whole category to Other, which looks like a grouping decision rather
+ * than a broken read.
+ */
+async function categories() {
+  const src = await readFile(join(ROOT, "src", "lib", "icon-taxonomy.ts"), "utf8")
+  const start = src.indexOf("export const CATEGORIES")
+  if (start < 0) throw new Error("lib/icon-taxonomy.ts: no CATEGORIES export")
+  const block = src
+    .slice(start, src.indexOf("\n]", start))
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/\/\/[^\n]*/g, "")
+
+  const labels = [...block.matchAll(/label:\s*"([^"]+)"/g)].length
+  const pairs = [
+    ...block.matchAll(
+      /label:\s*"([^"]+)",\s*match:\s*(\/(?:[^/\\\n]|\\.)+\/),\s*blurb:\s*"([^"]+)"/g
+    ),
+  ].map(([, label, re, blurb]) => ({ label, match: new RegExp(re.slice(1, -1)), blurb }))
+
+  if (pairs.length !== labels) {
+    throw new Error(
+      `lib/icon-taxonomy.ts: read ${pairs.length} of ${labels} categories. ` +
+        `A match pattern has moved off its label's line; fix this parse rather ` +
+        `than letting the difference fall into Other.`
+    )
+  }
+  return pairs
+}
+
+const ATTR = /([\w-]+)="([^"]*)"/g
+/** Re-declared on the tile, so the file's own copies are 1,231 times redundant. */
+const DROP = new Set(["width", "height", "xmlns"])
+
+/** One drawing, split into the attributes it needs and the paths it draws. */
+function parse(svg) {
+  const open = svg.match(/<svg\b([^>]*)>/)?.[1] ?? ""
+  const attrs = [...open.matchAll(ATTR)]
+    .filter(([, k]) => !DROP.has(k))
+    .map(([, k, v]) => `${k}="${v}"`)
+    .join(" ")
+  const body = svg
+    .replace(/^[\s\S]*?<svg\b[^>]*>/, "")
+    .replace(/<\/svg>[\s\S]*$/, "")
+    .replace(/\s+/g, " ")
+    .trim()
+  return { attrs, body }
+}
+
+/**
+ * Both treatments, out of the two shapes `icons/` keeps them in.
+ *
+ * Rounded is `icons/<style>/<name>.svg` and sharp is
+ * `icons/sharp/<style>/<name>.svg`, which is `build.mjs`'s own layout: the
+ * rounded paths were left where they were so that every import predating the
+ * axis still resolves, and sharp got a namespace of its own rather than a
+ * suffix on the name, since `[element]-[modifier]` is what a name means here.
+ *
+ * Coverage is identical across the two by construction — 585 stroke, 480
+ * duotone, 432 fill each — so a sharp file that is missing is a defect and not
+ * a decision. The cell is drawn empty rather than skipped, which keeps the six
+ * columns lined up and makes the hole visible on the board.
+ */
+const dirOf = (corners, style) =>
+  corners === "sharp" ? join(ICONS, "sharp", style) : join(ICONS, style)
+
+const byName = new Map()
+for (const corners of CORNERS) {
+  for (const style of STYLES) {
+    const dir = dirOf(corners, style)
+    if (!existsSync(dir)) continue
+    for (const file of (await readdir(dir)).filter((f) => f.endsWith(".svg"))) {
+      const name = file.slice(0, -4)
+      if (!byName.has(name)) byName.set(name, { name, art: {}, sharp: {} })
+      const icon = byName.get(name)
+      const art = parse(await readFile(join(dir, file), "utf8"))
+      if (corners === "sharp") icon.sharp[style] = art
+      else icon.art[style] = art
+    }
+  }
+}
+
+/**
+ * A `square-`/`circle-` prefix only means a container once the base it claims to
+ * wrap exists. This is `containerOf` in lib/icons.ts, and the reasoning there is
+ * the one to read: twenty-six names wear a prefix without wrapping anything,
+ * and counting `circle-half` as a variant of a `half` that was never drawn
+ * files a standalone shape as a variant of nothing.
+ */
+const names = new Set(byName.keys())
+const NOT_CONTAINERS = new Set(
+  JSON.parse(await readFile(join(ROOT, "src", "lib", "icon-not-containers.json"), "utf8")).names
+)
+const containerOf = (name) => {
+  if (NOT_CONTAINERS.has(name)) return "regular"
+  const m = /^(square|circle)-(.+)$/.exec(name)
+  return m && names.has(m[2]) ? m[1] : "regular"
+}
+
+const CATEGORIES = await categories()
+const OTHER = "Other"
+
+/**
+ * The release, read from the same file the site's changelog page reads.
+ *
+ * `lib/icon-history.json` is built from `git log` by `build-history.mjs`, so the
+ * version, the date and the counts here are the ones `/changelog` prints. That
+ * is the whole reason the changelog surface is generated rather than typed: the
+ * Figma file carries this page written by hand, and the note on
+ * `app/changelog/page.tsx` says an edit to one is an edit to the other. A third
+ * hand-written copy is a third thing to forget.
+ */
+const HISTORY = JSON.parse(
+  await readFile(join(ROOT, "src", "lib", "icon-history.json"), "utf8")
+)
+
+/* A release's heading, as `/changelog` prints it: the set's name and the
+   version lead, then the title (Zafar, 18 Sep 2026). */
+const headline = (version, title) =>
+  title ? `Flux Icons v${version}: ${title}` : `Flux Icons v${version}`
+
+/*
+ * Drawn after the tag, so in the tree but not in a release.
+ *
+ * Derived from the dates rather than listed, the same way `lib/icons.ts`
+ * derives it: a hand-kept list of what is new is one someone has to remember to
+ * empty. Declared up here because `row` reads it and the rows are composed a
+ * long way above where the release object is assembled.
+ */
+/*
+ * Measured against the release the badges were last cleared through, which is
+ * a decision rather than a date the build can work out.
+ *
+ * It was `previousReleasedAt`, so cutting a release cleared the badges of the
+ * release before it, automatically and silently. That is not a rule anyone
+ * agreed to: v0.1.2 took the New badge off all 24 of v0.1.1's drawings, and
+ * because the boards are regenerated and re-imported wholesale, the clearing
+ * reached the Paper file as a side effect of an unrelated import.
+ *
+ * **Only Zafar decides when badges drop, stated explicitly, every time.** So
+ * the floor is read from `lib/icon-badges.json` and nothing in the pipeline
+ * writes it. Cutting a release leaves it exactly where it was, which means
+ * badges accumulate until they are deliberately cleared — the failure mode is
+ * a badge that outstays its welcome and gets noticed, rather than one that
+ * disappears without anyone choosing it.
+ */
+const BADGES = JSON.parse(
+  await readFile(join(ROOT, "src", "lib", "icon-badges.json"), "utf8")
+)
+/* The badge is an age, not a release. Same rule and same file as `isNewSince`
+   in lib/icons.ts, compared as instants because git's offset dates and a
+   window computed from the clock do not sort against each other as strings. */
+const NEW_FOR_DAYS = BADGES.newForDays ?? 30
+const NEW_SINCE = Math.max(
+  BADGES.clearedBefore ? Date.parse(BADGES.clearedBefore) : 0,
+  Date.now() - NEW_FOR_DAYS * 86_400_000
+)
+const since = Object.entries(HISTORY.icons ?? {})
+  .filter(([, h]) => Date.parse(h.added) > NEW_SINCE)
+  .sort(([a], [b]) => a.localeCompare(b))
+const NEW_NAMES = new Set(since.map(([name]) => name))
+
+/**
+ * One block per base icon, which is one component set in Figma and one row in
+ * its catalogue. Grouping by name rather than by style is what makes the sheet
+ * legible as the set: a designer comparing `check`, `square-check` and
+ * `circle-check` has them side by side, and the three style folders on disk are
+ * an export detail rather than how anyone reads the library.
+ */
+const blocks = new Map()
+for (const icon of byName.values()) {
+  const container = containerOf(icon.name)
+  const base =
+    container === "regular" ? icon.name : icon.name.slice(container.length + 1)
+  if (!blocks.has(base)) {
+    blocks.set(base, {
+      base,
+      category: CATEGORIES.find((x) => x.match.test(base))?.label ?? OTHER,
+      variants: [],
+      rows: [],
+    })
+  }
+  for (const style of STYLES) {
+    for (const corners of CORNERS) {
+      const art = corners === "sharp" ? icon.sharp[style] : icon.art[style]
+      if (art) {
+        blocks.get(base).variants.push({ name: icon.name, container, style, corners, art })
+      }
+    }
+  }
+  /* The row the card draws for this name. A block is still the family, because
+     that is what a Figma component set is and what the header counts, but the
+     line on the card is one name: `arrow-down`, `square-arrow-down` and
+     `circle-arrow-down` are three rows of six cells rather than one row of
+     eighteen drawings. */
+  blocks.get(base).rows.push({
+    name: icon.name,
+    base,
+    container,
+    art: icon.art,
+    sharp: icon.sharp,
+  })
+}
+
+for (const block of blocks.values()) {
+  block.variants.sort(
+    (a, b) =>
+      CONTAINERS.indexOf(a.container) - CONTAINERS.indexOf(b.container) ||
+      STYLES.indexOf(a.style) - STYLES.indexOf(b.style) ||
+      CORNERS.indexOf(a.corners) - CORNERS.indexOf(b.corners)
+  )
+  block.rows.sort(
+    (a, b) => CONTAINERS.indexOf(a.container) - CONTAINERS.indexOf(b.container)
+  )
+}
+
+/** Sections in the site's own order, with the leftovers last. */
+/**
+ * The shelves, alphabetically. There is no leftovers shelf.
+ *
+ * **Sorted here and never in `lib/icon-taxonomy.ts`.** That array's order is not
+ * a presentation choice, it is the resolution order: the first pattern to match
+ * wins, so Files has to be asked before Shapes or `circle-pen` files itself as a
+ * circle, and Media before Layout or `list-music` files itself as a list. Sorting
+ * that array alphabetically would silently refile icons. Sorting a copy of it for
+ * display cannot.
+ *
+ * **Other is not published.** It used to sit last and render whenever something
+ * matched no pattern, which made an unfiled drawing look like a filing decision.
+ * It is out of the release along with Figma's New band, and what replaces it is
+ * the assertion below: an icon with no shelf fails the build by name. That is the
+ * behaviour worth keeping, because the failure mode it prevents is silent, a
+ * drawing that ships everywhere except the surfaces that list it.
+ */
+const SECTIONS = [...CATEGORIES]
+  .sort((a, b) => a.label.localeCompare(b.label))
+  .map(({ label, blurb }) => ({
+    label,
+    blurb,
+    blocks: [...blocks.values()]
+      .filter((b) => b.category === label)
+      .sort((a, b) => a.base.localeCompare(b.base)),
+  }))
+  .filter((s) => s.blocks.length)
+
+const unfiled = [...blocks.values()].filter((b) => b.category === OTHER)
+if (unfiled.length) {
+  throw new Error(
+    `${unfiled.length} icons match no category: ${unfiled.map((b) => b.base).join(", ")}\n` +
+      `Add a pattern in lib/icon-taxonomy.ts. There is no Other shelf to fall into.`
+  )
+}
+
+const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+
+/**
+ * Drawn at 24, which is the size the icons are drawn at.
+ *
+ * Enlarging them here would make a prettier sheet and a wrong file: what lands
+ * in Paper is the geometry at native size, so a stroke is 2 units of a 24 grid
+ * exactly as it is everywhere else in this repo, and whoever scales an instance
+ * scales it from the size the set is specified at.
+ */
+const SIZE = 24
+
+/**
+ * The drawings the changelog's sharp preview shows, read out of the file the
+ * site reads them from.
+ *
+ * Parsed rather than copied, the same call this file makes about the category
+ * table: a second list of thirty names is a second thing to keep in step, and
+ * the copy that drifts is always the one nobody renders. The declaration has
+ * the shape `check-demos.mjs` looks for, so every name in it is proved against
+ * `icons/` by a check that already runs.
+ */
+async function sharpShowcase() {
+  const src = await readFile(join(ROOT, "src", "lib", "changelog.ts"), "utf8")
+  const open = src.indexOf("export const CHANGELOG_SHARP_ICON_NAMES = [")
+  if (open < 0) {
+    throw new Error("lib/changelog.ts: no CHANGELOG_SHARP_ICON_NAMES export")
+  }
+  const names = [
+    ...src.slice(open, src.indexOf("]", open)).matchAll(/"([^"]+)"/g),
+  ].map(([, name]) => name)
+  if (!names.length) {
+    throw new Error("lib/changelog.ts: CHANGELOG_SHARP_ICON_NAMES parsed empty")
+  }
+  /* The entry the preview belongs to, from the same file for the same reason:
+     the board and the page have to agree about which release announced sharp. */
+  const release = /SHARP_RELEASE\s*=\s*"([^"]+)"/.exec(src)?.[1]
+  if (!release) throw new Error("lib/changelog.ts: no SHARP_RELEASE export")
+  /* And the release whose cover draws a line per style, for the same reason. */
+  const styles = /FOUR_STYLES_RELEASE\s*=\s*"([^"]+)"/.exec(src)?.[1]
+  if (!styles) throw new Error("lib/changelog.ts: no FOUR_STYLES_RELEASE export")
+  return { names, release, styles }
+}
+const {
+  names: SHARP_SHOWCASE,
+  release: SHARP_RELEASE,
+  styles: FOUR_STYLES_RELEASE,
+} = await sharpShowcase()
+
+/**
+ * Every rule written on the element it applies to, because a `<style>` block
+ * does not survive the import.
+ *
+ * This was a stylesheet with eight `kl-` classes first, on the reasoning that
+ * Paper is an HTML and CSS canvas so a style block is what it is built to read.
+ * The first sheet written into a real file came back as a single column of
+ * unstyled drawings: `write_html` parses inline styles and drops the block, so
+ * every class matched nothing. The drawings themselves arrived perfectly, which
+ * is what makes it worth writing down, since nothing about the result says the
+ * cause was the CSS rather than the SVG.
+ *
+ * **The numbers are Figma's, measured off `Category / Core Interface`.** A card
+ * is 742 wide with 28 of padding and a 14 corner; its rows are 38 tall on a 10
+ * corner, padded 7 and 10, with the base drawing, then the name, then the rest
+ * of the variants pushed right. Every one of those was read out of the file
+ * rather than chosen here, because the two surfaces are supposed to be
+ * indistinguishable and only one of them gets to decide.
+ */
+const CARD =
+  `box-sizing:border-box;width:742px;padding:28px;background:${BG};color:${INK};` +
+  `font-family:${FONT};border-radius:14px;display:flex;flex-direction:column;gap:12px`
+const HEADER = "display:flex;align-items:baseline;justify-content:space-between;gap:16px"
+const TITLE = "margin:0;font-size:28px;font-weight:700;letter-spacing:-0.5px"
+const COUNT = `font-size:15px;font-weight:500;color:${MUTED};white-space:nowrap`
+const BLURB = `margin:0;font-size:16px;color:${MUTED}`
+const DIVIDER = `height:1px;background:${HAIRLINE}`
+const ROWS = "display:flex;flex-direction:column"
+const LABEL = `font-size:14px;font-weight:500;color:${INK};white-space:nowrap`
+/* Sized off the row's 38px rather than the label's line, so a badged row is the
+   same height as an unbadged one and the stripe stays a straight edge. */
+const BADGE =
+  `flex-shrink:0;padding:2px 7px;border-radius:999px;background:${INK};color:#ffffff;` +
+  `font-size:10px;font-weight:600;letter-spacing:0.3px;line-height:16px;white-space:nowrap`
+/** A treatment's three cells, stroke then duotone then fill. */
+const GROUP = "display:flex;align-items:center;gap:6px"
+/** The name and its badge, held together so the spacer pushes both. */
+const NAME = "display:flex;align-items:center;gap:6px;min-width:0"
+/**
+ * A cell with nothing in it, which is how a name that owes a style keeps the
+ * column it does not fill. An open glyph owes no fill, so most cards have
+ * them, and a row that simply dropped the tile would slide its later columns
+ * left and stop the six reading as a grid.
+ */
+const CELL = `width:${SIZE}px;height:${SIZE}px;flex-shrink:0`
+
+/**
+ * The two column headings over the matrix, and the legend that expands them.
+ *
+ * Figma's `Legend` sits above the divider and its `Column header` below, a
+ * treatment line over a style line, both 28 apart and both padded 10 so they
+ * land on the cells rather than near them. 84 is not a chosen width: it is
+ * three 24 cells and two 6 gaps, so a heading is exactly as wide as the group
+ * it names.
+ */
+const GROUP_WIDTH = SIZE * 3 + 6 * 2
+const LEGEND = `margin:0;font-size:12px;font-weight:500;color:${MUTED}`
+const COLUMNS = "display:flex;flex-direction:column;gap:3px;padding-bottom:4px"
+const HEAD_ROW = "display:flex;align-items:center;gap:28px;padding:0 10px"
+const HEAD_GROUP =
+  `width:${GROUP_WIDTH}px;text-align:center;font-size:12px;font-weight:600;color:${INK}`
+const HEAD_STYLES = "display:flex;gap:6px"
+const HEAD_STYLE =
+  `width:${SIZE}px;text-align:center;font-size:10px;font-weight:500;color:#a3a3a3`
+
+/**
+ * A row's own line, striped on the even ones exactly as the Figma card is.
+ *
+ * The gap is 28 because the column headings above it are 28 apart: name,
+ * spacer, Regular, Sharp, at the card's own spacing, so a heading sits over
+ * its own three cells rather than approximately over them.
+ */
+const rowStyle = (index) =>
+  `display:flex;align-items:center;gap:28px;height:38px;padding:7px 10px;` +
+  `box-sizing:border-box;border-radius:10px` +
+  (index % 2 === 0 ? `;background:${STRIPE}` : "")
+
+/**
+ * What one drawing is called, on the sheet and in the Paper layer tree.
+ *
+ * The treatment is part of the name because a board now carries both, and
+ * `check-paper.mjs` compares these strings against the file position for
+ * position: two drawings called `arrow-down stroke` on one board would make a
+ * sharp cell holding a rounded drawing unreportable. Rounded stays unsuffixed
+ * so every name already in the file keeps the name it has.
+ */
+const layerName = (name, style, corners) =>
+  `${name} ${style}${corners === "sharp" ? " sharp" : ""}`
+
+/** One drawing, named twice: once for the layer tree, once for a reader. */
+const tile = (v) =>
+  `<svg width="${SIZE}" height="${SIZE}" xmlns="http://www.w3.org/2000/svg" ` +
+  `role="img" aria-label="${layerName(v.name, v.style, v.corners)}" data-icon="${v.name}" ` +
+  `data-style="${v.style}" data-corners="${v.corners}" ${v.art.attrs}>${v.art.body}</svg>`
+
+/** One treatment of one name: stroke, duotone, fill, gaps included. */
+const group = (item, corners) =>
+  `<div style="${GROUP}" data-group="${corners}">` +
+    STYLES.map((style) => {
+      const art = (corners === "sharp" ? item.sharp : item.art)[style]
+      return art
+        ? tile({ name: item.name, style, corners, art })
+        : `<div style="${CELL}"></div>`
+    }).join("") +
+  `</div>`
+
+/**
+ * One name, as Figma's cards draw it since the matrix landed: the name on the
+ * left, then the same three styles twice, rounded against sharp.
+ *
+ * The card used to put one row per *set* and lay every variant of it out in a
+ * line, which worked while a drawing had one corner treatment and stops working
+ * the moment it has two: eighteen tiles on a line say nothing about which of
+ * them are the same drawing. Six cells in two labelled groups say it by
+ * position, and the empty cells are as much of the answer as the full ones.
+ *
+ * The badge is the set's, repeated on each of its rows, which is what the Figma
+ * card does — a container variant is drawn the day its base is, so badging the
+ * family rather than the name says the same thing without three dates to keep.
+ */
+function row(item, index) {
+  const isNew = NEW_NAMES.has(item.base)
+  return (
+    `<div style="${rowStyle(index)}" data-icon-set="${item.base}" data-icon-name="${item.name}"` +
+      (isNew ? ` data-new="true"` : "") + `>` +
+      `<div style="${NAME}">` +
+        `<div style="${LABEL}">${item.name}</div>` +
+        (isNew ? `<span style="${BADGE}">New</span>` : "") +
+      `</div>` +
+      /* The spacer, not the label, is what pushes the groups right. The label
+         used to carry `flex:1` and a badge next to it then sat against the far
+         edge instead of against the name it badges. */
+      `<div style="flex:1"></div>` +
+      CORNERS.map((corners) => group(item, corners)).join("") +
+    `</div>`
+  )
+}
+
+/** The legend and the two heading lines, drawn once per card. */
+const columns = () =>
+  `<div style="${COLUMNS}" data-columns="true">` +
+    `<div style="${HEAD_ROW}">` +
+      `<div style="flex:1"></div>` +
+      CORNERS.map(
+        (corners) =>
+          `<div style="${HEAD_GROUP}">${corners === "sharp" ? "Sharp" : "Regular"}</div>`
+      ).join("") +
+    `</div>` +
+    `<div style="${HEAD_ROW}">` +
+      `<div style="flex:1"></div>` +
+      CORNERS.map(
+        () =>
+          `<div style="${HEAD_STYLES}">` +
+            STYLES.map(
+              (style) => `<div style="${HEAD_STYLE}">${style[0].toUpperCase()}</div>`
+            ).join("") +
+          `</div>`
+      ).join("") +
+    `</div>` +
+  `</div>`
+
+/**
+ * A category card: header, blurb, rule, rows.
+ *
+ * One card per category rather than the several boards this used to cut each
+ * one into. Figma has one card per shelf and the two are meant to match, so the
+ * split now happens on the wire only: the first part carries the card and its
+ * empty rows container, and every part after it appends rows into that
+ * container. Nothing about the result says it arrived in pieces.
+ */
+/**
+ * The header states two numbers because the surfaces were counting two things
+ * and calling both "icons".
+ *
+ * A card lists one row per *set*, the drawing family, so Arrows is 60 rows. The
+ * site's rail lists one tile per *name*, and `circle-arrow-down` is its own
+ * name, so the same shelf is 104 there. Neither is wrong and neither can be
+ * dropped: a board labelled 104 visibly holds 60 rows, and a rail labelled 60
+ * visibly holds 104 tiles. So each surface counts what it displays and says
+ * which it counted.
+ */
+function card({ label, blurb, icons, names, rows }) {
+  return (
+    `<div style="${CARD}" data-category="${label}">` +
+      `<div style="${HEADER}">` +
+        `<h2 style="${TITLE}">${label}</h2>` +
+        `<span style="${COUNT}">${icons} ${icons === 1 ? "icon" : "icons"} · ${names} ${names === 1 ? "name" : "names"}</span>` +
+      `</div>` +
+      `<p style="${BLURB}">${blurb}</p>` +
+      /* Above the divider, as it is in Figma: the legend explains the initials
+         the heading line uses, so it belongs with the prose rather than with
+         the grid. */
+      `<p style="${LEGEND}">S stroke &middot; D duotone &middot; F fill</p>` +
+      `<div style="${DIVIDER}"></div>` +
+      columns() +
+      `<div style="${ROWS}" data-rows="${label}">${rows}</div>` +
+    `</div>\n`
+  )
+}
+
+/**
+ * The catalogue surface: what the set *is*, rather than everything in it.
+ *
+ * Head and variant specimen, and nothing else. It carried an index of the 18
+ * categories under those, with each shelf's weight and eight of its drawings,
+ * until the boards beside it made the point better: they are the categories,
+ * laid out ten to a row on the same canvas, each with its own count on it. An
+ * index of things the reader can already see is a second answer to a question
+ * that was not asked twice.
+ *
+ * This replaces a catalogue that listed all 397 icons with all their variants,
+ * one row each, the way the Figma file's Catalog page does. That was deleted on
+ * sight and the reason is worth keeping: Figma's catalogue is a page of
+ * *instances*, so it stays true on its own and is worth its length. Paper has no
+ * components and no instances, so the same page would be 1,289 copies that go
+ * stale the moment a drawing changes, sitting beside 33 boards that already show
+ * every one of them. An inventory nothing can keep honest is worse than no
+ * inventory.
+ *
+ * What survives is the part the boards cannot say: the variant system itself,
+ * one specimen showing every treatment of one drawing, and an index of the
+ * categories with their weights. One card, and it fits on a screen.
+ *
+ * The dark head is the Figma catalogue's, at the user's request, and it is the
+ * only surface here that inverts. That is the point of it: a cover is a
+ * different kind of object from the sheets it covers, and on a canvas of 33
+ * white boards the one that states the totals should not be a 34th white board.
+ */
+/**
+ * Where the set lives, read from `lib/seo.ts` rather than typed here.
+ *
+ * A Community or Paper file travels: someone duplicates it and it is theirs,
+ * detached from the listing that described it and from whatever links sat
+ * beside the listing. A file that does not say where it came from is an orphan
+ * the moment it is copied, which is what both covers were until now.
+ *
+ * Parsed out of the same constant the canonical URLs are built from, so it
+ * cannot name a different origin than the site does. The protocol is dropped
+ * for display only: a cover states an address, it does not link to one.
+ */
+const SITE = (await readFile(join(ROOT, "src", "lib", "seo.ts"), "utf8")).match(
+  /SITE_URL\s*=\s*"([^"]+)"/
+)?.[1]
+if (!SITE) throw new Error("SITE_URL not found in lib/seo.ts")
+const SITE_LABEL = SITE.replace(/^https?:\/\//, "")
+
+const HEAD_BG = "#0a0a0a"
+const HEAD_INK = "#ffffff"
+const HEAD_MUTED = "#a3a3a3"
+
+/**
+ * A label and its value, right-aligned in the dark head.
+ *
+ * `white-space:nowrap` on both halves and `flex-shrink:0` on the column, all
+ * three load-bearing. A browser gave this row its natural width and the head
+ * looked right locally; Paper laid the same markup out against the space left
+ * over by the title and wrapped every value, so a version read "0.1." over "0"
+ * and the date sat on top of its own label. Nothing about the local render
+ * predicted it, which is the argument for screenshotting the imported artboard
+ * rather than the file it came from.
+ */
+const meta = (label, value) =>
+  `<div style="display:flex;gap:10px;align-items:baseline;justify-content:flex-end;white-space:nowrap">` +
+    `<span style="font-size:14px;color:${HEAD_MUTED};white-space:nowrap">${label}</span>` +
+    `<span style="font-size:14px;font-weight:600;color:${HEAD_INK};white-space:nowrap">${value}</span>` +
+  `</div>`
+
+/**
+ * One treatment of the specimen drawing, as a chip.
+ *
+ * Container then style, and within a container fill, duotone, stroke, which is
+ * the order the requested design puts them in rather than the repo's own
+ * stroke-first order. It is a specimen of the axis, so it follows the drawing
+ * that specified it.
+ */
+function chip(icons, name, style, corners, caption) {
+  const icon = icons.get(name)
+  const art = (corners === "sharp" ? icon?.sharp : icon?.art)?.[style]
+  if (!art) return ""
+  return (
+    `<div style="display:flex;align-items:center;gap:10px;padding:8px 14px 8px 10px;` +
+      `border-radius:10px;background:#f5f5f5">` +
+      `<svg width="${SIZE}" height="${SIZE}" xmlns="http://www.w3.org/2000/svg" role="img" ` +
+      `aria-label="${layerName(name, style, corners)}" data-icon="${name}" data-style="${style}" ` +
+      `data-corners="${corners}" ${art.attrs}>${art.body}</svg>` +
+      `<span style="font-size:12px;color:${MUTED};white-space:nowrap">${caption}</span>` +
+    `</div>`
+  )
+}
+
+function catalogSheet(icons, totals, release) {
+  /*
+   * One drawing in every treatment, now twice over.
+   *
+   * The specimen is the one place this file states the variant system rather
+   * than listing its output, so it is the place the third axis has to appear:
+   * the same seven chips under each corner treatment, same drawing, same
+   * order, so the only thing that differs between the two lines is the thing
+   * the axis changes. A sentence claiming two treatments over one row of chips
+   * would be the cover asserting something the cover does not show.
+   */
+  const SPECIMEN = [
+    ["arrow-down", "stroke", "regular"],
+    ["square-arrow-down", "fill", "square-fill"],
+    ["square-arrow-down", "duotone", "square-duotone"],
+    ["square-arrow-down", "two-tone", "square-two-tone"],
+    ["square-arrow-down", "stroke", "square-stroke"],
+    ["circle-arrow-down", "fill", "circle-fill"],
+    ["circle-arrow-down", "duotone", "circle-duotone"],
+    ["circle-arrow-down", "two-tone", "circle-two-tone"],
+    ["circle-arrow-down", "stroke", "circle-stroke"],
+  ]
+  const specimen = CORNERS.map(
+    (corners) =>
+      `<div style="display:flex;align-items:center;flex-wrap:wrap;gap:12px">` +
+        `<span style="width:72px;flex-shrink:0;font-size:13px;font-weight:600">` +
+          `${corners === "sharp" ? "Sharp" : "Regular"}</span>` +
+        SPECIMEN.map(([name, style, caption]) =>
+          chip(icons, name, style, corners, caption)
+        ).join("") +
+      `</div>`
+  )
+
+  return (
+    `<section style="box-sizing:border-box;width:1224px;background:${BG};color:${INK};` +
+      `font-family:${FONT};border-radius:24px;overflow:hidden" data-surface="catalog">` +
+
+      `<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:32px;` +
+        `padding:48px;background:${HEAD_BG}">` +
+        `<div>` +
+          `<h1 style="margin:0;font-size:48px;font-weight:600;letter-spacing:-1.5px;color:${HEAD_INK}">Flux Icons</h1>` +
+          `<p style="margin:10px 0 0;font-size:16px;color:${HEAD_MUTED}">Organized category catalog / 24px icon system</p>` +
+        `</div>` +
+        `<div style="display:flex;flex-direction:column;gap:8px">` +
+          /* All three quantities, because "icons" alone meant a different
+             number on every surface: 396 sets, 503 importable names and 1,286
+             files. The boards below count sets and say so; this counts the lot
+             and says so. The site's headline of 503 is the middle one, which is
+             what a reader downloads.
+
+             This line has been wrong twice, in both directions, which is the
+             argument for spelling it out rather than picking one word. */
+          meta(
+            "Icons:",
+            `${blocks.size} icons · ${icons.size} names · ` +
+              `${[...blocks.values()].reduce((n, b) => n + b.variants.length, 0)} variants`
+          ) +
+          meta("Last updated:", release.updatedLabel) +
+          meta("Version:", release.version) +
+          meta("Site:", SITE_LABEL) +
+        `</div>` +
+      `</div>` +
+
+      `<div style="padding:48px">` +
+        `<h2 style="margin:0;font-size:24px;font-weight:600;letter-spacing:-0.4px">Variant specimen</h2>` +
+        `<p style="margin:8px 0 20px;font-size:14px;color:${MUTED}">` +
+          `One drawing in every treatment the set offers: two container shapes ` +
+          `against four styles against two corner treatments, plus the bare glyph.` +
+        `</p>` +
+        `<div style="display:flex;flex-direction:column;gap:12px">${specimen.join("")}</div>` +
+
+      `</div>` +
+    `</section>\n`
+  )
+}
+
+/**
+ * The changelog, word for word from the page that owns the words.
+ *
+ * `app/changelog/page.tsx` is one heading and three sentences with every
+ * countable thing counted, and this is the same sentences off the same data.
+ * Three sheets and three artboards since 17 Sep 2026: the cover, the newest
+ * update's card and one card for every earlier release.
+ */
+/* The notes are the one string on this board written by a person rather than
+   derived, so they are the one that can carry an ampersand or an angle bracket
+   into markup that is otherwise all ours. */
+const esc = (t) =>
+  t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+
+/**
+ * Whether a release entry draws its strips on this board, or only names them.
+ *
+ * Only the newest release does, since 10 Sep 2026. Paper puts a ceiling on a
+ * file, and the day v0.7.0 was cut the file answered every call, reads
+ * included, with "Your file is too large. Further changes will result in data
+ * loss. Please start a new file." The changelog sheet had grown to 445KB with
+ * the 73 drawings of that release on top of every earlier one, and the file
+ * was carrying 3.7MB of boards. Zafar's call, against starting a new file:
+ * *"we can drop the icons from other releases except for the last one"*.
+ *
+ * So an older entry keeps its heading, its date, its note and its counts, and
+ * its sentence ends in a full stop instead of leading into a strip. Nothing is
+ * deleted from the record: `/changelog` and the Figma page go on showing every
+ * drawing of every release, and this board says where. The cut moves forward
+ * on its own, because `current` is whichever entry is newest when the sheet is
+ * built.
+ */
+/* And while an unreleased window is open, it is the newest update and no
+   tagged entry draws: Zafar, 17 Sep 2026, "keep icons only for the last update
+   and drop from earlier ones", said of the Figma page and meant of both. */
+const drawn = (entry) => entry.current && !HISTORY.unreleased
+
+/** The counts sentence, ended as a lead-in where strips follow and closed where they do not. */
+const strip = (entry, sentence) =>
+  drawn(entry) || entry.initial
+    ? /* Topics carry their own sentences before their strips, so the count
+         closes rather than leading into one. */
+      entry.topics && drawn(entry)
+      ? sentence.replace(/:$/, ".")
+      : sentence
+    : sentence.replace(/:$/, ".") +
+      ` Every drawing of this release is on ${SITE_LABEL}/changelog.`
+
+function changelogSheet(icons, release) {
+  /* "1 drawing", not "1 drawings". The board said the second for years, and a
+     release that adds one icon is the common case rather than an edge. */
+  /* Grouped, for the reason the page gives: these reach four figures once a
+     release counts drawings rather than names. */
+  const plural = (n, one, many = one + "s") =>
+    `${n.toLocaleString("en-US")} ${n === 1 ? one : many}`
+
+  /* The redraws an entry carries, from a file that may predate them. Older
+     copies of `lib/icon-history.json` have `updatedNames` and no `updated`,
+     and a board is not worth failing over a field a rebuild will supply. */
+  const redrawnIn = (entry) => entry.updated ?? []
+
+  /* The drawings, not their names. Named only, a reader has to go and look
+     them up, which is the one thing this surface is here to save them. Drawn
+     at grid size: they are being identified rather than admired, and 24 is the
+     size the set is built at. */
+  const tiles = (names, corners = "regular", extra = "") =>
+    `<div style="display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 0${extra}">` +
+      names
+        .map((name) => {
+          const icon = icons.get(name)
+          const art = (corners === "sharp" ? icon?.sharp : icon?.art)?.stroke
+          if (!art) return ""
+          return (
+            `<div style="display:flex;flex-direction:column;align-items:center;gap:8px;` +
+              `width:104px;padding:12px 4px;box-sizing:border-box;border-radius:10px;` +
+              `background:${STRIPE}">` +
+              `<svg width="${SIZE}" height="${SIZE}" xmlns="http://www.w3.org/2000/svg" ` +
+              `role="img" aria-label="${layerName(name, "stroke", corners)}" data-icon="${name}" ` +
+              `data-style="stroke" data-corners="${corners}" ${art.attrs}>${art.body}</svg>` +
+              `<span style="font-size:11px;line-height:1.2;color:${MUTED};` +
+                `text-align:center">${name}</span>` +
+            `</div>`
+          )
+        })
+        .join("") +
+    `</div>`
+
+  /*
+   * A taste of the sharp half, under the sentence that announces it.
+   *
+   * The same drawings `/changelog` shows and the Figma page draws, out of the
+   * same file, because three surfaces drawing a different thirty is three
+   * answers to one question. It was a spread across the set until the spread
+   * put six `circle-*` names in a preview of a corner treatment; the argument
+   * for naming them instead is in `lib/changelog.ts`.
+   *
+   * The fade is a mask, as it is on the site: an overlay has to know the colour
+   * behind it and a mask does not. If Paper drops the property the block still
+   * reads — thirty drawings and a line saying how many more there are — which is
+   * the reason it is a mask here rather than a rectangle laid over the top.
+   */
+  const sharpPreview = () => {
+    /* The count is the treatment's whole coverage, not the preview's length, so
+       it does not move when the list does. */
+    const total = [...icons.values()].filter((icon) => icon.sharp?.stroke).length
+    const sample = SHARP_SHOWCASE.filter((name) => icons.get(name)?.sharp?.stroke)
+    if (!sample.length || !total) return ""
+    const fade =
+      ";mask-image:linear-gradient(to bottom, #000 55%, transparent 100%)" +
+      ";-webkit-mask-image:linear-gradient(to bottom, #000 55%, transparent 100%)"
+    return (
+      tiles(sample, "sharp", fade) +
+      /* The count is the whole treatment rather than what the fade hides: how
+         many are cut off depends on the width, so a remainder would be a number
+         that is only true at one size. */
+      `<p style="margin:12px 0 0;font-size:14px;line-height:1.7">` +
+        `<span style="font-weight:500;text-decoration:underline;` +
+          `text-underline-offset:4px">See all ${total} in sharp</span>` +
+      `</p>`
+    )
+  }
+
+  /*
+   * What was redrawn, shown as the change rather than as a claim.
+   *
+   * A changelog that only names a corrected drawing asks the reader to
+   * remember what it used to look like, and nobody can — which is the whole
+   * reason it was worth correcting. Both drawings come baked into
+   * `lib/icon-history.json`, out of the two refs that bound the release, so
+   * this board and `/changelog` print the same pair from the same source.
+   *
+   * Same size, same ink, same ground for both halves: the difference between
+   * them is the only thing that should differ.
+   *
+   * A sharp pair says so under the name, as `/changelog` does. Two squared-off
+   * drawings captioned with the bare name read as the rounded drawing having
+   * been squared off, and a release spent entirely in the sharp half would be
+   * published as corrections to drawings nobody touched. Rounded carries no
+   * marker: it is what a pair is unless it says otherwise.
+   */
+  /* The cut moves a diagonal end by 0.414 of a unit and these are drawn at 24,
+     so past the first few the board repeats one picture: 303 pairs whose files
+     differ and whose drawings do not. Six is a row, which reads as a sample.
+     Rounded pairs are never capped — those are corrections that can be seen.
+     It is also what keeps this sheet inside one write: uncapped it reached
+     824KB and 899 drawings against a BUDGET of 40KB, and Paper kept 469 of
+     them without saying so. */
+  const SHARP_SHOWN = 6
+  const redraws = (updated) => {
+    const cornersOf = (r) => r.corners ?? "regular"
+    const sharp = updated.filter((r) => cornersOf(r) === "sharp")
+    const shown = [
+      ...updated.filter((r) => cornersOf(r) !== "sharp"),
+      ...sharp.slice(0, SHARP_SHOWN),
+    ]
+    return (
+    `<div style="display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 0">` +
+      shown
+        .map((redraw) => {
+          /* Older copies of `lib/icon-history.json` predate the field, and
+             every pair in them is a rounded one. */
+          const corners = redraw.corners ?? "regular"
+          const style = redraw.style ?? "stroke"
+          const face = (art, label) =>
+            art
+              ? `<div style="display:flex;flex-direction:column;align-items:center;gap:6px">` +
+                  `<svg width="${SIZE}" height="${SIZE}" xmlns="http://www.w3.org/2000/svg" ` +
+                  /* The treatment is in the layer name for the reason
+                     `layerName` gives: on the name alone, a sharp cell holding
+                     a rounded drawing is unreportable. */
+                  `role="img" aria-label="${layerName(redraw.name, style, corners)} ${label}" ` +
+                  `data-icon="${redraw.name}" ` +
+                  `data-style="${style}" data-corners="${corners}" ` +
+                  `${art.attrs}>${art.body}</svg>` +
+                  `<span style="font-size:10px;line-height:1;color:${MUTED}">${label}</span>` +
+                `</div>`
+              : ""
+          const before = redraw.before ? parse(redraw.before) : null
+          /* A drawing committed without visibly moving carries no pair, and
+             what it still has is today's drawing — in this redraw's own
+             treatment, or the caption would say sharp over a rounded tile. */
+          const after = redraw.after
+            ? parse(redraw.after)
+            : (corners === "sharp"
+                ? icons.get(redraw.name)?.sharp?.stroke
+                : icons.get(redraw.name)?.art?.stroke) ?? null
+          return (
+            `<div style="display:flex;flex-direction:column;align-items:center;gap:8px;` +
+              `width:148px;padding:12px 4px;box-sizing:border-box;border-radius:10px;` +
+              `background:${STRIPE}">` +
+              `<div style="display:flex;align-items:center;gap:12px">` +
+                face(before, "Before") +
+                (before && after
+                  ? `<span style="color:${MUTED};font-size:13px">&rarr;</span>`
+                  : "") +
+                face(after, "After") +
+              `</div>` +
+              `<span style="font-size:11px;line-height:1.2;color:${MUTED};` +
+                `text-align:center">${redraw.name}` +
+                (corners === "sharp" ? ` &middot; sharp` : "") +
+              `</span>` +
+            `</div>`
+          )
+        })
+        .join("") +
+    `</div>` +
+    /* The count is every sharp correction rather than the remainder behind the
+       cut, for the reason the sharp preview above gives. */
+    (sharp.length > SHARP_SHOWN
+      ? `<p style="margin:12px 0 0;font-size:14px;line-height:1.7">` +
+          `<span style="font-weight:500;text-decoration:underline;` +
+            `text-underline-offset:4px">See all ${sharp.length} in sharp</span>` +
+        `</p>`
+      : "")
+    )
+  }
+
+  /*
+   * An entry read section by section, the way `/changelog` reads it: a shelf's
+   * title, its sentence, its tiles, its pairs, then the next shelf. Zafar,
+   * 17 Sep 2026: "topic > icons, topic > icons", then "categorize them, not
+   * just text > icons. titles, etc.", then redraws as a section of their own
+   * with shelves inside it. The titles are links on the site only: this board,
+   * like the Figma page, carries no links on its release headings either.
+   */
+  const topicBlocks = (entry) => {
+    const pairOf = new Map(redrawnIn(entry).map((r) => [r.name, r]))
+    const block = (topic, depth) => {
+      const pairs = topic.updatedNames.map((n) => pairOf.get(n)).filter(Boolean)
+      return (
+        (topic.title
+          ? depth === 0
+            ? `<h3 style="margin:32px 0 0;font-size:16px;font-weight:600;letter-spacing:-0.2px">${esc(topic.title)}</h3>`
+            : `<h4 style="margin:24px 0 0;font-size:14px;font-weight:600">${esc(topic.title)}</h4>`
+          : "") +
+        (topic.text
+          ? `<p style="margin:${topic.title ? 8 : 24}px 0 0;font-size:14px;line-height:1.7">${esc(topic.text)}</p>`
+          : "") +
+        (topic.names.length ? tiles(topic.names) : "") +
+        (pairs.length ? redraws(pairs) : "") +
+        (topic.sections ?? []).map((sub) => block(sub, depth + 1)).join("")
+      )
+    }
+    return entry.topics.map((topic) => block(topic, 0)).join("")
+  }
+
+  /**
+   * The newest update, laid out as `/changelog` lays it out.
+   *
+   * Zafar, 17 Sep 2026, looking at the site's 1.0.0 entry: "you can follow this
+   * style/layout content now in v1.0.0". Only the newest entry takes it. The
+   * board around it keeps its own layout, the dark head, the 768 surface and
+   * the older entries as headings and copy, because a design file takes the
+   * site's content and not its chrome: the page's tick column never comes here.
+   *
+   * A line naming it, the title, the summary, the notice, a cover of its own
+   * drawings, then Preline's chips with their shelves and tiles. The column is
+   * the board's 688 rather than the page's 704, so the tiles are 131 and the
+   * pairs 166 (five and four to a row with 8 between) and the cover's sides are
+   * 36 rather than 40, which is what lets ten 36px drawings with 28 between sit
+   * on a line. The Figma page's block is the same block at the same widths.
+   *
+   * Written in the site's face and tokens: Geist, the ink, the muted ink, the
+   * muted fill and the keyline blue. Two things Paper does differently from a
+   * browser and the block is written around: a text node carries one style, so
+   * a bold lead and its sentence are two layers side by side; and text always
+   * wraps, so a long tile name takes a second line where the page cuts it off.
+   */
+  const latestBlock = (u) => {
+    const INK_ = "#0a0a0a"
+    const MUTED_ = "#737373"
+    const FILL = "#f5f5f5"
+    const NAME = "#454545"
+    const BLUE = "#006aa5"
+    const SANS = "Geist, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+    const MONO = "'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace"
+    const CAPS = `font-size:11px;letter-spacing:1.1px;color:${MUTED_};white-space:nowrap`
+    const COLUMN = 688
+
+    /* Every drawing carries `data-icon`, `data-style` and `data-corners` in that
+       order, the arrows and the chip glyphs included: the importer renames each
+       drawing Paper makes off that list and refuses a write whose count
+       disagrees. A drawing shown below 24 scales its stroke with it, as an SVG
+       does, so only the cover's lighter 1.5 is written out. */
+    const svg = ({ name, style = "stroke", corners = "regular", art, size = SIZE, stroke, label }) =>
+      `<svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg" ` +
+      `role="img" aria-label="${layerName(name, style, corners)}${label ? ` ${label}` : ""}" ` +
+      `data-icon="${name}" data-style="${style}" data-corners="${corners}" ` +
+      `${stroke ? art.attrs.replace(/stroke-width="[^"]*"/, `stroke-width="${stroke}"`) : art.attrs}>${art.body}</svg>`
+    const glyph = (name, size) => {
+      const art = icons.get(name)?.art?.stroke
+      return art ? svg({ name, art, size }) : ""
+    }
+
+    const tile = (width, inner, name, caption = "") =>
+      `<div style="display:flex;flex-direction:column;align-items:center;gap:14px;width:${width}px;` +
+        `padding:20px 8px 12px;box-sizing:border-box;border-radius:14px;background:${FILL}">` +
+        `<div style="display:flex;align-items:center;justify-content:center;gap:10px">${inner}</div>` +
+        `<span style="font-family:${MONO};font-size:11px;line-height:13px;letter-spacing:-0.3px;color:${NAME};` +
+          `text-align:center">${name}${caption}</span>` +
+      `</div>`
+    const grid = (cells) =>
+      `<div style="display:flex;flex-wrap:wrap;gap:8px;width:${COLUMN}px">${cells.join("")}</div>`
+
+    const drawings = (names) =>
+      grid(names.flatMap((name) => {
+        const art = icons.get(name)?.art?.stroke
+        return art ? [tile(131, svg({ name, art }), name)] : []
+      }))
+
+    /* Before and after, same size, same ink, same ground, the set's own arrow
+       between them. The words are said once, beside the chip. */
+    const pairs = (updated) =>
+      grid(updated.map((redraw) => {
+        const corners = redraw.corners ?? "regular"
+        const style = redraw.style ?? "stroke"
+        const before = redraw.before ? parse(redraw.before) : null
+        const after = redraw.after
+          ? parse(redraw.after)
+          : (corners === "sharp" ? icons.get(redraw.name)?.sharp?.stroke : icons.get(redraw.name)?.art?.stroke) ?? null
+        const face = (art, label) => (art ? svg({ name: redraw.name, style, corners, art, label }) : "")
+        return tile(
+          166,
+          face(before, "Before") + (before && after ? glyph("arrow-right", 14) : "") + face(after, "After"),
+          redraw.name,
+          corners === "sharp" ? `<span style="color:${MUTED_}"> &middot; sharp</span>` : ""
+        )
+      }))
+
+    /* The cover: ten drawings to a line, dealt one shelf at a time so the first
+       line samples the release rather than one family. The four-styles release
+       draws a line per style over the same ten. */
+    const shelfOf = (name) => {
+      const container = containerOf(name)
+      const base = container === "regular" ? name : name.slice(container.length + 1)
+      return CATEGORIES.find((x) => x.match.test(base))?.label ?? OTHER
+    }
+    const dealt = (() => {
+      const shelves = new Map()
+      for (const name of u.names) {
+        if (!icons.get(name)?.art?.stroke) continue
+        const label = shelfOf(name)
+        shelves.set(label, [...(shelves.get(label) ?? []), name])
+      }
+      const queues = [...shelves.values()]
+      const total = queues.reduce((n, q) => n + q.length, 0)
+      const out = []
+      for (let round = 0; out.length < total; round++) for (const q of queues) if (q[round]) out.push(q[round])
+      return out
+    })()
+    const line = (cells) => `<div style="display:flex;justify-content:center;gap:28px">${cells.join("")}</div>`
+    const coverLines =
+      release.version === FOUR_STYLES_RELEASE
+        ? STYLES.map((style) =>
+            dealt.slice(0, 10).flatMap((name) => {
+              const art = icons.get(name)?.art?.[style]
+              return art ? [svg({ name, style, art, size: 36, stroke: 1.5 })] : []
+            })
+          )
+        : (() => {
+            const field = dealt.slice(0, 30).map((name) => svg({ name, art: icons.get(name).art.stroke, size: 36, stroke: 1.5 }))
+            return Array.from({ length: Math.ceil(field.length / 10) }, (_, i) => field.slice(i * 10, i * 10 + 10))
+          })()
+    const cover = dealt.length >= 6
+      ? `<div style="display:flex;flex-direction:column;align-items:center;gap:28px;margin:32px 0 0;width:${COLUMN}px;` +
+          `box-sizing:border-box;padding:56px 36px;border-radius:18px;background:${FILL};color:${INK_}">` +
+          coverLines.map(line).join("") +
+        `</div>`
+      : ""
+
+    const countIn = (t) => t.names.length + t.updatedNames.length + (t.sections ?? []).reduce((n, x) => n + countIn(x), 0)
+    const redrawsIn = (t) => t.updatedNames.length > 0 || (t.sections ?? []).some(redrawsIn)
+    const pairOf = new Map((u.updated ?? []).map((r) => [r.name, r]))
+    const strips = (t) => {
+      const shown = t.updatedNames.map((n) => pairOf.get(n)).filter(Boolean)
+      return (t.names.length ? drawings(t.names) : "") + (shown.length ? pairs(shown) : "")
+    }
+    const topics = u.topics ?? [
+      { title: "New drawings", icon: "sparkles", names: u.names, updatedNames: [], sections: [], text: null },
+      { title: "Redrawn", icon: "pen", names: [], updatedNames: u.updatedNames ?? [], sections: [], text: null },
+    ].filter((c) => c.names.length || c.updatedNames.length)
+
+    const chips = topics
+      .map((t) => {
+        const count = countIn(t)
+        return (
+          `<div style="margin:56px 0 0">` +
+            `<div style="display:flex;align-items:center;gap:16px">` +
+              `<div style="display:flex;align-items:center;gap:10px;padding:4px 14px 4px 4px;border-radius:999px;background:${FILL};` +
+                `font-size:14px;font-weight:500;color:${INK_};white-space:nowrap">` +
+                `<div style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:999px;background:#ffffff;color:${INK_}">` +
+                  (t.icon ? glyph(t.icon, 16) : "") +
+                `</div>` +
+                `<span>${esc(t.title)}</span>` +
+                (count ? `<span style="font-weight:400;color:${MUTED_}">${count.toLocaleString("en-US")}</span>` : "") +
+              `</div>` +
+              (redrawsIn(t)
+                ? `<div style="display:flex;align-items:center;gap:6px;${CAPS}">BEFORE${glyph("arrow-right", 12)}AFTER</div>`
+                : "") +
+            `</div>` +
+            `<div style="display:flex;flex-direction:column;gap:20px;margin:20px 0 0">` +
+              (t.text ? `<p style="margin:0;max-width:672px;font-size:15px;line-height:24px;color:${MUTED_}">${esc(t.text)}</p>` : "") +
+              strips(t) +
+              (t.sections ?? [])
+                .map((x, i) =>
+                  `<div style="display:flex;flex-direction:column;gap:16px;margin:${i === 0 && !t.text ? 0 : 16}px 0 0">` +
+                    `<div style="display:flex;gap:5px;max-width:672px;font-size:15px;line-height:24px">` +
+                      (x.title ? `<span style="font-weight:600;color:${INK_};white-space:nowrap;flex-shrink:0">${esc(x.title)}:</span>` : "") +
+                      `<span style="color:${MUTED_}">${esc(x.text ?? "")}</span>` +
+                    `</div>` +
+                    strips(x) +
+                  `</div>`
+                )
+                .join("") +
+            `</div>` +
+          `</div>`
+        )
+      })
+      .join("")
+
+    const redrawn = (u.updated ?? []).length
+    return (
+      `<div style="display:flex;flex-direction:column;font-family:${SANS};color:${INK_}">` +
+        `<div style="display:flex;align-items:center;gap:12px">` +
+          `<div style="display:flex;align-items:center;gap:6px;padding:2px 6px;border-radius:8px;background:${FILL};` +
+            `font-family:${MONO};font-size:12px;line-height:16px;letter-spacing:-0.3px;color:${INK_};white-space:nowrap">` +
+            `<div style="width:6px;height:6px;border-radius:999px;background:${BLUE}"></div><span>Unreleased</span>` +
+          `</div>` +
+          `<span style="${CAPS}">SINCE V${u.since}</span>` +
+          `<span style="font-size:11px;color:${MUTED_};white-space:nowrap">${u.count.toLocaleString("en-US")} names</span>` +
+        `</div>` +
+        `<h2 style="margin:16px 0 0;font-size:28px;line-height:35px;font-weight:600;letter-spacing:-0.7px;color:${INK_}">` +
+          `${esc(headline(HISTORY.version, u.title))}</h2>` +
+        `<p style="margin:12px 0 0;max-width:672px;font-size:16px;line-height:26px;color:${MUTED_}">` +
+          (u.names.length && redrawn
+            ? `${u.names.length.toLocaleString("en-US")} drawing${u.names.length === 1 ? "" : "s"} added and ${redrawn} redrawn since ${u.since}`
+            : u.names.length
+              ? `${u.names.length.toLocaleString("en-US")} drawing${u.names.length === 1 ? "" : "s"} added since ${u.since}`
+              : `${redrawn} drawing${redrawn === 1 ? "" : "s"} redrawn since ${u.since}`) +
+          `. The set holds ${u.count.toLocaleString("en-US")}.` +
+        `</p>` +
+        `<div style="display:flex;align-items:flex-start;gap:10px;margin:20px 0 0;padding:8px 12px;border-radius:10px;background:${FILL};` +
+          `font-size:14px;line-height:20px;color:${MUTED_};width:fit-content">` +
+          `<div style="width:6px;height:6px;margin:7px 0 0;border-radius:999px;background:${BLUE};flex-shrink:0"></div>` +
+          `<span>In the repository and the design files, and not on npm until the next release.</span>` +
+        `</div>` +
+        cover +
+        chips +
+      `</div>`
+    )
+  }
+
+  /* Three boards laid out the way the Catalog page is, since 17 Sep 2026: the
+     cover, then cards. Zafar asked for the Figma changelog in "catalog format"
+     because "one card holding everything is getting ridiculously long", settled
+     it there as "leave v1.0.0 alone and put all in one card", then "apply it to
+     paper". So the newest update is a card of its own and every earlier release
+     shares the second. The cover takes the Catalog surface's width, as the
+     Figma cover took Figma's. A card is 744 and not a category card's 742: the
+     column inside has to stay 688, where five tiles fit a row. */
+  const card = (inner) =>
+    `<section style="box-sizing:border-box;width:744px;padding:28px;background:${BG};color:${INK};` +
+      `font-family:${FONT};border-radius:14px" data-surface="changelog">` +
+      inner +
+    `</section>\n`
+
+  const cover =
+    `<section style="box-sizing:border-box;width:1224px;background:${BG};color:${INK};` +
+      `font-family:${FONT};border-radius:24px;overflow:hidden" data-surface="changelog">` +
+
+      /* The catalogue surface's head at this surface's width, so the two covers
+         in the file are one device rather than two. */
+      `<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px;` +
+        `padding:40px;background:${HEAD_BG}">` +
+        `<div>` +
+          `<h1 style="margin:0;font-size:36px;font-weight:600;letter-spacing:-0.8px;color:${HEAD_INK}">Changelog</h1>` +
+          `<p style="margin:10px 0 0;font-size:15px;color:${HEAD_MUTED}">` +
+            `Releases, new drawings and announcements, newest first.` +
+          `</p>` +
+        `</div>` +
+        `<div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0">` +
+          meta("Version:", release.version) +
+          meta("Site:", SITE_LABEL) +
+        `</div>` +
+      `</div>` +
+    `</section>\n`
+
+  /* One block per release, newest first, every release that has ever been
+     cut. Entries are never dropped and never relabelled: see the note on
+     `release.entries`. */
+  const blocks = [
+    /* Work since the newest tag leads the board, headed by no version
+       because it has none: an install of the newest release does not
+       contain it. Null is the resting state and prints nothing. */
+    release.unreleased
+      ? latestBlock(release.unreleased)
+      : "",
+  ].concat(release.entries.map((entry) =>
+    `<h2 style="margin:0;font-size:20px;font-weight:600;letter-spacing:-0.3px">${esc(headline(entry.version, entry.title))}</h2>` +
+    `<p style="margin:8px 0 0;font-size:13px;color:${MUTED}">` +
+      /* "Initial release" belongs to the oldest tag and to nothing else.
+         Printed over whichever entry came second, it announced each
+         release's predecessor as the first cut of the set. */
+      `${entry.initial ? "Initial release" : "Released"} &middot; ${entry.label}` +
+    `</p>` +
+    /* The hand-written note leads where there is one, in full-strength
+       ink, because it is the announcement and the counts under it are the
+       detail. Same order as the page that owns the words. */
+    (entry.note && !(entry.topics && drawn(entry))
+      ? `<p style="margin:16px 0 0;font-size:14px;line-height:1.7">${esc(entry.note)}</p>`
+      : "") +
+    /* Pinned to the release that introduced the treatment rather than to
+       whatever carries a note, and it stays there: a changelog only
+       grows, so that entry goes on showing what it announced. On this
+       board it is subject to the same cut as every other strip below:
+       see `drawn`. */
+    (entry.version === SHARP_RELEASE && entry.current ? sharpPreview() : "") +
+    `<p style="margin:16px 0 0;font-size:14px;line-height:1.7;color:${MUTED}">` +
+      strip(entry, entry.initial
+        ? `The first cut of the set: ${entry.count} drawings on one 24 × 24 grid, ` +
+          `at a 2px keyline, built for shadcn/ui and free under the MIT licence, ` +
+          `shipping as SVGs, JSX snippets and React components.`
+        /* A release is not always drawings added. One that is entirely
+           corrections said "0 drawings added", which is true and tells a
+           reader nothing about why they would upgrade. */
+        : entry.names.length === 0 && entry.updatedNames.length === 0
+          ? `No drawing changes since ${entry.previous}. The set still ` +
+            `holds ${entry.count}.`
+          /* Drawings without names, which is what a new treatment is. The
+           branch below reads "No new drawings", and it was the only one
+           v0.3.0 matched: 1,497 drawings landed and the board announced
+           nothing, directly under a note saying the file count doubled. */
+        : entry.names.length === 0 && entry.files > entry.previousFiles
+          ? `${plural(entry.files - entry.previousFiles, "drawing")} added ` +
+            `since ${entry.previous} without a new name, taking the set from ` +
+            `${entry.previousFiles.toLocaleString("en-US")} drawings to ` +
+            `${entry.files.toLocaleString("en-US")}.` +
+            (entry.updatedNames.length
+              ? ` ${entry.updatedNames.length} redrawn:`
+              : "")
+        : entry.names.length === 0
+          ? `No new drawings. ${entry.updatedNames.length} redrawn since ` +
+            `${entry.previous}, so the set still holds ${entry.count}:`
+          : entry.updatedNames.length === 0
+          ? `${plural(entry.names.length, "drawing")} added since ` +
+            `${entry.previous}, bringing the set to ${entry.count}:`
+          /* A release that both adds and corrects used to announce only
+             the additions and draw only their tiles, so every redrawn
+             icon in a release like that went out unmentioned. */
+          : `${plural(entry.names.length, "drawing")} added since ` +
+            `${entry.previous}, bringing the set to ${entry.count}, and ` +
+            `${entry.updatedNames.length} redrawn:`) +
+    `</p>` +
+    (entry.topics && drawn(entry) && !entry.initial ? topicBlocks(entry) : "") +
+    (entry.initial || !entry.names.length || !drawn(entry) || entry.topics ? "" : tiles(entry.names)) +
+    (entry.initial || !redrawnIn(entry).length || !drawn(entry) || entry.topics
+      ? ""
+      : redraws(redrawnIn(entry)))
+  ))
+    .filter(Boolean)
+
+  return {
+    cover,
+    /* The newest update, whichever it is: the unreleased window while one is
+       open, the newest tag once it is cut. */
+    newest: card(blocks[0]),
+    earlier: card(blocks.slice(1).join(`<div style="${DIVIDER};margin:32px 0"></div>`)),
+  }
+}
+
+/**
+ * One card per category, cut into parts only for the wire.
+ *
+ * A part closes when the next row would take it past the budget. The first
+ * carries the card, its header and an empty rows container; the rest are bare
+ * rows that the importer appends into that container, so the artboard ends up
+ * holding one card however many calls built it.
+ *
+ * Rows are numbered across the whole card rather than per part, or the stripe
+ * would restart at every boundary and the seam would be visible.
+ */
+const files = new Map()
+const entries = []
+
+for (const section of SECTIONS) {
+  /* One row per name rather than per set, in the block's own container order,
+     and numbered across the whole card so the stripe does not restart where a
+     part boundary happens to fall. */
+  const rows = section.blocks
+    .flatMap((block) => block.rows)
+    .map((item, i) => row(item, i))
+
+  const parts = []
+  let current = []
+  let size = 0
+  for (const html of rows) {
+    if (current.length && size + html.length > BUDGET) {
+      parts.push(current)
+      current = []
+      size = 0
+    }
+    current.push(html)
+    size += html.length
+  }
+  if (current.length) parts.push(current)
+
+  for (const [i, part] of parts.entries()) {
+    const name = `${slug(section.label)}${parts.length > 1 ? `-${i + 1}` : ""}.html`
+    const html =
+      i === 0
+        ? card({
+            label: section.label,
+            blurb: section.blurb,
+            icons: section.blocks.length,
+            /* Counted off the rows the card draws, so the number in the header
+               and the number of lines under it cannot disagree. */
+            names: section.blocks.reduce((n, b) => n + b.rows.length, 0),
+            rows: part.join(""),
+          })
+        : part.join("") + "\n"
+
+    files.set(name, html)
+    entries.push({
+      file: name,
+      artboard: section.label,
+      category: section.label,
+      part: i + 1,
+      parts: parts.length,
+      /* Where this part is written. The first makes the artboard; the rest are
+         rows and belong inside the card's rows container, not beside it. */
+      into: i === 0 ? "artboard" : "rows",
+      width: 742,
+      icons: i === 0 ? section.blocks.length : 0,
+      variants: part.reduce(
+        (n, html) => n + (html.match(/<svg /g) ?? []).length,
+        0
+      ),
+      bytes: html.length,
+    })
+  }
+}
+
+/**
+ * The release the two prose surfaces date themselves by.
+ *
+ * The tag's date, not the newest drawing's. Both surfaces used to print the
+ * latter, which made the catalogue's "Released:" line wrong as soon as a
+ * release was cut on a different day from the last edit: the last drawing
+ * changed on 19 August and v0.1.0 was tagged on the 20th, so the boards claimed
+ * a release date a day before it happened.
+ *
+ * These boards describe one released version rather than a working tree, so
+ * both lines answer the same question, "as of when". The newest drawing date is
+ * still the honest answer before anything is tagged, which is the fallback.
+ *
+ * The label is baked by `build-history.mjs` rather than formatted here: a date
+ * formatted at render is formatted in the reader's locale, and these two
+ * surfaces have to agree with the site.
+ */
+const dated = Object.values(HISTORY.icons ?? {}).filter((h) => h.updated)
+const newest = dated.reduce((a, b) => (a && a.updated > b.updated ? a : b), dated[0])
+
+
+const release = {
+  version: HISTORY.version,
+  releasedVersion: HISTORY.releasedVersion ?? HISTORY.version,
+  /* What the current entry counts from. See NEW_SINCE above. */
+  previousReleasedVersion:
+    HISTORY.previousReleasedVersion ?? HISTORY.releasedVersion ?? HISTORY.version,
+  previousLabel: HISTORY.previousReleasedLabel ?? HISTORY.releasedLabel ?? "",
+  /* What the first release shipped, counted rather than carried forward. Off
+     the release windows, not off the badge floor: the badge is an age now, so
+     asking it what a tag held would answer with whatever is 30 days old. */
+  initialCount:
+    (HISTORY.releases ?? []).find((r) => r.initial)?.count ??
+    Object.keys(HISTORY.icons ?? {}).length,
+  label: HISTORY.releasedLabel ?? newest?.updatedLabel ?? "",
+  /* "Last updated" is the last day a drawing moved, which is not the day the
+     tag was cut. Handing it `label` printed the release date under a heading
+     that promises the opposite, and it went stale in the other direction: the
+     boards said 20 August while three days of drawings sat in them. */
+  updatedLabel: newest?.updatedLabel ?? HISTORY.releasedLabel ?? "",
+  since: {
+    names: since.map(([name]) => name),
+    label: since.reduce((a, [, h]) => (h.added > a.added ? h : a), since[0]?.[1] ?? {})
+      ?.addedLabel ?? "",
+  },
+  /*
+   * Every release, newest first, straight off the generated list.
+   *
+   * This board used to be assembled from `releasedVersion` and
+   * `previousReleasedVersion`, which describe two releases and can therefore
+   * only ever draw two entries. Cutting a third deleted the oldest: v0.1.2
+   * pushed v0.1.0 off the board and printed "Initial release" over v0.1.1. A
+   * changelog only grows, so it is drawn from the list that holds all of them.
+   */
+  entries: (HISTORY.releases ?? []).map((entry, i, all) => ({
+    ...entry,
+    previous: all[i + 1]?.version ?? null,
+    current: i === 0,
+  })),
+  /* Drawn since the newest tag and in no release. Its own block on the board,
+     for the same reason as on /changelog: the newest release entry is headed
+     "Released" over the tag's date, and a drawing made afterwards was not in
+     it. Null is the resting state and prints nothing. */
+  unreleased: HISTORY.unreleased ?? null,
+  /* The page counts drawings that carry a history entry, which is names rather
+     than base icons and lags `icons/` until `history:build` runs. Both are true
+     of `/changelog` as well, so mirroring the number is what keeps the two
+     surfaces saying the same thing. */
+  count: dated.length,
+  styles: Object.fromEntries(
+    STYLES.map((style) => [
+      style,
+      [...byName.values()].filter((icon) => icon.art[style]).length,
+    ])
+  ),
+}
+
+/* Counted before the catalogue is composed, because the cover prints them. */
+const counted = {
+  icons: blocks.size,
+  variants: entries.reduce((n, e) => n + e.variants, 0),
+}
+
+{
+  const html = catalogSheet(byName, counted, release)
+  files.set("catalog.html", html)
+  entries.push({
+    file: "catalog.html",
+    artboard: "Catalog surface",
+    surface: "catalog",
+    part: 1,
+    parts: 1,
+    /* The cover lists no icons now that the category index is gone: what it
+       draws is the seven specimen chips, and reporting 396 here would have the
+       manifest claim a surface carries the set. */
+    icons: 0,
+    /* The specimen and the category samples, not the set: this surface draws a
+       little over a hundred of the 1,289 and the manifest should not imply it
+       carries them all. */
+    variants: (html.match(/<svg /g) ?? []).length,
+    bytes: html.length,
+  })
+}
+
+{
+  const sheets = changelogSheet(byName, release)
+  for (const [file, artboard, width, html] of [
+    ["changelog.html", "Changelog", 1224, sheets.cover],
+    ["changelog-newest.html", "Newest release", 744, sheets.newest],
+    ["changelog-earlier.html", "Earlier releases", 744, sheets.earlier],
+  ]) {
+    files.set(file, html)
+    entries.push({
+      file,
+      artboard,
+      surface: "changelog",
+      part: 1,
+      parts: 1,
+      width,
+      icons: 0,
+      variants: 0,
+      bytes: html.length,
+    })
+  }
+}
+
+const totals = {
+  icons: counted.icons,
+  names: byName.size,
+  /* The catalogue draws every variant a second time, so the set's own total is
+     the boards' and nothing else. Counting `entries` here would report 2,578. */
+  variants: counted.variants,
+  count: entries.length,
+}
+
+files.set(
+  "manifest.json",
+  JSON.stringify(
+    {
+      $comment: "GENERATED BY pipeline/build-paper.mjs — DO NOT EDIT.",
+      target: "paper.design",
+      /* How to spend this file, so the next session does not have to re-derive
+         it: one artboard per sheet, in this order, `write_html` with the file's
+         contents. Paper's MCP server is local and needs the desktop app open. */
+      how: [
+        "The set is split across two Paper files, because Paper's size ceiling is on a whole file and not on a page. SET_PAPER_FILES in lib/site-chrome.ts names them and says which shelves each holds; pipeline/lib/paper-files.mjs turns that into a board-to-file answer. Write a board only into the file it belongs in.",
+        "Open the target file in Paper Desktop so its MCP server is listening.",
+        "First import: for each sheet in order, create_artboard named `artboard`, then write_html with the file's contents.",
+        "Re-import of a board that already exists: do NOT delete it. get_children on the artboard, then write_html with mode: 'replace' targeting its single child. The artboard keeps its id, its name and its canvas position; delete + create_artboard loses the position, and nothing records it.",
+        "Only the sheets that changed need re-importing. `git show --stat -- previews/paper` names them.",
+        "Sheets are fragments: write them as-is, do not wrap them in a document.",
+        "An artboard clips rather than hugs, so after the writes set height: fit-content on it with update_styles and it takes the height of what it holds.",
+        "update_styles takes updates: [{ nodeIds: [...], styles }] — nodeIds, plural, an array. Handed a singular nodeId it answers with a schema error in the tool result rather than throwing, so a caller that does not read isError sees a call that reported nothing and changed nothing, and reads it as the property being unsettable.",
+        "Paper names every node it parses after its type, so the file arrives as Frame holding SVG. Rename from the sheets: each svg carries data-icon, data-style and data-corners in document order, and the layer name is `<icon> <style>` for a rounded drawing and `<icon> <style> sharp` for a sharp one.",
+        "The drawings to rename are the createdNodes with component === 'SVG'. Do not match on the name or on /svg/i — the nested paths come back as SVGVisualElement and a loose filter catches those too, which is 18 candidates on the catalogue sheet where there are 7 drawings.",
+        "rename_nodes takes updates: [{ nodeId, name }] — nodeId singular here, unlike update_styles, which takes nodeIds as an array. The two are inconsistent and each rejects the other's shape.",
+      ],
+      icons: totals.icons,
+      names: totals.names,
+      variants: totals.variants,
+      sheets: entries,
+    },
+    null,
+    2
+  ) + "\n"
+)
+
+if (check) {
+  let drift = false
+  const seen = existsSync(OUT)
+    ? (await readdir(OUT)).filter((f) => f.endsWith(".html") || f === "manifest.json")
+    : []
+
+  for (const [name, want] of files) {
+    const path = join(OUT, name)
+    const prev = existsSync(path) ? await readFile(path, "utf8") : null
+    if (prev === want) continue
+    const why = prev === null ? "does not exist" : "is out of sync with icons/"
+    console.error(`  ${c(33, "DRIFT")} previews/paper/${name} ${why}`)
+    drift = true
+  }
+  /* An orphan is the failure a per-file diff cannot see: rename a category and
+     the old sheet stays on disk, still valid, still imported by anyone reading
+     the directory rather than the manifest. */
+  for (const name of seen) {
+    if (files.has(name)) continue
+    console.error(`  ${c(33, "ORPHAN")} previews/paper/${name} is no longer generated`)
+    drift = true
+  }
+
+  if (drift) {
+    console.error(`\nRun: node pipeline/build-paper.mjs`)
+    process.exit(1)
+  }
+  console.log(
+    c(32, `previews/paper/ is in sync with icons/ (${totals.count} sheets, ${totals.variants} variants)`)
+  )
+} else {
+  await mkdir(OUT, { recursive: true })
+  for (const [name, html] of files) await writeFile(join(OUT, name), html, "utf8")
+
+  for (const name of await readdir(OUT)) {
+    if (files.has(name)) continue
+    if (!name.endsWith(".html") && name !== "manifest.json") continue
+    await unlink(join(OUT, name))
+    console.log(`Removed previews/paper/${name} (no longer generated)`)
+  }
+
+  const kb = [...files.values()].reduce((n, s) => n + s.length, 0) / 1024
+  console.log(
+    `Wrote ${totals.count} sheets to previews/paper/ ` +
+      `(${totals.icons} icons, ${totals.variants} variants, ${kb.toFixed(0)}KB)`
+  )
+  for (const e of entries) {
+    console.log(`  ${e.file.padEnd(24)} ${String(e.icons).padStart(3)} ${e.icons === 1 ? "icon " : "icons"}  ${String(e.variants).padStart(3)} variants  ${(e.bytes / 1024).toFixed(0)}KB`)
+  }
+}

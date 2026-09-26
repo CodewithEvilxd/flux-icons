@@ -1,0 +1,5581 @@
+[
+  {
+    "name": "A Arrow Down",
+    "slug": "a-arrow-down",
+    "componentName": "AArrowDown",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "a-arrow-down",
+      "a",
+      "arrow",
+      "down"
+    ]
+  },
+  {
+    "name": "A Arrow Up",
+    "slug": "a-arrow-up",
+    "componentName": "AArrowUp",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "a-arrow-up",
+      "a",
+      "arrow",
+      "up"
+    ]
+  },
+  {
+    "name": "Accessibility",
+    "slug": "accessibility",
+    "componentName": "Accessibility",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "accessibility",
+      "accessibility"
+    ]
+  },
+  {
+    "name": "Activity",
+    "slug": "activity",
+    "componentName": "Activity",
+    "category": "Health & Wellness",
+    "animationType": "draw",
+    "keywords": [
+      "activity",
+      "activity"
+    ]
+  },
+  {
+    "name": "Air Vent",
+    "slug": "air-vent",
+    "componentName": "AirVent",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "air-vent",
+      "air",
+      "vent"
+    ]
+  },
+  {
+    "name": "Airplane",
+    "slug": "airplane",
+    "componentName": "Airplane",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "airplane",
+      "airplane"
+    ]
+  },
+  {
+    "name": "Airplay",
+    "slug": "airplay",
+    "componentName": "Airplay",
+    "category": "Media & Audio",
+    "animationType": "spring",
+    "keywords": [
+      "airplay",
+      "airplay"
+    ]
+  },
+  {
+    "name": "Alarm Clock",
+    "slug": "alarm-clock",
+    "componentName": "AlarmClock",
+    "category": "General & UI",
+    "animationType": "ring",
+    "keywords": [
+      "alarm-clock",
+      "alarm",
+      "clock"
+    ]
+  },
+  {
+    "name": "Alarm Clock Check",
+    "slug": "alarm-clock-check",
+    "componentName": "AlarmClockCheck",
+    "category": "General & UI",
+    "animationType": "ring",
+    "keywords": [
+      "alarm-clock-check",
+      "alarm",
+      "clock",
+      "check"
+    ]
+  },
+  {
+    "name": "Alarm Clock Minus",
+    "slug": "alarm-clock-minus",
+    "componentName": "AlarmClockMinus",
+    "category": "General & UI",
+    "animationType": "ring",
+    "keywords": [
+      "alarm-clock-minus",
+      "alarm",
+      "clock",
+      "minus"
+    ]
+  },
+  {
+    "name": "Alarm Clock Plus",
+    "slug": "alarm-clock-plus",
+    "componentName": "AlarmClockPlus",
+    "category": "General & UI",
+    "animationType": "ring",
+    "keywords": [
+      "alarm-clock-plus",
+      "alarm",
+      "clock",
+      "plus"
+    ]
+  },
+  {
+    "name": "Alarm Smoke",
+    "slug": "alarm-smoke",
+    "componentName": "AlarmSmoke",
+    "category": "General & UI",
+    "animationType": "ring",
+    "keywords": [
+      "alarm-smoke",
+      "alarm",
+      "smoke"
+    ]
+  },
+  {
+    "name": "Align Center",
+    "slug": "align-center",
+    "componentName": "AlignCenter",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "align-center",
+      "align",
+      "center"
+    ]
+  },
+  {
+    "name": "Align Horizontal",
+    "slug": "align-horizontal",
+    "componentName": "AlignHorizontal",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "align-horizontal",
+      "align",
+      "horizontal"
+    ]
+  },
+  {
+    "name": "Align Left",
+    "slug": "align-left",
+    "componentName": "AlignLeft",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "align-left",
+      "align",
+      "left"
+    ]
+  },
+  {
+    "name": "Align Right",
+    "slug": "align-right",
+    "componentName": "AlignRight",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "align-right",
+      "align",
+      "right"
+    ]
+  },
+  {
+    "name": "Align Vertical",
+    "slug": "align-vertical",
+    "componentName": "AlignVertical",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "align-vertical",
+      "align",
+      "vertical"
+    ]
+  },
+  {
+    "name": "Ambulance",
+    "slug": "ambulance",
+    "componentName": "Ambulance",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "ambulance",
+      "ambulance"
+    ]
+  },
+  {
+    "name": "Angry",
+    "slug": "angry",
+    "componentName": "Angry",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "angry",
+      "angry"
+    ]
+  },
+  {
+    "name": "Annoyed",
+    "slug": "annoyed",
+    "componentName": "Annoyed",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "annoyed",
+      "annoyed"
+    ]
+  },
+  {
+    "name": "Archive",
+    "slug": "archive",
+    "componentName": "Archive",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "archive",
+      "archive"
+    ]
+  },
+  {
+    "name": "Arrow Big Down",
+    "slug": "arrow-big-down",
+    "componentName": "ArrowBigDown",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "arrow-big-down",
+      "arrow",
+      "big",
+      "down"
+    ]
+  },
+  {
+    "name": "Arrow Big Down Dash",
+    "slug": "arrow-big-down-dash",
+    "componentName": "ArrowBigDownDash",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "arrow-big-down-dash",
+      "arrow",
+      "big",
+      "down",
+      "dash"
+    ]
+  },
+  {
+    "name": "Arrow Big Left",
+    "slug": "arrow-big-left",
+    "componentName": "ArrowBigLeft",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "arrow-big-left",
+      "arrow",
+      "big",
+      "left"
+    ]
+  },
+  {
+    "name": "Arrow Big Left Dash",
+    "slug": "arrow-big-left-dash",
+    "componentName": "ArrowBigLeftDash",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "arrow-big-left-dash",
+      "arrow",
+      "big",
+      "left",
+      "dash"
+    ]
+  },
+  {
+    "name": "Arrow Big Right",
+    "slug": "arrow-big-right",
+    "componentName": "ArrowBigRight",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "arrow-big-right",
+      "arrow",
+      "big",
+      "right"
+    ]
+  },
+  {
+    "name": "Arrow Big Right Dash",
+    "slug": "arrow-big-right-dash",
+    "componentName": "ArrowBigRightDash",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "arrow-big-right-dash",
+      "arrow",
+      "big",
+      "right",
+      "dash"
+    ]
+  },
+  {
+    "name": "Arrow Big Up",
+    "slug": "arrow-big-up",
+    "componentName": "ArrowBigUp",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "arrow-big-up",
+      "arrow",
+      "big",
+      "up"
+    ]
+  },
+  {
+    "name": "Arrow Big Up Dash",
+    "slug": "arrow-big-up-dash",
+    "componentName": "ArrowBigUpDash",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "arrow-big-up-dash",
+      "arrow",
+      "big",
+      "up",
+      "dash"
+    ]
+  },
+  {
+    "name": "Arrow Down",
+    "slug": "arrow-down",
+    "componentName": "ArrowDown",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "arrow-down",
+      "arrow",
+      "down"
+    ]
+  },
+  {
+    "name": "Arrow Down 0 1",
+    "slug": "arrow-down-0-1",
+    "componentName": "ArrowDown01",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "arrow-down-0-1",
+      "arrow",
+      "down",
+      "0",
+      "1"
+    ]
+  },
+  {
+    "name": "Arrow Down 1 0",
+    "slug": "arrow-down-1-0",
+    "componentName": "ArrowDown10",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "arrow-down-1-0",
+      "arrow",
+      "down",
+      "1",
+      "0"
+    ]
+  },
+  {
+    "name": "Arrow Down A Z",
+    "slug": "arrow-down-a-z",
+    "componentName": "ArrowDownAZ",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "arrow-down-a-z",
+      "arrow",
+      "down",
+      "a",
+      "z"
+    ]
+  },
+  {
+    "name": "Arrow Down Left",
+    "slug": "arrow-down-left",
+    "componentName": "ArrowDownLeft",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "arrow-down-left",
+      "arrow",
+      "down",
+      "left"
+    ]
+  },
+  {
+    "name": "Arrow Down Right",
+    "slug": "arrow-down-right",
+    "componentName": "ArrowDownRight",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "arrow-down-right",
+      "arrow",
+      "down",
+      "right"
+    ]
+  },
+  {
+    "name": "Arrow Down Z A",
+    "slug": "arrow-down-z-a",
+    "componentName": "ArrowDownZA",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "arrow-down-z-a",
+      "arrow",
+      "down",
+      "z",
+      "a"
+    ]
+  },
+  {
+    "name": "Arrow Left",
+    "slug": "arrow-left",
+    "componentName": "ArrowLeft",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "arrow-left",
+      "arrow",
+      "left"
+    ]
+  },
+  {
+    "name": "Arrow Right",
+    "slug": "arrow-right",
+    "componentName": "ArrowRight",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "arrow-right",
+      "arrow",
+      "right"
+    ]
+  },
+  {
+    "name": "Arrow Up",
+    "slug": "arrow-up",
+    "componentName": "ArrowUp",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "arrow-up",
+      "arrow",
+      "up"
+    ]
+  },
+  {
+    "name": "Arrow Up Left",
+    "slug": "arrow-up-left",
+    "componentName": "ArrowUpLeft",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "arrow-up-left",
+      "arrow",
+      "up",
+      "left"
+    ]
+  },
+  {
+    "name": "Arrow Up Right",
+    "slug": "arrow-up-right",
+    "componentName": "ArrowUpRight",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "arrow-up-right",
+      "arrow",
+      "up",
+      "right"
+    ]
+  },
+  {
+    "name": "At Sign",
+    "slug": "at-sign",
+    "componentName": "AtSign",
+    "category": "Communication & Social",
+    "animationType": "spring",
+    "keywords": [
+      "at-sign",
+      "at",
+      "sign"
+    ]
+  },
+  {
+    "name": "Atom",
+    "slug": "atom",
+    "componentName": "Atom",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "atom",
+      "atom"
+    ]
+  },
+  {
+    "name": "Attach File",
+    "slug": "attach-file",
+    "componentName": "AttachFile",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "attach-file",
+      "attach",
+      "file"
+    ]
+  },
+  {
+    "name": "Audio Lines",
+    "slug": "audio-lines",
+    "componentName": "AudioLines",
+    "category": "Media & Audio",
+    "animationType": "draw",
+    "keywords": [
+      "audio-lines",
+      "audio",
+      "lines"
+    ]
+  },
+  {
+    "name": "Axe",
+    "slug": "axe",
+    "componentName": "Axe",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "axe",
+      "axe"
+    ]
+  },
+  {
+    "name": "Badge Alert",
+    "slug": "badge-alert",
+    "componentName": "BadgeAlert",
+    "category": "General & UI",
+    "animationType": "ring",
+    "keywords": [
+      "badge-alert",
+      "badge",
+      "alert"
+    ]
+  },
+  {
+    "name": "Badge Percent",
+    "slug": "badge-percent",
+    "componentName": "BadgePercent",
+    "category": "Finance & Commerce",
+    "animationType": "spring",
+    "keywords": [
+      "badge-percent",
+      "badge",
+      "percent"
+    ]
+  },
+  {
+    "name": "Ban",
+    "slug": "ban",
+    "componentName": "Ban",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "ban",
+      "ban"
+    ]
+  },
+  {
+    "name": "Banana",
+    "slug": "banana",
+    "componentName": "Banana",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "banana",
+      "banana"
+    ]
+  },
+  {
+    "name": "Battery",
+    "slug": "battery",
+    "componentName": "Battery",
+    "category": "System & Devices",
+    "animationType": "spring",
+    "keywords": [
+      "battery",
+      "battery"
+    ]
+  },
+  {
+    "name": "Battery Charging",
+    "slug": "battery-charging",
+    "componentName": "BatteryCharging",
+    "category": "System & Devices",
+    "animationType": "spring",
+    "keywords": [
+      "battery-charging",
+      "battery",
+      "charging"
+    ]
+  },
+  {
+    "name": "Battery Full",
+    "slug": "battery-full",
+    "componentName": "BatteryFull",
+    "category": "System & Devices",
+    "animationType": "spring",
+    "keywords": [
+      "battery-full",
+      "battery",
+      "full"
+    ]
+  },
+  {
+    "name": "Battery Low",
+    "slug": "battery-low",
+    "componentName": "BatteryLow",
+    "category": "System & Devices",
+    "animationType": "spring",
+    "keywords": [
+      "battery-low",
+      "battery",
+      "low"
+    ]
+  },
+  {
+    "name": "Battery Medium",
+    "slug": "battery-medium",
+    "componentName": "BatteryMedium",
+    "category": "System & Devices",
+    "animationType": "spring",
+    "keywords": [
+      "battery-medium",
+      "battery",
+      "medium"
+    ]
+  },
+  {
+    "name": "Battery Plus",
+    "slug": "battery-plus",
+    "componentName": "BatteryPlus",
+    "category": "System & Devices",
+    "animationType": "pop",
+    "keywords": [
+      "battery-plus",
+      "battery",
+      "plus"
+    ]
+  },
+  {
+    "name": "Battery Warning",
+    "slug": "battery-warning",
+    "componentName": "BatteryWarning",
+    "category": "System & Devices",
+    "animationType": "spring",
+    "keywords": [
+      "battery-warning",
+      "battery",
+      "warning"
+    ]
+  },
+  {
+    "name": "Bell",
+    "slug": "bell",
+    "componentName": "Bell",
+    "category": "Communication & Social",
+    "animationType": "ring",
+    "keywords": [
+      "bell",
+      "bell"
+    ]
+  },
+  {
+    "name": "Bell Electric",
+    "slug": "bell-electric",
+    "componentName": "BellElectric",
+    "category": "Communication & Social",
+    "animationType": "ring",
+    "keywords": [
+      "bell-electric",
+      "bell",
+      "electric"
+    ]
+  },
+  {
+    "name": "Biceps Flexed",
+    "slug": "biceps-flexed",
+    "componentName": "BicepsFlexed",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "biceps-flexed",
+      "biceps",
+      "flexed"
+    ]
+  },
+  {
+    "name": "Binary",
+    "slug": "binary",
+    "componentName": "Binary",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "binary",
+      "binary"
+    ]
+  },
+  {
+    "name": "Blocks",
+    "slug": "blocks",
+    "componentName": "Blocks",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "blocks",
+      "blocks"
+    ]
+  },
+  {
+    "name": "Bluetooth",
+    "slug": "bluetooth",
+    "componentName": "Bluetooth",
+    "category": "System & Devices",
+    "animationType": "wave",
+    "keywords": [
+      "bluetooth",
+      "bluetooth"
+    ]
+  },
+  {
+    "name": "Bluetooth Connected",
+    "slug": "bluetooth-connected",
+    "componentName": "BluetoothConnected",
+    "category": "System & Devices",
+    "animationType": "wave",
+    "keywords": [
+      "bluetooth-connected",
+      "bluetooth",
+      "connected"
+    ]
+  },
+  {
+    "name": "Bluetooth Off",
+    "slug": "bluetooth-off",
+    "componentName": "BluetoothOff",
+    "category": "System & Devices",
+    "animationType": "wave",
+    "keywords": [
+      "bluetooth-off",
+      "bluetooth",
+      "off"
+    ]
+  },
+  {
+    "name": "Bluetooth Searching",
+    "slug": "bluetooth-searching",
+    "componentName": "BluetoothSearching",
+    "category": "System & Devices",
+    "animationType": "wave",
+    "keywords": [
+      "bluetooth-searching",
+      "bluetooth",
+      "searching"
+    ]
+  },
+  {
+    "name": "Bold",
+    "slug": "bold",
+    "componentName": "Bold",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "bold",
+      "bold"
+    ]
+  },
+  {
+    "name": "Bone",
+    "slug": "bone",
+    "componentName": "Bone",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "bone",
+      "bone"
+    ]
+  },
+  {
+    "name": "Book Text",
+    "slug": "book-text",
+    "componentName": "BookText",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "book-text",
+      "book",
+      "text"
+    ]
+  },
+  {
+    "name": "Bookmark",
+    "slug": "bookmark",
+    "componentName": "Bookmark",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "bookmark",
+      "bookmark"
+    ]
+  },
+  {
+    "name": "Bookmark Check",
+    "slug": "bookmark-check",
+    "componentName": "BookmarkCheck",
+    "category": "Files & Documents",
+    "animationType": "pop",
+    "keywords": [
+      "bookmark-check",
+      "bookmark",
+      "check"
+    ]
+  },
+  {
+    "name": "Bookmark Minus",
+    "slug": "bookmark-minus",
+    "componentName": "BookmarkMinus",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "bookmark-minus",
+      "bookmark",
+      "minus"
+    ]
+  },
+  {
+    "name": "Bookmark Plus",
+    "slug": "bookmark-plus",
+    "componentName": "BookmarkPlus",
+    "category": "Files & Documents",
+    "animationType": "pop",
+    "keywords": [
+      "bookmark-plus",
+      "bookmark",
+      "plus"
+    ]
+  },
+  {
+    "name": "Bookmark X",
+    "slug": "bookmark-x",
+    "componentName": "BookmarkX",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "bookmark-x",
+      "bookmark",
+      "x"
+    ]
+  },
+  {
+    "name": "Bot",
+    "slug": "bot",
+    "componentName": "Bot",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "bot",
+      "bot"
+    ]
+  },
+  {
+    "name": "Bot Message Square",
+    "slug": "bot-message-square",
+    "componentName": "BotMessageSquare",
+    "category": "Communication & Social",
+    "animationType": "spring",
+    "keywords": [
+      "bot-message-square",
+      "bot",
+      "message",
+      "square"
+    ]
+  },
+  {
+    "name": "Box",
+    "slug": "box",
+    "componentName": "Box",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "box",
+      "box"
+    ]
+  },
+  {
+    "name": "Boxes",
+    "slug": "boxes",
+    "componentName": "Boxes",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "boxes",
+      "boxes"
+    ]
+  },
+  {
+    "name": "Brain",
+    "slug": "brain",
+    "componentName": "Brain",
+    "category": "Weather & Nature",
+    "animationType": "spring",
+    "keywords": [
+      "brain",
+      "brain"
+    ]
+  },
+  {
+    "name": "Briefcase Business",
+    "slug": "briefcase-business",
+    "componentName": "BriefcaseBusiness",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "briefcase-business",
+      "briefcase",
+      "business"
+    ]
+  },
+  {
+    "name": "Calendar Check",
+    "slug": "calendar-check",
+    "componentName": "CalendarCheck",
+    "category": "General & UI",
+    "animationType": "pop",
+    "keywords": [
+      "calendar-check",
+      "calendar",
+      "check"
+    ]
+  },
+  {
+    "name": "Calendar Check 2",
+    "slug": "calendar-check-2",
+    "componentName": "CalendarCheck2",
+    "category": "General & UI",
+    "animationType": "pop",
+    "keywords": [
+      "calendar-check-2",
+      "calendar",
+      "check",
+      "2"
+    ]
+  },
+  {
+    "name": "Calendar Cog",
+    "slug": "calendar-cog",
+    "componentName": "CalendarCog",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "calendar-cog",
+      "calendar",
+      "cog"
+    ]
+  },
+  {
+    "name": "Calendar Days",
+    "slug": "calendar-days",
+    "componentName": "CalendarDays",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "calendar-days",
+      "calendar",
+      "days"
+    ]
+  },
+  {
+    "name": "Cart",
+    "slug": "cart",
+    "componentName": "Cart",
+    "category": "Finance & Commerce",
+    "animationType": "spring",
+    "keywords": [
+      "cart",
+      "cart"
+    ]
+  },
+  {
+    "name": "Cast",
+    "slug": "cast",
+    "componentName": "Cast",
+    "category": "Media & Audio",
+    "animationType": "wave",
+    "keywords": [
+      "cast",
+      "cast"
+    ]
+  },
+  {
+    "name": "Cctv",
+    "slug": "cctv",
+    "componentName": "Cctv",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "cctv",
+      "cctv"
+    ]
+  },
+  {
+    "name": "Chart Bar Decreasing",
+    "slug": "chart-bar-decreasing",
+    "componentName": "ChartBarDecreasing",
+    "category": "General & UI",
+    "animationType": "draw",
+    "keywords": [
+      "chart-bar-decreasing",
+      "chart",
+      "bar",
+      "decreasing"
+    ]
+  },
+  {
+    "name": "Chart Bar Increasing",
+    "slug": "chart-bar-increasing",
+    "componentName": "ChartBarIncreasing",
+    "category": "General & UI",
+    "animationType": "draw",
+    "keywords": [
+      "chart-bar-increasing",
+      "chart",
+      "bar",
+      "increasing"
+    ]
+  },
+  {
+    "name": "Chart Column Decreasing",
+    "slug": "chart-column-decreasing",
+    "componentName": "ChartColumnDecreasing",
+    "category": "General & UI",
+    "animationType": "draw",
+    "keywords": [
+      "chart-column-decreasing",
+      "chart",
+      "column",
+      "decreasing"
+    ]
+  },
+  {
+    "name": "Chart Column Increasing",
+    "slug": "chart-column-increasing",
+    "componentName": "ChartColumnIncreasing",
+    "category": "General & UI",
+    "animationType": "draw",
+    "keywords": [
+      "chart-column-increasing",
+      "chart",
+      "column",
+      "increasing"
+    ]
+  },
+  {
+    "name": "Chart Line",
+    "slug": "chart-line",
+    "componentName": "ChartLine",
+    "category": "General & UI",
+    "animationType": "draw",
+    "keywords": [
+      "chart-line",
+      "chart",
+      "line"
+    ]
+  },
+  {
+    "name": "Chart No Axes Column Decreasing",
+    "slug": "chart-no-axes-column-decreasing",
+    "componentName": "ChartNoAxesColumnDecreasing",
+    "category": "General & UI",
+    "animationType": "draw",
+    "keywords": [
+      "chart-no-axes-column-decreasing",
+      "chart",
+      "no",
+      "axes",
+      "column",
+      "decreasing"
+    ]
+  },
+  {
+    "name": "Chart No Axes Column Increasing",
+    "slug": "chart-no-axes-column-increasing",
+    "componentName": "ChartNoAxesColumnIncreasing",
+    "category": "General & UI",
+    "animationType": "draw",
+    "keywords": [
+      "chart-no-axes-column-increasing",
+      "chart",
+      "no",
+      "axes",
+      "column",
+      "increasing"
+    ]
+  },
+  {
+    "name": "Chart Pie",
+    "slug": "chart-pie",
+    "componentName": "ChartPie",
+    "category": "General & UI",
+    "animationType": "draw",
+    "keywords": [
+      "chart-pie",
+      "chart",
+      "pie"
+    ]
+  },
+  {
+    "name": "Chart Scatter",
+    "slug": "chart-scatter",
+    "componentName": "ChartScatter",
+    "category": "General & UI",
+    "animationType": "draw",
+    "keywords": [
+      "chart-scatter",
+      "chart",
+      "scatter"
+    ]
+  },
+  {
+    "name": "Chart Spline",
+    "slug": "chart-spline",
+    "componentName": "ChartSpline",
+    "category": "General & UI",
+    "animationType": "draw",
+    "keywords": [
+      "chart-spline",
+      "chart",
+      "spline"
+    ]
+  },
+  {
+    "name": "Check",
+    "slug": "check",
+    "componentName": "Check",
+    "category": "General & UI",
+    "animationType": "pop",
+    "keywords": [
+      "check",
+      "check"
+    ]
+  },
+  {
+    "name": "Check Check",
+    "slug": "check-check",
+    "componentName": "CheckCheck",
+    "category": "General & UI",
+    "animationType": "pop",
+    "keywords": [
+      "check-check",
+      "check",
+      "check"
+    ]
+  },
+  {
+    "name": "Chess Bishop",
+    "slug": "chess-bishop",
+    "componentName": "ChessBishop",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "chess-bishop",
+      "chess",
+      "bishop"
+    ]
+  },
+  {
+    "name": "Chess King",
+    "slug": "chess-king",
+    "componentName": "ChessKing",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "chess-king",
+      "chess",
+      "king"
+    ]
+  },
+  {
+    "name": "Chess Knight",
+    "slug": "chess-knight",
+    "componentName": "ChessKnight",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "chess-knight",
+      "chess",
+      "knight"
+    ]
+  },
+  {
+    "name": "Chess Pawn",
+    "slug": "chess-pawn",
+    "componentName": "ChessPawn",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "chess-pawn",
+      "chess",
+      "pawn"
+    ]
+  },
+  {
+    "name": "Chevron Down",
+    "slug": "chevron-down",
+    "componentName": "ChevronDown",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "chevron-down",
+      "chevron",
+      "down"
+    ]
+  },
+  {
+    "name": "Chevron First",
+    "slug": "chevron-first",
+    "componentName": "ChevronFirst",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "chevron-first",
+      "chevron",
+      "first"
+    ]
+  },
+  {
+    "name": "Chevron Left",
+    "slug": "chevron-left",
+    "componentName": "ChevronLeft",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "chevron-left",
+      "chevron",
+      "left"
+    ]
+  },
+  {
+    "name": "Chevron Right",
+    "slug": "chevron-right",
+    "componentName": "ChevronRight",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "chevron-right",
+      "chevron",
+      "right"
+    ]
+  },
+  {
+    "name": "Chevron Up",
+    "slug": "chevron-up",
+    "componentName": "ChevronUp",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "chevron-up",
+      "chevron",
+      "up"
+    ]
+  },
+  {
+    "name": "Chevrons Down Up",
+    "slug": "chevrons-down-up",
+    "componentName": "ChevronsDownUp",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "chevrons-down-up",
+      "chevrons",
+      "down",
+      "up"
+    ]
+  },
+  {
+    "name": "Chevrons Left Right",
+    "slug": "chevrons-left-right",
+    "componentName": "ChevronsLeftRight",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "chevrons-left-right",
+      "chevrons",
+      "left",
+      "right"
+    ]
+  },
+  {
+    "name": "Chevrons Right Left",
+    "slug": "chevrons-right-left",
+    "componentName": "ChevronsRightLeft",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "chevrons-right-left",
+      "chevrons",
+      "right",
+      "left"
+    ]
+  },
+  {
+    "name": "Chevrons Up Down",
+    "slug": "chevrons-up-down",
+    "componentName": "ChevronsUpDown",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "chevrons-up-down",
+      "chevrons",
+      "up",
+      "down"
+    ]
+  },
+  {
+    "name": "Chrome",
+    "slug": "chrome",
+    "componentName": "Chrome",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "chrome",
+      "chrome"
+    ]
+  },
+  {
+    "name": "Cigarette",
+    "slug": "cigarette",
+    "componentName": "Cigarette",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "cigarette",
+      "cigarette"
+    ]
+  },
+  {
+    "name": "Cigarette Off",
+    "slug": "cigarette-off",
+    "componentName": "CigaretteOff",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "cigarette-off",
+      "cigarette",
+      "off"
+    ]
+  },
+  {
+    "name": "Circle Check",
+    "slug": "circle-check",
+    "componentName": "CircleCheck",
+    "category": "General & UI",
+    "animationType": "pop",
+    "keywords": [
+      "circle-check",
+      "circle",
+      "check"
+    ]
+  },
+  {
+    "name": "Circle Chevron Down",
+    "slug": "circle-chevron-down",
+    "componentName": "CircleChevronDown",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "circle-chevron-down",
+      "circle",
+      "chevron",
+      "down"
+    ]
+  },
+  {
+    "name": "Circle Chevron Left",
+    "slug": "circle-chevron-left",
+    "componentName": "CircleChevronLeft",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "circle-chevron-left",
+      "circle",
+      "chevron",
+      "left"
+    ]
+  },
+  {
+    "name": "Circle Chevron Right",
+    "slug": "circle-chevron-right",
+    "componentName": "CircleChevronRight",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "circle-chevron-right",
+      "circle",
+      "chevron",
+      "right"
+    ]
+  },
+  {
+    "name": "Circle Chevron Up",
+    "slug": "circle-chevron-up",
+    "componentName": "CircleChevronUp",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "circle-chevron-up",
+      "circle",
+      "chevron",
+      "up"
+    ]
+  },
+  {
+    "name": "Circle Dashed",
+    "slug": "circle-dashed",
+    "componentName": "CircleDashed",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "circle-dashed",
+      "circle",
+      "dashed"
+    ]
+  },
+  {
+    "name": "Circle Dollar Sign",
+    "slug": "circle-dollar-sign",
+    "componentName": "CircleDollarSign",
+    "category": "Finance & Commerce",
+    "animationType": "spring",
+    "keywords": [
+      "circle-dollar-sign",
+      "circle",
+      "dollar",
+      "sign"
+    ]
+  },
+  {
+    "name": "Circle Gauge",
+    "slug": "circle-gauge",
+    "componentName": "CircleGauge",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "circle-gauge",
+      "circle",
+      "gauge"
+    ]
+  },
+  {
+    "name": "Circle Help",
+    "slug": "circle-help",
+    "componentName": "CircleHelp",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "circle-help",
+      "circle",
+      "help"
+    ]
+  },
+  {
+    "name": "Clap",
+    "slug": "clap",
+    "componentName": "Clap",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "clap",
+      "clap"
+    ]
+  },
+  {
+    "name": "Clipboard Check",
+    "slug": "clipboard-check",
+    "componentName": "ClipboardCheck",
+    "category": "Files & Documents",
+    "animationType": "pop",
+    "keywords": [
+      "clipboard-check",
+      "clipboard",
+      "check"
+    ]
+  },
+  {
+    "name": "Clock",
+    "slug": "clock",
+    "componentName": "Clock",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "clock",
+      "clock"
+    ]
+  },
+  {
+    "name": "Cloud Backup",
+    "slug": "cloud-backup",
+    "componentName": "CloudBackup",
+    "category": "Weather & Nature",
+    "animationType": "spring",
+    "keywords": [
+      "cloud-backup",
+      "cloud",
+      "backup"
+    ]
+  },
+  {
+    "name": "Cloud Cog",
+    "slug": "cloud-cog",
+    "componentName": "CloudCog",
+    "category": "Weather & Nature",
+    "animationType": "spring",
+    "keywords": [
+      "cloud-cog",
+      "cloud",
+      "cog"
+    ]
+  },
+  {
+    "name": "Cloud Download",
+    "slug": "cloud-download",
+    "componentName": "CloudDownload",
+    "category": "Weather & Nature",
+    "animationType": "bounce",
+    "keywords": [
+      "cloud-download",
+      "cloud",
+      "download"
+    ]
+  },
+  {
+    "name": "Cloud Lightning",
+    "slug": "cloud-lightning",
+    "componentName": "CloudLightning",
+    "category": "Weather & Nature",
+    "animationType": "spring",
+    "keywords": [
+      "cloud-lightning",
+      "cloud",
+      "lightning"
+    ]
+  },
+  {
+    "name": "Cloud Rain",
+    "slug": "cloud-rain",
+    "componentName": "CloudRain",
+    "category": "Weather & Nature",
+    "animationType": "spring",
+    "keywords": [
+      "cloud-rain",
+      "cloud",
+      "rain"
+    ]
+  },
+  {
+    "name": "Cloud Rain Wind",
+    "slug": "cloud-rain-wind",
+    "componentName": "CloudRainWind",
+    "category": "Weather & Nature",
+    "animationType": "spring",
+    "keywords": [
+      "cloud-rain-wind",
+      "cloud",
+      "rain",
+      "wind"
+    ]
+  },
+  {
+    "name": "Cloud Snow",
+    "slug": "cloud-snow",
+    "componentName": "CloudSnow",
+    "category": "Weather & Nature",
+    "animationType": "spring",
+    "keywords": [
+      "cloud-snow",
+      "cloud",
+      "snow"
+    ]
+  },
+  {
+    "name": "Cloud Sun",
+    "slug": "cloud-sun",
+    "componentName": "CloudSun",
+    "category": "Weather & Nature",
+    "animationType": "spin",
+    "keywords": [
+      "cloud-sun",
+      "cloud",
+      "sun"
+    ]
+  },
+  {
+    "name": "Cloud Sync",
+    "slug": "cloud-sync",
+    "componentName": "CloudSync",
+    "category": "Weather & Nature",
+    "animationType": "spring",
+    "keywords": [
+      "cloud-sync",
+      "cloud",
+      "sync"
+    ]
+  },
+  {
+    "name": "Cloud Upload",
+    "slug": "cloud-upload",
+    "componentName": "CloudUpload",
+    "category": "Weather & Nature",
+    "animationType": "bounce",
+    "keywords": [
+      "cloud-upload",
+      "cloud",
+      "upload"
+    ]
+  },
+  {
+    "name": "Coffee",
+    "slug": "coffee",
+    "componentName": "Coffee",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "coffee",
+      "coffee"
+    ]
+  },
+  {
+    "name": "Cog",
+    "slug": "cog",
+    "componentName": "Cog",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "cog",
+      "cog"
+    ]
+  },
+  {
+    "name": "Compass",
+    "slug": "compass",
+    "componentName": "Compass",
+    "category": "Arrows & Navigation",
+    "animationType": "spring",
+    "keywords": [
+      "compass",
+      "compass"
+    ]
+  },
+  {
+    "name": "Concierge Bell",
+    "slug": "concierge-bell",
+    "componentName": "ConciergeBell",
+    "category": "Communication & Social",
+    "animationType": "ring",
+    "keywords": [
+      "concierge-bell",
+      "concierge",
+      "bell"
+    ]
+  },
+  {
+    "name": "Connect",
+    "slug": "connect",
+    "componentName": "Connect",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "connect",
+      "connect"
+    ]
+  },
+  {
+    "name": "Construction",
+    "slug": "construction",
+    "componentName": "Construction",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "construction",
+      "construction"
+    ]
+  },
+  {
+    "name": "Contrast",
+    "slug": "contrast",
+    "componentName": "Contrast",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "contrast",
+      "contrast"
+    ]
+  },
+  {
+    "name": "Cooking Pot",
+    "slug": "cooking-pot",
+    "componentName": "CookingPot",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "cooking-pot",
+      "cooking",
+      "pot"
+    ]
+  },
+  {
+    "name": "Copy",
+    "slug": "copy",
+    "componentName": "Copy",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "copy",
+      "copy"
+    ]
+  },
+  {
+    "name": "Corner Down Left",
+    "slug": "corner-down-left",
+    "componentName": "CornerDownLeft",
+    "category": "Arrows & Navigation",
+    "animationType": "spring",
+    "keywords": [
+      "corner-down-left",
+      "corner",
+      "down",
+      "left"
+    ]
+  },
+  {
+    "name": "Corner Down Right",
+    "slug": "corner-down-right",
+    "componentName": "CornerDownRight",
+    "category": "Arrows & Navigation",
+    "animationType": "spring",
+    "keywords": [
+      "corner-down-right",
+      "corner",
+      "down",
+      "right"
+    ]
+  },
+  {
+    "name": "Corner Left Down",
+    "slug": "corner-left-down",
+    "componentName": "CornerLeftDown",
+    "category": "Arrows & Navigation",
+    "animationType": "spring",
+    "keywords": [
+      "corner-left-down",
+      "corner",
+      "left",
+      "down"
+    ]
+  },
+  {
+    "name": "Corner Left Up",
+    "slug": "corner-left-up",
+    "componentName": "CornerLeftUp",
+    "category": "Arrows & Navigation",
+    "animationType": "spring",
+    "keywords": [
+      "corner-left-up",
+      "corner",
+      "left",
+      "up"
+    ]
+  },
+  {
+    "name": "Corner Right Down",
+    "slug": "corner-right-down",
+    "componentName": "CornerRightDown",
+    "category": "Arrows & Navigation",
+    "animationType": "spring",
+    "keywords": [
+      "corner-right-down",
+      "corner",
+      "right",
+      "down"
+    ]
+  },
+  {
+    "name": "Corner Right Up",
+    "slug": "corner-right-up",
+    "componentName": "CornerRightUp",
+    "category": "Arrows & Navigation",
+    "animationType": "spring",
+    "keywords": [
+      "corner-right-up",
+      "corner",
+      "right",
+      "up"
+    ]
+  },
+  {
+    "name": "Corner Up Left",
+    "slug": "corner-up-left",
+    "componentName": "CornerUpLeft",
+    "category": "Arrows & Navigation",
+    "animationType": "spring",
+    "keywords": [
+      "corner-up-left",
+      "corner",
+      "up",
+      "left"
+    ]
+  },
+  {
+    "name": "Corner Up Right",
+    "slug": "corner-up-right",
+    "componentName": "CornerUpRight",
+    "category": "Arrows & Navigation",
+    "animationType": "spring",
+    "keywords": [
+      "corner-up-right",
+      "corner",
+      "up",
+      "right"
+    ]
+  },
+  {
+    "name": "Cpu",
+    "slug": "cpu",
+    "componentName": "Cpu",
+    "category": "System & Devices",
+    "animationType": "spring",
+    "keywords": [
+      "cpu",
+      "cpu"
+    ]
+  },
+  {
+    "name": "Credit Card",
+    "slug": "credit-card",
+    "componentName": "CreditCard",
+    "category": "Finance & Commerce",
+    "animationType": "spring",
+    "keywords": [
+      "credit-card",
+      "credit",
+      "card"
+    ]
+  },
+  {
+    "name": "Cup Soda",
+    "slug": "cup-soda",
+    "componentName": "CupSoda",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "cup-soda",
+      "cup",
+      "soda"
+    ]
+  },
+  {
+    "name": "Cursor Click",
+    "slug": "cursor-click",
+    "componentName": "CursorClick",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "cursor-click",
+      "cursor",
+      "click"
+    ]
+  },
+  {
+    "name": "Database Backup",
+    "slug": "database-backup",
+    "componentName": "DatabaseBackup",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "database-backup",
+      "database",
+      "backup"
+    ]
+  },
+  {
+    "name": "Delete",
+    "slug": "delete",
+    "componentName": "Delete",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "delete",
+      "delete"
+    ]
+  },
+  {
+    "name": "Disc 3",
+    "slug": "disc-3",
+    "componentName": "Disc3",
+    "category": "Media & Audio",
+    "animationType": "spin",
+    "keywords": [
+      "disc-3",
+      "disc",
+      "3"
+    ]
+  },
+  {
+    "name": "Discord",
+    "slug": "discord",
+    "componentName": "Discord",
+    "category": "Media & Audio",
+    "animationType": "spin",
+    "keywords": [
+      "discord",
+      "discord"
+    ]
+  },
+  {
+    "name": "Dollar Sign",
+    "slug": "dollar-sign",
+    "componentName": "DollarSign",
+    "category": "Finance & Commerce",
+    "animationType": "spring",
+    "keywords": [
+      "dollar-sign",
+      "dollar",
+      "sign"
+    ]
+  },
+  {
+    "name": "Download",
+    "slug": "download",
+    "componentName": "Download",
+    "category": "General & UI",
+    "animationType": "bounce",
+    "keywords": [
+      "download",
+      "download"
+    ]
+  },
+  {
+    "name": "Downvote",
+    "slug": "downvote",
+    "componentName": "Downvote",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "downvote",
+      "downvote"
+    ]
+  },
+  {
+    "name": "Dribbble",
+    "slug": "dribbble",
+    "componentName": "Dribbble",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "dribbble",
+      "dribbble"
+    ]
+  },
+  {
+    "name": "Droplet",
+    "slug": "droplet",
+    "componentName": "Droplet",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "droplet",
+      "droplet"
+    ]
+  },
+  {
+    "name": "Drum",
+    "slug": "drum",
+    "componentName": "Drum",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "drum",
+      "drum"
+    ]
+  },
+  {
+    "name": "Earth",
+    "slug": "earth",
+    "componentName": "Earth",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "earth",
+      "earth"
+    ]
+  },
+  {
+    "name": "Euro",
+    "slug": "euro",
+    "componentName": "Euro",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "euro",
+      "euro"
+    ]
+  },
+  {
+    "name": "Ev Charger",
+    "slug": "ev-charger",
+    "componentName": "EvCharger",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "ev-charger",
+      "ev",
+      "charger"
+    ]
+  },
+  {
+    "name": "Expand",
+    "slug": "expand",
+    "componentName": "Expand",
+    "category": "Arrows & Navigation",
+    "animationType": "spring",
+    "keywords": [
+      "expand",
+      "expand"
+    ]
+  },
+  {
+    "name": "External Link",
+    "slug": "external-link",
+    "componentName": "ExternalLink",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "external-link",
+      "external",
+      "link"
+    ]
+  },
+  {
+    "name": "Eye",
+    "slug": "eye",
+    "componentName": "Eye",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "eye",
+      "eye"
+    ]
+  },
+  {
+    "name": "Eye Off",
+    "slug": "eye-off",
+    "componentName": "EyeOff",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "eye-off",
+      "eye",
+      "off"
+    ]
+  },
+  {
+    "name": "Facebook",
+    "slug": "facebook",
+    "componentName": "Facebook",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "facebook",
+      "facebook"
+    ]
+  },
+  {
+    "name": "Fan",
+    "slug": "fan",
+    "componentName": "Fan",
+    "category": "General & UI",
+    "animationType": "spin",
+    "keywords": [
+      "fan",
+      "fan"
+    ]
+  },
+  {
+    "name": "Feather",
+    "slug": "feather",
+    "componentName": "Feather",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "feather",
+      "feather"
+    ]
+  },
+  {
+    "name": "Figma",
+    "slug": "figma",
+    "componentName": "Figma",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "figma",
+      "figma"
+    ]
+  },
+  {
+    "name": "File Chart Line",
+    "slug": "file-chart-line",
+    "componentName": "FileChartLine",
+    "category": "Files & Documents",
+    "animationType": "draw",
+    "keywords": [
+      "file-chart-line",
+      "file",
+      "chart",
+      "line"
+    ]
+  },
+  {
+    "name": "File Check",
+    "slug": "file-check",
+    "componentName": "FileCheck",
+    "category": "Files & Documents",
+    "animationType": "pop",
+    "keywords": [
+      "file-check",
+      "file",
+      "check"
+    ]
+  },
+  {
+    "name": "File Check 2",
+    "slug": "file-check-2",
+    "componentName": "FileCheck2",
+    "category": "Files & Documents",
+    "animationType": "pop",
+    "keywords": [
+      "file-check-2",
+      "file",
+      "check",
+      "2"
+    ]
+  },
+  {
+    "name": "File Cog",
+    "slug": "file-cog",
+    "componentName": "FileCog",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "file-cog",
+      "file",
+      "cog"
+    ]
+  },
+  {
+    "name": "File Pen Line",
+    "slug": "file-pen-line",
+    "componentName": "FilePenLine",
+    "category": "Editing & Design",
+    "animationType": "draw",
+    "keywords": [
+      "file-pen-line",
+      "file",
+      "pen",
+      "line"
+    ]
+  },
+  {
+    "name": "File Stack",
+    "slug": "file-stack",
+    "componentName": "FileStack",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "file-stack",
+      "file",
+      "stack"
+    ]
+  },
+  {
+    "name": "File Text",
+    "slug": "file-text",
+    "componentName": "FileText",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "file-text",
+      "file",
+      "text"
+    ]
+  },
+  {
+    "name": "Fingerprint",
+    "slug": "fingerprint",
+    "componentName": "Fingerprint",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "fingerprint",
+      "fingerprint"
+    ]
+  },
+  {
+    "name": "Fish Symbol",
+    "slug": "fish-symbol",
+    "componentName": "FishSymbol",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "fish-symbol",
+      "fish",
+      "symbol"
+    ]
+  },
+  {
+    "name": "Flame",
+    "slug": "flame",
+    "componentName": "Flame",
+    "category": "Weather & Nature",
+    "animationType": "pop",
+    "keywords": [
+      "flame",
+      "flame"
+    ]
+  },
+  {
+    "name": "Flask",
+    "slug": "flask",
+    "componentName": "Flask",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "flask",
+      "flask"
+    ]
+  },
+  {
+    "name": "Folder Archive",
+    "slug": "folder-archive",
+    "componentName": "FolderArchive",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "folder-archive",
+      "folder",
+      "archive"
+    ]
+  },
+  {
+    "name": "Folder Check",
+    "slug": "folder-check",
+    "componentName": "FolderCheck",
+    "category": "Files & Documents",
+    "animationType": "pop",
+    "keywords": [
+      "folder-check",
+      "folder",
+      "check"
+    ]
+  },
+  {
+    "name": "Folder Clock",
+    "slug": "folder-clock",
+    "componentName": "FolderClock",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "folder-clock",
+      "folder",
+      "clock"
+    ]
+  },
+  {
+    "name": "Folder Code",
+    "slug": "folder-code",
+    "componentName": "FolderCode",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "folder-code",
+      "folder",
+      "code"
+    ]
+  },
+  {
+    "name": "Folder Cog",
+    "slug": "folder-cog",
+    "componentName": "FolderCog",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "folder-cog",
+      "folder",
+      "cog"
+    ]
+  },
+  {
+    "name": "Folder Dot",
+    "slug": "folder-dot",
+    "componentName": "FolderDot",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "folder-dot",
+      "folder",
+      "dot"
+    ]
+  },
+  {
+    "name": "Folder Down",
+    "slug": "folder-down",
+    "componentName": "FolderDown",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "folder-down",
+      "folder",
+      "down"
+    ]
+  },
+  {
+    "name": "Folder Git",
+    "slug": "folder-git",
+    "componentName": "FolderGit",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "folder-git",
+      "folder",
+      "git"
+    ]
+  },
+  {
+    "name": "Folder Git 2",
+    "slug": "folder-git-2",
+    "componentName": "FolderGit2",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "folder-git-2",
+      "folder",
+      "git",
+      "2"
+    ]
+  },
+  {
+    "name": "Folder Heart",
+    "slug": "folder-heart",
+    "componentName": "FolderHeart",
+    "category": "Health & Wellness",
+    "animationType": "draw",
+    "keywords": [
+      "folder-heart",
+      "folder",
+      "heart"
+    ]
+  },
+  {
+    "name": "Folder Input",
+    "slug": "folder-input",
+    "componentName": "FolderInput",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "folder-input",
+      "folder",
+      "input"
+    ]
+  },
+  {
+    "name": "Folder Kanban",
+    "slug": "folder-kanban",
+    "componentName": "FolderKanban",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "folder-kanban",
+      "folder",
+      "kanban"
+    ]
+  },
+  {
+    "name": "Folder Key",
+    "slug": "folder-key",
+    "componentName": "FolderKey",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "folder-key",
+      "folder",
+      "key"
+    ]
+  },
+  {
+    "name": "Folder Lock",
+    "slug": "folder-lock",
+    "componentName": "FolderLock",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "folder-lock",
+      "folder",
+      "lock"
+    ]
+  },
+  {
+    "name": "Folder Minus",
+    "slug": "folder-minus",
+    "componentName": "FolderMinus",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "folder-minus",
+      "folder",
+      "minus"
+    ]
+  },
+  {
+    "name": "Folder Open",
+    "slug": "folder-open",
+    "componentName": "FolderOpen",
+    "category": "Editing & Design",
+    "animationType": "spring",
+    "keywords": [
+      "folder-open",
+      "folder",
+      "open"
+    ]
+  },
+  {
+    "name": "Folder Output",
+    "slug": "folder-output",
+    "componentName": "FolderOutput",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "folder-output",
+      "folder",
+      "output"
+    ]
+  },
+  {
+    "name": "Folder Plus",
+    "slug": "folder-plus",
+    "componentName": "FolderPlus",
+    "category": "Files & Documents",
+    "animationType": "pop",
+    "keywords": [
+      "folder-plus",
+      "folder",
+      "plus"
+    ]
+  },
+  {
+    "name": "Folder Root",
+    "slug": "folder-root",
+    "componentName": "FolderRoot",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "folder-root",
+      "folder",
+      "root"
+    ]
+  },
+  {
+    "name": "Folder Sync",
+    "slug": "folder-sync",
+    "componentName": "FolderSync",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "folder-sync",
+      "folder",
+      "sync"
+    ]
+  },
+  {
+    "name": "Folder Tree",
+    "slug": "folder-tree",
+    "componentName": "FolderTree",
+    "category": "Weather & Nature",
+    "animationType": "spring",
+    "keywords": [
+      "folder-tree",
+      "folder",
+      "tree"
+    ]
+  },
+  {
+    "name": "Folder Up",
+    "slug": "folder-up",
+    "componentName": "FolderUp",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "folder-up",
+      "folder",
+      "up"
+    ]
+  },
+  {
+    "name": "Folder X",
+    "slug": "folder-x",
+    "componentName": "FolderX",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "folder-x",
+      "folder",
+      "x"
+    ]
+  },
+  {
+    "name": "Folders",
+    "slug": "folders",
+    "componentName": "Folders",
+    "category": "Files & Documents",
+    "animationType": "spring",
+    "keywords": [
+      "folders",
+      "folders"
+    ]
+  },
+  {
+    "name": "Frame",
+    "slug": "frame",
+    "componentName": "Frame",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "frame",
+      "frame"
+    ]
+  },
+  {
+    "name": "Frown",
+    "slug": "frown",
+    "componentName": "Frown",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "frown",
+      "frown"
+    ]
+  },
+  {
+    "name": "Gallery Horizontal End",
+    "slug": "gallery-horizontal-end",
+    "componentName": "GalleryHorizontalEnd",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "gallery-horizontal-end",
+      "gallery",
+      "horizontal",
+      "end"
+    ]
+  },
+  {
+    "name": "Gallery Thumbnails",
+    "slug": "gallery-thumbnails",
+    "componentName": "GalleryThumbnails",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "gallery-thumbnails",
+      "gallery",
+      "thumbnails"
+    ]
+  },
+  {
+    "name": "Gallery Vertical End",
+    "slug": "gallery-vertical-end",
+    "componentName": "GalleryVerticalEnd",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "gallery-vertical-end",
+      "gallery",
+      "vertical",
+      "end"
+    ]
+  },
+  {
+    "name": "Gauge",
+    "slug": "gauge",
+    "componentName": "Gauge",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "gauge",
+      "gauge"
+    ]
+  },
+  {
+    "name": "Gavel",
+    "slug": "gavel",
+    "componentName": "Gavel",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "gavel",
+      "gavel"
+    ]
+  },
+  {
+    "name": "Georgian Lari",
+    "slug": "georgian-lari",
+    "componentName": "GeorgianLari",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "georgian-lari",
+      "georgian",
+      "lari"
+    ]
+  },
+  {
+    "name": "Git Branch",
+    "slug": "git-branch",
+    "componentName": "GitBranch",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "git-branch",
+      "git",
+      "branch"
+    ]
+  },
+  {
+    "name": "Git Commit Horizontal",
+    "slug": "git-commit-horizontal",
+    "componentName": "GitCommitHorizontal",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "git-commit-horizontal",
+      "git",
+      "commit",
+      "horizontal"
+    ]
+  },
+  {
+    "name": "Git Commit Vertical",
+    "slug": "git-commit-vertical",
+    "componentName": "GitCommitVertical",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "git-commit-vertical",
+      "git",
+      "commit",
+      "vertical"
+    ]
+  },
+  {
+    "name": "Git Compare",
+    "slug": "git-compare",
+    "componentName": "GitCompare",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "git-compare",
+      "git",
+      "compare"
+    ]
+  },
+  {
+    "name": "Git Compare Arrows",
+    "slug": "git-compare-arrows",
+    "componentName": "GitCompareArrows",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "git-compare-arrows",
+      "git",
+      "compare",
+      "arrows"
+    ]
+  },
+  {
+    "name": "Git Fork",
+    "slug": "git-fork",
+    "componentName": "GitFork",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "git-fork",
+      "git",
+      "fork"
+    ]
+  },
+  {
+    "name": "Git Graph",
+    "slug": "git-graph",
+    "componentName": "GitGraph",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "git-graph",
+      "git",
+      "graph"
+    ]
+  },
+  {
+    "name": "Git Merge",
+    "slug": "git-merge",
+    "componentName": "GitMerge",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "git-merge",
+      "git",
+      "merge"
+    ]
+  },
+  {
+    "name": "Git Pull Request",
+    "slug": "git-pull-request",
+    "componentName": "GitPullRequest",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "git-pull-request",
+      "git",
+      "pull",
+      "request"
+    ]
+  },
+  {
+    "name": "Git Pull Request Closed",
+    "slug": "git-pull-request-closed",
+    "componentName": "GitPullRequestClosed",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "git-pull-request-closed",
+      "git",
+      "pull",
+      "request",
+      "closed"
+    ]
+  },
+  {
+    "name": "Git Pull Request Create",
+    "slug": "git-pull-request-create",
+    "componentName": "GitPullRequestCreate",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "git-pull-request-create",
+      "git",
+      "pull",
+      "request",
+      "create"
+    ]
+  },
+  {
+    "name": "Github",
+    "slug": "github",
+    "componentName": "Github",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "github",
+      "github"
+    ]
+  },
+  {
+    "name": "Gitlab",
+    "slug": "gitlab",
+    "componentName": "Gitlab",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "gitlab",
+      "gitlab"
+    ]
+  },
+  {
+    "name": "Graduation Cap",
+    "slug": "graduation-cap",
+    "componentName": "GraduationCap",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "graduation-cap",
+      "graduation",
+      "cap"
+    ]
+  },
+  {
+    "name": "Grip",
+    "slug": "grip",
+    "componentName": "Grip",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "grip",
+      "grip"
+    ]
+  },
+  {
+    "name": "Grip Horizontal",
+    "slug": "grip-horizontal",
+    "componentName": "GripHorizontal",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "grip-horizontal",
+      "grip",
+      "horizontal"
+    ]
+  },
+  {
+    "name": "Grip Vertical",
+    "slug": "grip-vertical",
+    "componentName": "GripVertical",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "grip-vertical",
+      "grip",
+      "vertical"
+    ]
+  },
+  {
+    "name": "Hammer",
+    "slug": "hammer",
+    "componentName": "Hammer",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "hammer",
+      "hammer"
+    ]
+  },
+  {
+    "name": "Hand",
+    "slug": "hand",
+    "componentName": "Hand",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "hand",
+      "hand"
+    ]
+  },
+  {
+    "name": "Hand Coins",
+    "slug": "hand-coins",
+    "componentName": "HandCoins",
+    "category": "Finance & Commerce",
+    "animationType": "spring",
+    "keywords": [
+      "hand-coins",
+      "hand",
+      "coins"
+    ]
+  },
+  {
+    "name": "Hand Fist",
+    "slug": "hand-fist",
+    "componentName": "HandFist",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "hand-fist",
+      "hand",
+      "fist"
+    ]
+  },
+  {
+    "name": "Hand Grab",
+    "slug": "hand-grab",
+    "componentName": "HandGrab",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "hand-grab",
+      "hand",
+      "grab"
+    ]
+  },
+  {
+    "name": "Hand Heart",
+    "slug": "hand-heart",
+    "componentName": "HandHeart",
+    "category": "Health & Wellness",
+    "animationType": "draw",
+    "keywords": [
+      "hand-heart",
+      "hand",
+      "heart"
+    ]
+  },
+  {
+    "name": "Hand Helping",
+    "slug": "hand-helping",
+    "componentName": "HandHelping",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "hand-helping",
+      "hand",
+      "helping"
+    ]
+  },
+  {
+    "name": "Hand Metal",
+    "slug": "hand-metal",
+    "componentName": "HandMetal",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "hand-metal",
+      "hand",
+      "metal"
+    ]
+  },
+  {
+    "name": "Hard Drive Download",
+    "slug": "hard-drive-download",
+    "componentName": "HardDriveDownload",
+    "category": "System & Devices",
+    "animationType": "bounce",
+    "keywords": [
+      "hard-drive-download",
+      "hard",
+      "drive",
+      "download"
+    ]
+  },
+  {
+    "name": "Hard Drive Upload",
+    "slug": "hard-drive-upload",
+    "componentName": "HardDriveUpload",
+    "category": "System & Devices",
+    "animationType": "bounce",
+    "keywords": [
+      "hard-drive-upload",
+      "hard",
+      "drive",
+      "upload"
+    ]
+  },
+  {
+    "name": "Hat Glasses",
+    "slug": "hat-glasses",
+    "componentName": "HatGlasses",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "hat-glasses",
+      "hat",
+      "glasses"
+    ]
+  },
+  {
+    "name": "Heart",
+    "slug": "heart",
+    "componentName": "Heart",
+    "category": "Health & Wellness",
+    "animationType": "draw",
+    "keywords": [
+      "heart",
+      "heart"
+    ]
+  },
+  {
+    "name": "Heart Handshake",
+    "slug": "heart-handshake",
+    "componentName": "HeartHandshake",
+    "category": "Health & Wellness",
+    "animationType": "draw",
+    "keywords": [
+      "heart-handshake",
+      "heart",
+      "handshake"
+    ]
+  },
+  {
+    "name": "Heart Pulse",
+    "slug": "heart-pulse",
+    "componentName": "HeartPulse",
+    "category": "Health & Wellness",
+    "animationType": "draw",
+    "keywords": [
+      "heart-pulse",
+      "heart",
+      "pulse"
+    ]
+  },
+  {
+    "name": "History",
+    "slug": "history",
+    "componentName": "History",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "history",
+      "history"
+    ]
+  },
+  {
+    "name": "Home",
+    "slug": "home",
+    "componentName": "Home",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "home",
+      "home"
+    ]
+  },
+  {
+    "name": "Hourglass",
+    "slug": "hourglass",
+    "componentName": "Hourglass",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "hourglass",
+      "hourglass"
+    ]
+  },
+  {
+    "name": "Id Card",
+    "slug": "id-card",
+    "componentName": "IdCard",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "id-card",
+      "id",
+      "card"
+    ]
+  },
+  {
+    "name": "Indian Rupee",
+    "slug": "indian-rupee",
+    "componentName": "IndianRupee",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "indian-rupee",
+      "indian",
+      "rupee"
+    ]
+  },
+  {
+    "name": "Instagram",
+    "slug": "instagram",
+    "componentName": "Instagram",
+    "category": "Finance & Commerce",
+    "animationType": "spring",
+    "keywords": [
+      "instagram",
+      "instagram"
+    ]
+  },
+  {
+    "name": "Italic",
+    "slug": "italic",
+    "componentName": "Italic",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "italic",
+      "italic"
+    ]
+  },
+  {
+    "name": "Japanese Yen",
+    "slug": "japanese-yen",
+    "componentName": "JapaneseYen",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "japanese-yen",
+      "japanese",
+      "yen"
+    ]
+  },
+  {
+    "name": "Key",
+    "slug": "key",
+    "componentName": "Key",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "key",
+      "key"
+    ]
+  },
+  {
+    "name": "Key Circle",
+    "slug": "key-circle",
+    "componentName": "KeyCircle",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "key-circle",
+      "key",
+      "circle"
+    ]
+  },
+  {
+    "name": "Key Square",
+    "slug": "key-square",
+    "componentName": "KeySquare",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "key-square",
+      "key",
+      "square"
+    ]
+  },
+  {
+    "name": "Keyboard",
+    "slug": "keyboard",
+    "componentName": "Keyboard",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "keyboard",
+      "keyboard"
+    ]
+  },
+  {
+    "name": "Languages",
+    "slug": "languages",
+    "componentName": "Languages",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "languages",
+      "languages"
+    ]
+  },
+  {
+    "name": "Laptop Minimal Check",
+    "slug": "laptop-minimal-check",
+    "componentName": "LaptopMinimalCheck",
+    "category": "System & Devices",
+    "animationType": "pop",
+    "keywords": [
+      "laptop-minimal-check",
+      "laptop",
+      "minimal",
+      "check"
+    ]
+  },
+  {
+    "name": "Laugh",
+    "slug": "laugh",
+    "componentName": "Laugh",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "laugh",
+      "laugh"
+    ]
+  },
+  {
+    "name": "Layers",
+    "slug": "layers",
+    "componentName": "Layers",
+    "category": "Editing & Design",
+    "animationType": "spring",
+    "keywords": [
+      "layers",
+      "layers"
+    ]
+  },
+  {
+    "name": "Layout Grid",
+    "slug": "layout-grid",
+    "componentName": "LayoutGrid",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "layout-grid",
+      "layout",
+      "grid"
+    ]
+  },
+  {
+    "name": "Layout Panel Top",
+    "slug": "layout-panel-top",
+    "componentName": "LayoutPanelTop",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "layout-panel-top",
+      "layout",
+      "panel",
+      "top"
+    ]
+  },
+  {
+    "name": "Leaf",
+    "slug": "leaf",
+    "componentName": "Leaf",
+    "category": "Weather & Nature",
+    "animationType": "spring",
+    "keywords": [
+      "leaf",
+      "leaf"
+    ]
+  },
+  {
+    "name": "Leafy Green",
+    "slug": "leafy-green",
+    "componentName": "LeafyGreen",
+    "category": "Weather & Nature",
+    "animationType": "spring",
+    "keywords": [
+      "leafy-green",
+      "leafy",
+      "green"
+    ]
+  },
+  {
+    "name": "Link",
+    "slug": "link",
+    "componentName": "Link",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "link",
+      "link"
+    ]
+  },
+  {
+    "name": "Link 2",
+    "slug": "link-2",
+    "componentName": "Link2",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "link-2",
+      "link",
+      "2"
+    ]
+  },
+  {
+    "name": "Linkedin",
+    "slug": "linkedin",
+    "componentName": "Linkedin",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "linkedin",
+      "linkedin"
+    ]
+  },
+  {
+    "name": "Loader",
+    "slug": "loader",
+    "componentName": "Loader",
+    "category": "General & UI",
+    "animationType": "spin",
+    "keywords": [
+      "loader",
+      "loader"
+    ]
+  },
+  {
+    "name": "Loader Circle",
+    "slug": "loader-circle",
+    "componentName": "LoaderCircle",
+    "category": "General & UI",
+    "animationType": "spin",
+    "keywords": [
+      "loader-circle",
+      "loader",
+      "circle"
+    ]
+  },
+  {
+    "name": "Loader Pinwheel",
+    "slug": "loader-pinwheel",
+    "componentName": "LoaderPinwheel",
+    "category": "General & UI",
+    "animationType": "spin",
+    "keywords": [
+      "loader-pinwheel",
+      "loader",
+      "pinwheel"
+    ]
+  },
+  {
+    "name": "Lock",
+    "slug": "lock",
+    "componentName": "Lock",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "lock",
+      "lock"
+    ]
+  },
+  {
+    "name": "Lock Keyhole",
+    "slug": "lock-keyhole",
+    "componentName": "LockKeyhole",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "lock-keyhole",
+      "lock",
+      "keyhole"
+    ]
+  },
+  {
+    "name": "Lock Keyhole Open",
+    "slug": "lock-keyhole-open",
+    "componentName": "LockKeyholeOpen",
+    "category": "Editing & Design",
+    "animationType": "spring",
+    "keywords": [
+      "lock-keyhole-open",
+      "lock",
+      "keyhole",
+      "open"
+    ]
+  },
+  {
+    "name": "Lock Open",
+    "slug": "lock-open",
+    "componentName": "LockOpen",
+    "category": "Editing & Design",
+    "animationType": "spring",
+    "keywords": [
+      "lock-open",
+      "lock",
+      "open"
+    ]
+  },
+  {
+    "name": "Login",
+    "slug": "login",
+    "componentName": "Login",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "login",
+      "login"
+    ]
+  },
+  {
+    "name": "Logout",
+    "slug": "logout",
+    "componentName": "Logout",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "logout",
+      "logout"
+    ]
+  },
+  {
+    "name": "Mail Check",
+    "slug": "mail-check",
+    "componentName": "MailCheck",
+    "category": "Communication & Social",
+    "animationType": "pop",
+    "keywords": [
+      "mail-check",
+      "mail",
+      "check"
+    ]
+  },
+  {
+    "name": "Mailbox",
+    "slug": "mailbox",
+    "componentName": "Mailbox",
+    "category": "Communication & Social",
+    "animationType": "spring",
+    "keywords": [
+      "mailbox",
+      "mailbox"
+    ]
+  },
+  {
+    "name": "Map Pin",
+    "slug": "map-pin",
+    "componentName": "MapPin",
+    "category": "Arrows & Navigation",
+    "animationType": "spring",
+    "keywords": [
+      "map-pin",
+      "map",
+      "pin"
+    ]
+  },
+  {
+    "name": "Map Pin Check",
+    "slug": "map-pin-check",
+    "componentName": "MapPinCheck",
+    "category": "Arrows & Navigation",
+    "animationType": "pop",
+    "keywords": [
+      "map-pin-check",
+      "map",
+      "pin",
+      "check"
+    ]
+  },
+  {
+    "name": "Map Pin Check Inside",
+    "slug": "map-pin-check-inside",
+    "componentName": "MapPinCheckInside",
+    "category": "Arrows & Navigation",
+    "animationType": "pop",
+    "keywords": [
+      "map-pin-check-inside",
+      "map",
+      "pin",
+      "check",
+      "inside"
+    ]
+  },
+  {
+    "name": "Map Pin House",
+    "slug": "map-pin-house",
+    "componentName": "MapPinHouse",
+    "category": "Arrows & Navigation",
+    "animationType": "spring",
+    "keywords": [
+      "map-pin-house",
+      "map",
+      "pin",
+      "house"
+    ]
+  },
+  {
+    "name": "Map Pin Minus",
+    "slug": "map-pin-minus",
+    "componentName": "MapPinMinus",
+    "category": "Arrows & Navigation",
+    "animationType": "spring",
+    "keywords": [
+      "map-pin-minus",
+      "map",
+      "pin",
+      "minus"
+    ]
+  },
+  {
+    "name": "Map Pin Minus Inside",
+    "slug": "map-pin-minus-inside",
+    "componentName": "MapPinMinusInside",
+    "category": "Arrows & Navigation",
+    "animationType": "spring",
+    "keywords": [
+      "map-pin-minus-inside",
+      "map",
+      "pin",
+      "minus",
+      "inside"
+    ]
+  },
+  {
+    "name": "Map Pin Off",
+    "slug": "map-pin-off",
+    "componentName": "MapPinOff",
+    "category": "Arrows & Navigation",
+    "animationType": "spring",
+    "keywords": [
+      "map-pin-off",
+      "map",
+      "pin",
+      "off"
+    ]
+  },
+  {
+    "name": "Map Pin Plus",
+    "slug": "map-pin-plus",
+    "componentName": "MapPinPlus",
+    "category": "Arrows & Navigation",
+    "animationType": "pop",
+    "keywords": [
+      "map-pin-plus",
+      "map",
+      "pin",
+      "plus"
+    ]
+  },
+  {
+    "name": "Map Pin Plus Inside",
+    "slug": "map-pin-plus-inside",
+    "componentName": "MapPinPlusInside",
+    "category": "Arrows & Navigation",
+    "animationType": "pop",
+    "keywords": [
+      "map-pin-plus-inside",
+      "map",
+      "pin",
+      "plus",
+      "inside"
+    ]
+  },
+  {
+    "name": "Map Pin X Inside",
+    "slug": "map-pin-x-inside",
+    "componentName": "MapPinXInside",
+    "category": "Arrows & Navigation",
+    "animationType": "spring",
+    "keywords": [
+      "map-pin-x-inside",
+      "map",
+      "pin",
+      "x",
+      "inside"
+    ]
+  },
+  {
+    "name": "Maximize",
+    "slug": "maximize",
+    "componentName": "Maximize",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "maximize",
+      "maximize"
+    ]
+  },
+  {
+    "name": "Maximize 2",
+    "slug": "maximize-2",
+    "componentName": "Maximize2",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "maximize-2",
+      "maximize",
+      "2"
+    ]
+  },
+  {
+    "name": "Meh",
+    "slug": "meh",
+    "componentName": "Meh",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "meh",
+      "meh"
+    ]
+  },
+  {
+    "name": "Menu",
+    "slug": "menu",
+    "componentName": "Menu",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "menu",
+      "menu"
+    ]
+  },
+  {
+    "name": "Message Circle",
+    "slug": "message-circle",
+    "componentName": "MessageCircle",
+    "category": "Communication & Social",
+    "animationType": "spring",
+    "keywords": [
+      "message-circle",
+      "message",
+      "circle"
+    ]
+  },
+  {
+    "name": "Message Circle Check",
+    "slug": "message-circle-check",
+    "componentName": "MessageCircleCheck",
+    "category": "Communication & Social",
+    "animationType": "pop",
+    "keywords": [
+      "message-circle-check",
+      "message",
+      "circle",
+      "check"
+    ]
+  },
+  {
+    "name": "Message Circle Dashed",
+    "slug": "message-circle-dashed",
+    "componentName": "MessageCircleDashed",
+    "category": "Communication & Social",
+    "animationType": "spring",
+    "keywords": [
+      "message-circle-dashed",
+      "message",
+      "circle",
+      "dashed"
+    ]
+  },
+  {
+    "name": "Message Circle More",
+    "slug": "message-circle-more",
+    "componentName": "MessageCircleMore",
+    "category": "Communication & Social",
+    "animationType": "spring",
+    "keywords": [
+      "message-circle-more",
+      "message",
+      "circle",
+      "more"
+    ]
+  },
+  {
+    "name": "Message Circle Plus",
+    "slug": "message-circle-plus",
+    "componentName": "MessageCirclePlus",
+    "category": "Communication & Social",
+    "animationType": "pop",
+    "keywords": [
+      "message-circle-plus",
+      "message",
+      "circle",
+      "plus"
+    ]
+  },
+  {
+    "name": "Message Circle X",
+    "slug": "message-circle-x",
+    "componentName": "MessageCircleX",
+    "category": "Communication & Social",
+    "animationType": "spring",
+    "keywords": [
+      "message-circle-x",
+      "message",
+      "circle",
+      "x"
+    ]
+  },
+  {
+    "name": "Message Square",
+    "slug": "message-square",
+    "componentName": "MessageSquare",
+    "category": "Communication & Social",
+    "animationType": "spring",
+    "keywords": [
+      "message-square",
+      "message",
+      "square"
+    ]
+  },
+  {
+    "name": "Message Square Check",
+    "slug": "message-square-check",
+    "componentName": "MessageSquareCheck",
+    "category": "Communication & Social",
+    "animationType": "pop",
+    "keywords": [
+      "message-square-check",
+      "message",
+      "square",
+      "check"
+    ]
+  },
+  {
+    "name": "Message Square Dashed",
+    "slug": "message-square-dashed",
+    "componentName": "MessageSquareDashed",
+    "category": "Communication & Social",
+    "animationType": "spring",
+    "keywords": [
+      "message-square-dashed",
+      "message",
+      "square",
+      "dashed"
+    ]
+  },
+  {
+    "name": "Message Square More",
+    "slug": "message-square-more",
+    "componentName": "MessageSquareMore",
+    "category": "Communication & Social",
+    "animationType": "spring",
+    "keywords": [
+      "message-square-more",
+      "message",
+      "square",
+      "more"
+    ]
+  },
+  {
+    "name": "Message Square Plus",
+    "slug": "message-square-plus",
+    "componentName": "MessageSquarePlus",
+    "category": "Communication & Social",
+    "animationType": "pop",
+    "keywords": [
+      "message-square-plus",
+      "message",
+      "square",
+      "plus"
+    ]
+  },
+  {
+    "name": "Message Square X",
+    "slug": "message-square-x",
+    "componentName": "MessageSquareX",
+    "category": "Communication & Social",
+    "animationType": "spring",
+    "keywords": [
+      "message-square-x",
+      "message",
+      "square",
+      "x"
+    ]
+  },
+  {
+    "name": "Mic",
+    "slug": "mic",
+    "componentName": "Mic",
+    "category": "Media & Audio",
+    "animationType": "spring",
+    "keywords": [
+      "mic",
+      "mic"
+    ]
+  },
+  {
+    "name": "Mic Off",
+    "slug": "mic-off",
+    "componentName": "MicOff",
+    "category": "Media & Audio",
+    "animationType": "spring",
+    "keywords": [
+      "mic-off",
+      "mic",
+      "off"
+    ]
+  },
+  {
+    "name": "Minimize",
+    "slug": "minimize",
+    "componentName": "Minimize",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "minimize",
+      "minimize"
+    ]
+  },
+  {
+    "name": "Monitor Check",
+    "slug": "monitor-check",
+    "componentName": "MonitorCheck",
+    "category": "System & Devices",
+    "animationType": "pop",
+    "keywords": [
+      "monitor-check",
+      "monitor",
+      "check"
+    ]
+  },
+  {
+    "name": "Monitor Cog",
+    "slug": "monitor-cog",
+    "componentName": "MonitorCog",
+    "category": "System & Devices",
+    "animationType": "spring",
+    "keywords": [
+      "monitor-cog",
+      "monitor",
+      "cog"
+    ]
+  },
+  {
+    "name": "Moon",
+    "slug": "moon",
+    "componentName": "Moon",
+    "category": "Weather & Nature",
+    "animationType": "spring",
+    "keywords": [
+      "moon",
+      "moon"
+    ]
+  },
+  {
+    "name": "Nfc",
+    "slug": "nfc",
+    "componentName": "Nfc",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "nfc",
+      "nfc"
+    ]
+  },
+  {
+    "name": "Palette",
+    "slug": "palette",
+    "componentName": "Palette",
+    "category": "Editing & Design",
+    "animationType": "spring",
+    "keywords": [
+      "palette",
+      "palette"
+    ]
+  },
+  {
+    "name": "Panel Left Close",
+    "slug": "panel-left-close",
+    "componentName": "PanelLeftClose",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "panel-left-close",
+      "panel",
+      "left",
+      "close"
+    ]
+  },
+  {
+    "name": "Panel Left Open",
+    "slug": "panel-left-open",
+    "componentName": "PanelLeftOpen",
+    "category": "Editing & Design",
+    "animationType": "spring",
+    "keywords": [
+      "panel-left-open",
+      "panel",
+      "left",
+      "open"
+    ]
+  },
+  {
+    "name": "Panel Right Open",
+    "slug": "panel-right-open",
+    "componentName": "PanelRightOpen",
+    "category": "Editing & Design",
+    "animationType": "spring",
+    "keywords": [
+      "panel-right-open",
+      "panel",
+      "right",
+      "open"
+    ]
+  },
+  {
+    "name": "Party Popper",
+    "slug": "party-popper",
+    "componentName": "PartyPopper",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "party-popper",
+      "party",
+      "popper"
+    ]
+  },
+  {
+    "name": "Pause",
+    "slug": "pause",
+    "componentName": "Pause",
+    "category": "Media & Audio",
+    "animationType": "spring",
+    "keywords": [
+      "pause",
+      "pause"
+    ]
+  },
+  {
+    "name": "Pen Tool",
+    "slug": "pen-tool",
+    "componentName": "PenTool",
+    "category": "Editing & Design",
+    "animationType": "spring",
+    "keywords": [
+      "pen-tool",
+      "pen",
+      "tool"
+    ]
+  },
+  {
+    "name": "Philippine Peso",
+    "slug": "philippine-peso",
+    "componentName": "PhilippinePeso",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "philippine-peso",
+      "philippine",
+      "peso"
+    ]
+  },
+  {
+    "name": "Phone",
+    "slug": "phone",
+    "componentName": "Phone",
+    "category": "Communication & Social",
+    "animationType": "ring",
+    "keywords": [
+      "phone",
+      "phone"
+    ]
+  },
+  {
+    "name": "Phone Call",
+    "slug": "phone-call",
+    "componentName": "PhoneCall",
+    "category": "Communication & Social",
+    "animationType": "ring",
+    "keywords": [
+      "phone-call",
+      "phone",
+      "call"
+    ]
+  },
+  {
+    "name": "Phone Forwarded",
+    "slug": "phone-forwarded",
+    "componentName": "PhoneForwarded",
+    "category": "Communication & Social",
+    "animationType": "ring",
+    "keywords": [
+      "phone-forwarded",
+      "phone",
+      "forwarded"
+    ]
+  },
+  {
+    "name": "Phone Incoming",
+    "slug": "phone-incoming",
+    "componentName": "PhoneIncoming",
+    "category": "Communication & Social",
+    "animationType": "ring",
+    "keywords": [
+      "phone-incoming",
+      "phone",
+      "incoming"
+    ]
+  },
+  {
+    "name": "Phone Missed",
+    "slug": "phone-missed",
+    "componentName": "PhoneMissed",
+    "category": "Communication & Social",
+    "animationType": "ring",
+    "keywords": [
+      "phone-missed",
+      "phone",
+      "missed"
+    ]
+  },
+  {
+    "name": "Phone Off",
+    "slug": "phone-off",
+    "componentName": "PhoneOff",
+    "category": "Communication & Social",
+    "animationType": "ring",
+    "keywords": [
+      "phone-off",
+      "phone",
+      "off"
+    ]
+  },
+  {
+    "name": "Pickaxe",
+    "slug": "pickaxe",
+    "componentName": "Pickaxe",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "pickaxe",
+      "pickaxe"
+    ]
+  },
+  {
+    "name": "Plane Landing",
+    "slug": "plane-landing",
+    "componentName": "PlaneLanding",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "plane-landing",
+      "plane",
+      "landing"
+    ]
+  },
+  {
+    "name": "Plane Takeoff",
+    "slug": "plane-takeoff",
+    "componentName": "PlaneTakeoff",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "plane-takeoff",
+      "plane",
+      "takeoff"
+    ]
+  },
+  {
+    "name": "Play",
+    "slug": "play",
+    "componentName": "Play",
+    "category": "Media & Audio",
+    "animationType": "spring",
+    "keywords": [
+      "play",
+      "play"
+    ]
+  },
+  {
+    "name": "Plug Zap",
+    "slug": "plug-zap",
+    "componentName": "PlugZap",
+    "category": "System & Devices",
+    "animationType": "pop",
+    "keywords": [
+      "plug-zap",
+      "plug",
+      "zap"
+    ]
+  },
+  {
+    "name": "Plus",
+    "slug": "plus",
+    "componentName": "Plus",
+    "category": "General & UI",
+    "animationType": "pop",
+    "keywords": [
+      "plus",
+      "plus"
+    ]
+  },
+  {
+    "name": "Pound Sterling",
+    "slug": "pound-sterling",
+    "componentName": "PoundSterling",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "pound-sterling",
+      "pound",
+      "sterling"
+    ]
+  },
+  {
+    "name": "Projector",
+    "slug": "projector",
+    "componentName": "Projector",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "projector",
+      "projector"
+    ]
+  },
+  {
+    "name": "Rabbit",
+    "slug": "rabbit",
+    "componentName": "Rabbit",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "rabbit",
+      "rabbit"
+    ]
+  },
+  {
+    "name": "Radio",
+    "slug": "radio",
+    "componentName": "Radio",
+    "category": "Media & Audio",
+    "animationType": "wave",
+    "keywords": [
+      "radio",
+      "radio"
+    ]
+  },
+  {
+    "name": "Radio Tower",
+    "slug": "radio-tower",
+    "componentName": "RadioTower",
+    "category": "Media & Audio",
+    "animationType": "wave",
+    "keywords": [
+      "radio-tower",
+      "radio",
+      "tower"
+    ]
+  },
+  {
+    "name": "Receipt",
+    "slug": "receipt",
+    "componentName": "Receipt",
+    "category": "Finance & Commerce",
+    "animationType": "spring",
+    "keywords": [
+      "receipt",
+      "receipt"
+    ]
+  },
+  {
+    "name": "Receipt Cent",
+    "slug": "receipt-cent",
+    "componentName": "ReceiptCent",
+    "category": "Finance & Commerce",
+    "animationType": "spring",
+    "keywords": [
+      "receipt-cent",
+      "receipt",
+      "cent"
+    ]
+  },
+  {
+    "name": "Receipt Euro",
+    "slug": "receipt-euro",
+    "componentName": "ReceiptEuro",
+    "category": "Finance & Commerce",
+    "animationType": "spring",
+    "keywords": [
+      "receipt-euro",
+      "receipt",
+      "euro"
+    ]
+  },
+  {
+    "name": "Receipt Indian Rupee",
+    "slug": "receipt-indian-rupee",
+    "componentName": "ReceiptIndianRupee",
+    "category": "Finance & Commerce",
+    "animationType": "spring",
+    "keywords": [
+      "receipt-indian-rupee",
+      "receipt",
+      "indian",
+      "rupee"
+    ]
+  },
+  {
+    "name": "Receipt Japanese Yen",
+    "slug": "receipt-japanese-yen",
+    "componentName": "ReceiptJapaneseYen",
+    "category": "Finance & Commerce",
+    "animationType": "spring",
+    "keywords": [
+      "receipt-japanese-yen",
+      "receipt",
+      "japanese",
+      "yen"
+    ]
+  },
+  {
+    "name": "Receipt Pound Sterling",
+    "slug": "receipt-pound-sterling",
+    "componentName": "ReceiptPoundSterling",
+    "category": "Finance & Commerce",
+    "animationType": "spring",
+    "keywords": [
+      "receipt-pound-sterling",
+      "receipt",
+      "pound",
+      "sterling"
+    ]
+  },
+  {
+    "name": "Receipt Russian Ruble",
+    "slug": "receipt-russian-ruble",
+    "componentName": "ReceiptRussianRuble",
+    "category": "Finance & Commerce",
+    "animationType": "spring",
+    "keywords": [
+      "receipt-russian-ruble",
+      "receipt",
+      "russian",
+      "ruble"
+    ]
+  },
+  {
+    "name": "Receipt Swiss Franc",
+    "slug": "receipt-swiss-franc",
+    "componentName": "ReceiptSwissFranc",
+    "category": "Finance & Commerce",
+    "animationType": "spring",
+    "keywords": [
+      "receipt-swiss-franc",
+      "receipt",
+      "swiss",
+      "franc"
+    ]
+  },
+  {
+    "name": "Receipt Text",
+    "slug": "receipt-text",
+    "componentName": "ReceiptText",
+    "category": "Finance & Commerce",
+    "animationType": "spring",
+    "keywords": [
+      "receipt-text",
+      "receipt",
+      "text"
+    ]
+  },
+  {
+    "name": "Receipt Turkish Lira",
+    "slug": "receipt-turkish-lira",
+    "componentName": "ReceiptTurkishLira",
+    "category": "Finance & Commerce",
+    "animationType": "spring",
+    "keywords": [
+      "receipt-turkish-lira",
+      "receipt",
+      "turkish",
+      "lira"
+    ]
+  },
+  {
+    "name": "Redo",
+    "slug": "redo",
+    "componentName": "Redo",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "redo",
+      "redo"
+    ]
+  },
+  {
+    "name": "Redo Dot",
+    "slug": "redo-dot",
+    "componentName": "RedoDot",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "redo-dot",
+      "redo",
+      "dot"
+    ]
+  },
+  {
+    "name": "Refresh Ccw",
+    "slug": "refresh-ccw",
+    "componentName": "RefreshCcw",
+    "category": "General & UI",
+    "animationType": "spin",
+    "keywords": [
+      "refresh-ccw",
+      "refresh",
+      "ccw"
+    ]
+  },
+  {
+    "name": "Refresh Ccw Dot",
+    "slug": "refresh-ccw-dot",
+    "componentName": "RefreshCcwDot",
+    "category": "General & UI",
+    "animationType": "spin",
+    "keywords": [
+      "refresh-ccw-dot",
+      "refresh",
+      "ccw",
+      "dot"
+    ]
+  },
+  {
+    "name": "Refresh Cw",
+    "slug": "refresh-cw",
+    "componentName": "RefreshCw",
+    "category": "General & UI",
+    "animationType": "spin",
+    "keywords": [
+      "refresh-cw",
+      "refresh",
+      "cw"
+    ]
+  },
+  {
+    "name": "Refresh Cw Off",
+    "slug": "refresh-cw-off",
+    "componentName": "RefreshCwOff",
+    "category": "General & UI",
+    "animationType": "spin",
+    "keywords": [
+      "refresh-cw-off",
+      "refresh",
+      "cw",
+      "off"
+    ]
+  },
+  {
+    "name": "Rocket",
+    "slug": "rocket",
+    "componentName": "Rocket",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "rocket",
+      "rocket"
+    ]
+  },
+  {
+    "name": "Rocking Chair",
+    "slug": "rocking-chair",
+    "componentName": "RockingChair",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "rocking-chair",
+      "rocking",
+      "chair"
+    ]
+  },
+  {
+    "name": "Roller Coaster",
+    "slug": "roller-coaster",
+    "componentName": "RollerCoaster",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "roller-coaster",
+      "roller",
+      "coaster"
+    ]
+  },
+  {
+    "name": "Rotate Ccw",
+    "slug": "rotate-ccw",
+    "componentName": "RotateCcw",
+    "category": "General & UI",
+    "animationType": "spin",
+    "keywords": [
+      "rotate-ccw",
+      "rotate",
+      "ccw"
+    ]
+  },
+  {
+    "name": "Rotate Cw",
+    "slug": "rotate-cw",
+    "componentName": "RotateCw",
+    "category": "General & UI",
+    "animationType": "spin",
+    "keywords": [
+      "rotate-cw",
+      "rotate",
+      "cw"
+    ]
+  },
+  {
+    "name": "Route",
+    "slug": "route",
+    "componentName": "Route",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "route",
+      "route"
+    ]
+  },
+  {
+    "name": "Router",
+    "slug": "router",
+    "componentName": "Router",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "router",
+      "router"
+    ]
+  },
+  {
+    "name": "Russian Ruble",
+    "slug": "russian-ruble",
+    "componentName": "RussianRuble",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "russian-ruble",
+      "russian",
+      "ruble"
+    ]
+  },
+  {
+    "name": "Satellite Dish",
+    "slug": "satellite-dish",
+    "componentName": "SatelliteDish",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "satellite-dish",
+      "satellite",
+      "dish"
+    ]
+  },
+  {
+    "name": "Saudi Riyal",
+    "slug": "saudi-riyal",
+    "componentName": "SaudiRiyal",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "saudi-riyal",
+      "saudi",
+      "riyal"
+    ]
+  },
+  {
+    "name": "Scan Face",
+    "slug": "scan-face",
+    "componentName": "ScanFace",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "scan-face",
+      "scan",
+      "face"
+    ]
+  },
+  {
+    "name": "Scan Text",
+    "slug": "scan-text",
+    "componentName": "ScanText",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "scan-text",
+      "scan",
+      "text"
+    ]
+  },
+  {
+    "name": "Search",
+    "slug": "search",
+    "componentName": "Search",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "search",
+      "search"
+    ]
+  },
+  {
+    "name": "Send",
+    "slug": "send",
+    "componentName": "Send",
+    "category": "Communication & Social",
+    "animationType": "bounce",
+    "keywords": [
+      "send",
+      "send"
+    ]
+  },
+  {
+    "name": "Server",
+    "slug": "server",
+    "componentName": "Server",
+    "category": "System & Devices",
+    "animationType": "spring",
+    "keywords": [
+      "server",
+      "server"
+    ]
+  },
+  {
+    "name": "Server Cog",
+    "slug": "server-cog",
+    "componentName": "ServerCog",
+    "category": "System & Devices",
+    "animationType": "spring",
+    "keywords": [
+      "server-cog",
+      "server",
+      "cog"
+    ]
+  },
+  {
+    "name": "Server Crash",
+    "slug": "server-crash",
+    "componentName": "ServerCrash",
+    "category": "System & Devices",
+    "animationType": "spring",
+    "keywords": [
+      "server-crash",
+      "server",
+      "crash"
+    ]
+  },
+  {
+    "name": "Settings",
+    "slug": "settings",
+    "componentName": "Settings",
+    "category": "General & UI",
+    "animationType": "spin",
+    "keywords": [
+      "settings",
+      "settings"
+    ]
+  },
+  {
+    "name": "Shield Check",
+    "slug": "shield-check",
+    "componentName": "ShieldCheck",
+    "category": "General & UI",
+    "animationType": "pop",
+    "keywords": [
+      "shield-check",
+      "shield",
+      "check"
+    ]
+  },
+  {
+    "name": "Ship",
+    "slug": "ship",
+    "componentName": "Ship",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "ship",
+      "ship"
+    ]
+  },
+  {
+    "name": "Ship Wheel",
+    "slug": "ship-wheel",
+    "componentName": "ShipWheel",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "ship-wheel",
+      "ship",
+      "wheel"
+    ]
+  },
+  {
+    "name": "Shower Head",
+    "slug": "shower-head",
+    "componentName": "ShowerHead",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "shower-head",
+      "shower",
+      "head"
+    ]
+  },
+  {
+    "name": "Shredder",
+    "slug": "shredder",
+    "componentName": "Shredder",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "shredder",
+      "shredder"
+    ]
+  },
+  {
+    "name": "Shrink",
+    "slug": "shrink",
+    "componentName": "Shrink",
+    "category": "Arrows & Navigation",
+    "animationType": "spring",
+    "keywords": [
+      "shrink",
+      "shrink"
+    ]
+  },
+  {
+    "name": "Sliders Horizontal",
+    "slug": "sliders-horizontal",
+    "componentName": "SlidersHorizontal",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "sliders-horizontal",
+      "sliders",
+      "horizontal"
+    ]
+  },
+  {
+    "name": "Smartphone Charging",
+    "slug": "smartphone-charging",
+    "componentName": "SmartphoneCharging",
+    "category": "Communication & Social",
+    "animationType": "ring",
+    "keywords": [
+      "smartphone-charging",
+      "smartphone",
+      "charging"
+    ]
+  },
+  {
+    "name": "Smartphone Nfc",
+    "slug": "smartphone-nfc",
+    "componentName": "SmartphoneNfc",
+    "category": "Communication & Social",
+    "animationType": "ring",
+    "keywords": [
+      "smartphone-nfc",
+      "smartphone",
+      "nfc"
+    ]
+  },
+  {
+    "name": "Smile",
+    "slug": "smile",
+    "componentName": "Smile",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "smile",
+      "smile"
+    ]
+  },
+  {
+    "name": "Smile Plus",
+    "slug": "smile-plus",
+    "componentName": "SmilePlus",
+    "category": "General & UI",
+    "animationType": "pop",
+    "keywords": [
+      "smile-plus",
+      "smile",
+      "plus"
+    ]
+  },
+  {
+    "name": "Snowflake",
+    "slug": "snowflake",
+    "componentName": "Snowflake",
+    "category": "Weather & Nature",
+    "animationType": "spring",
+    "keywords": [
+      "snowflake",
+      "snowflake"
+    ]
+  },
+  {
+    "name": "Soup",
+    "slug": "soup",
+    "componentName": "Soup",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "soup",
+      "soup"
+    ]
+  },
+  {
+    "name": "Sparkles",
+    "slug": "sparkles",
+    "componentName": "Sparkles",
+    "category": "General & UI",
+    "animationType": "pop",
+    "keywords": [
+      "sparkles",
+      "sparkles"
+    ]
+  },
+  {
+    "name": "Spray Can",
+    "slug": "spray-can",
+    "componentName": "SprayCan",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "spray-can",
+      "spray",
+      "can"
+    ]
+  },
+  {
+    "name": "Square Activity",
+    "slug": "square-activity",
+    "componentName": "SquareActivity",
+    "category": "Health & Wellness",
+    "animationType": "draw",
+    "keywords": [
+      "square-activity",
+      "square",
+      "activity"
+    ]
+  },
+  {
+    "name": "Square Arrow Down",
+    "slug": "square-arrow-down",
+    "componentName": "SquareArrowDown",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "square-arrow-down",
+      "square",
+      "arrow",
+      "down"
+    ]
+  },
+  {
+    "name": "Square Arrow Left",
+    "slug": "square-arrow-left",
+    "componentName": "SquareArrowLeft",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "square-arrow-left",
+      "square",
+      "arrow",
+      "left"
+    ]
+  },
+  {
+    "name": "Square Arrow Right",
+    "slug": "square-arrow-right",
+    "componentName": "SquareArrowRight",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "square-arrow-right",
+      "square",
+      "arrow",
+      "right"
+    ]
+  },
+  {
+    "name": "Square Arrow Up",
+    "slug": "square-arrow-up",
+    "componentName": "SquareArrowUp",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "square-arrow-up",
+      "square",
+      "arrow",
+      "up"
+    ]
+  },
+  {
+    "name": "Square Chevron Down",
+    "slug": "square-chevron-down",
+    "componentName": "SquareChevronDown",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "square-chevron-down",
+      "square",
+      "chevron",
+      "down"
+    ]
+  },
+  {
+    "name": "Square Chevron Left",
+    "slug": "square-chevron-left",
+    "componentName": "SquareChevronLeft",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "square-chevron-left",
+      "square",
+      "chevron",
+      "left"
+    ]
+  },
+  {
+    "name": "Square Chevron Right",
+    "slug": "square-chevron-right",
+    "componentName": "SquareChevronRight",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "square-chevron-right",
+      "square",
+      "chevron",
+      "right"
+    ]
+  },
+  {
+    "name": "Square Chevron Up",
+    "slug": "square-chevron-up",
+    "componentName": "SquareChevronUp",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "square-chevron-up",
+      "square",
+      "chevron",
+      "up"
+    ]
+  },
+  {
+    "name": "Square Pen",
+    "slug": "square-pen",
+    "componentName": "SquarePen",
+    "category": "Editing & Design",
+    "animationType": "spring",
+    "keywords": [
+      "square-pen",
+      "square",
+      "pen"
+    ]
+  },
+  {
+    "name": "Square Stack",
+    "slug": "square-stack",
+    "componentName": "SquareStack",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "square-stack",
+      "square",
+      "stack"
+    ]
+  },
+  {
+    "name": "Stamp",
+    "slug": "stamp",
+    "componentName": "Stamp",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "stamp",
+      "stamp"
+    ]
+  },
+  {
+    "name": "Stethoscope",
+    "slug": "stethoscope",
+    "componentName": "Stethoscope",
+    "category": "Health & Wellness",
+    "animationType": "spring",
+    "keywords": [
+      "stethoscope",
+      "stethoscope"
+    ]
+  },
+  {
+    "name": "Sun",
+    "slug": "sun",
+    "componentName": "Sun",
+    "category": "Weather & Nature",
+    "animationType": "spin",
+    "keywords": [
+      "sun",
+      "sun"
+    ]
+  },
+  {
+    "name": "Sun Dim",
+    "slug": "sun-dim",
+    "componentName": "SunDim",
+    "category": "Weather & Nature",
+    "animationType": "spin",
+    "keywords": [
+      "sun-dim",
+      "sun",
+      "dim"
+    ]
+  },
+  {
+    "name": "Sun Medium",
+    "slug": "sun-medium",
+    "componentName": "SunMedium",
+    "category": "Weather & Nature",
+    "animationType": "spin",
+    "keywords": [
+      "sun-medium",
+      "sun",
+      "medium"
+    ]
+  },
+  {
+    "name": "Sun Moon",
+    "slug": "sun-moon",
+    "componentName": "SunMoon",
+    "category": "Weather & Nature",
+    "animationType": "spin",
+    "keywords": [
+      "sun-moon",
+      "sun",
+      "moon"
+    ]
+  },
+  {
+    "name": "Sunset",
+    "slug": "sunset",
+    "componentName": "Sunset",
+    "category": "Weather & Nature",
+    "animationType": "spin",
+    "keywords": [
+      "sunset",
+      "sunset"
+    ]
+  },
+  {
+    "name": "Swiss Franc",
+    "slug": "swiss-franc",
+    "componentName": "SwissFranc",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "swiss-franc",
+      "swiss",
+      "franc"
+    ]
+  },
+  {
+    "name": "Switch Camera",
+    "slug": "switch-camera",
+    "componentName": "SwitchCamera",
+    "category": "Media & Audio",
+    "animationType": "spring",
+    "keywords": [
+      "switch-camera",
+      "switch",
+      "camera"
+    ]
+  },
+  {
+    "name": "Syringe",
+    "slug": "syringe",
+    "componentName": "Syringe",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "syringe",
+      "syringe"
+    ]
+  },
+  {
+    "name": "Telescope",
+    "slug": "telescope",
+    "componentName": "Telescope",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "telescope",
+      "telescope"
+    ]
+  },
+  {
+    "name": "Terminal",
+    "slug": "terminal",
+    "componentName": "Terminal",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "terminal",
+      "terminal"
+    ]
+  },
+  {
+    "name": "Thermometer",
+    "slug": "thermometer",
+    "componentName": "Thermometer",
+    "category": "Weather & Nature",
+    "animationType": "spring",
+    "keywords": [
+      "thermometer",
+      "thermometer"
+    ]
+  },
+  {
+    "name": "Ticket",
+    "slug": "ticket",
+    "componentName": "Ticket",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "ticket",
+      "ticket"
+    ]
+  },
+  {
+    "name": "Timer",
+    "slug": "timer",
+    "componentName": "Timer",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "timer",
+      "timer"
+    ]
+  },
+  {
+    "name": "Tornado",
+    "slug": "tornado",
+    "componentName": "Tornado",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "tornado",
+      "tornado"
+    ]
+  },
+  {
+    "name": "Train Track",
+    "slug": "train-track",
+    "componentName": "TrainTrack",
+    "category": "Weather & Nature",
+    "animationType": "spring",
+    "keywords": [
+      "train-track",
+      "train",
+      "track"
+    ]
+  },
+  {
+    "name": "Tree Deciduous",
+    "slug": "tree-deciduous",
+    "componentName": "TreeDeciduous",
+    "category": "Weather & Nature",
+    "animationType": "spring",
+    "keywords": [
+      "tree-deciduous",
+      "tree",
+      "deciduous"
+    ]
+  },
+  {
+    "name": "Tree Pine",
+    "slug": "tree-pine",
+    "componentName": "TreePine",
+    "category": "Weather & Nature",
+    "animationType": "spring",
+    "keywords": [
+      "tree-pine",
+      "tree",
+      "pine"
+    ]
+  },
+  {
+    "name": "Trending Down",
+    "slug": "trending-down",
+    "componentName": "TrendingDown",
+    "category": "General & UI",
+    "animationType": "draw",
+    "keywords": [
+      "trending-down",
+      "trending",
+      "down"
+    ]
+  },
+  {
+    "name": "Trending Up",
+    "slug": "trending-up",
+    "componentName": "TrendingUp",
+    "category": "General & UI",
+    "animationType": "draw",
+    "keywords": [
+      "trending-up",
+      "trending",
+      "up"
+    ]
+  },
+  {
+    "name": "Trending Up Down",
+    "slug": "trending-up-down",
+    "componentName": "TrendingUpDown",
+    "category": "General & UI",
+    "animationType": "draw",
+    "keywords": [
+      "trending-up-down",
+      "trending",
+      "up",
+      "down"
+    ]
+  },
+  {
+    "name": "Truck",
+    "slug": "truck",
+    "componentName": "Truck",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "truck",
+      "truck"
+    ]
+  },
+  {
+    "name": "Turkish Lira",
+    "slug": "turkish-lira",
+    "componentName": "TurkishLira",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "turkish-lira",
+      "turkish",
+      "lira"
+    ]
+  },
+  {
+    "name": "Twitch",
+    "slug": "twitch",
+    "componentName": "Twitch",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "twitch",
+      "twitch"
+    ]
+  },
+  {
+    "name": "Twitter",
+    "slug": "twitter",
+    "componentName": "Twitter",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "twitter",
+      "twitter"
+    ]
+  },
+  {
+    "name": "Underline",
+    "slug": "underline",
+    "componentName": "Underline",
+    "category": "General & UI",
+    "animationType": "draw",
+    "keywords": [
+      "underline",
+      "underline"
+    ]
+  },
+  {
+    "name": "Undo",
+    "slug": "undo",
+    "componentName": "Undo",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "undo",
+      "undo"
+    ]
+  },
+  {
+    "name": "Undo Dot",
+    "slug": "undo-dot",
+    "componentName": "UndoDot",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "undo-dot",
+      "undo",
+      "dot"
+    ]
+  },
+  {
+    "name": "Upload",
+    "slug": "upload",
+    "componentName": "Upload",
+    "category": "General & UI",
+    "animationType": "bounce",
+    "keywords": [
+      "upload",
+      "upload"
+    ]
+  },
+  {
+    "name": "Upvote",
+    "slug": "upvote",
+    "componentName": "Upvote",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "upvote",
+      "upvote"
+    ]
+  },
+  {
+    "name": "User",
+    "slug": "user",
+    "componentName": "User",
+    "category": "Communication & Social",
+    "animationType": "spring",
+    "keywords": [
+      "user",
+      "user"
+    ]
+  },
+  {
+    "name": "User Check",
+    "slug": "user-check",
+    "componentName": "UserCheck",
+    "category": "Communication & Social",
+    "animationType": "pop",
+    "keywords": [
+      "user-check",
+      "user",
+      "check"
+    ]
+  },
+  {
+    "name": "User Plus",
+    "slug": "user-plus",
+    "componentName": "UserPlus",
+    "category": "Communication & Social",
+    "animationType": "pop",
+    "keywords": [
+      "user-plus",
+      "user",
+      "plus"
+    ]
+  },
+  {
+    "name": "User Round Check",
+    "slug": "user-round-check",
+    "componentName": "UserRoundCheck",
+    "category": "Communication & Social",
+    "animationType": "pop",
+    "keywords": [
+      "user-round-check",
+      "user",
+      "round",
+      "check"
+    ]
+  },
+  {
+    "name": "User Round Cog",
+    "slug": "user-round-cog",
+    "componentName": "UserRoundCog",
+    "category": "Communication & Social",
+    "animationType": "spring",
+    "keywords": [
+      "user-round-cog",
+      "user",
+      "round",
+      "cog"
+    ]
+  },
+  {
+    "name": "User Round Plus",
+    "slug": "user-round-plus",
+    "componentName": "UserRoundPlus",
+    "category": "Communication & Social",
+    "animationType": "pop",
+    "keywords": [
+      "user-round-plus",
+      "user",
+      "round",
+      "plus"
+    ]
+  },
+  {
+    "name": "Users",
+    "slug": "users",
+    "componentName": "Users",
+    "category": "Communication & Social",
+    "animationType": "spring",
+    "keywords": [
+      "users",
+      "users"
+    ]
+  },
+  {
+    "name": "Users Round",
+    "slug": "users-round",
+    "componentName": "UsersRound",
+    "category": "Communication & Social",
+    "animationType": "spring",
+    "keywords": [
+      "users-round",
+      "users",
+      "round"
+    ]
+  },
+  {
+    "name": "Vibrate",
+    "slug": "vibrate",
+    "componentName": "Vibrate",
+    "category": "General & UI",
+    "animationType": "ring",
+    "keywords": [
+      "vibrate",
+      "vibrate"
+    ]
+  },
+  {
+    "name": "Volume",
+    "slug": "volume",
+    "componentName": "Volume",
+    "category": "Media & Audio",
+    "animationType": "ring",
+    "keywords": [
+      "volume",
+      "volume"
+    ]
+  },
+  {
+    "name": "Wallet",
+    "slug": "wallet",
+    "componentName": "Wallet",
+    "category": "Finance & Commerce",
+    "animationType": "spring",
+    "keywords": [
+      "wallet",
+      "wallet"
+    ]
+  },
+  {
+    "name": "Washing Machine",
+    "slug": "washing-machine",
+    "componentName": "WashingMachine",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "washing-machine",
+      "washing",
+      "machine"
+    ]
+  },
+  {
+    "name": "Waves",
+    "slug": "waves",
+    "componentName": "Waves",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "waves",
+      "waves"
+    ]
+  },
+  {
+    "name": "Waves Arrow Down",
+    "slug": "waves-arrow-down",
+    "componentName": "WavesArrowDown",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "waves-arrow-down",
+      "waves",
+      "arrow",
+      "down"
+    ]
+  },
+  {
+    "name": "Waves Arrow Up",
+    "slug": "waves-arrow-up",
+    "componentName": "WavesArrowUp",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "waves-arrow-up",
+      "waves",
+      "arrow",
+      "up"
+    ]
+  },
+  {
+    "name": "Waves Ladder",
+    "slug": "waves-ladder",
+    "componentName": "WavesLadder",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "waves-ladder",
+      "waves",
+      "ladder"
+    ]
+  },
+  {
+    "name": "Waypoints",
+    "slug": "waypoints",
+    "componentName": "Waypoints",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "waypoints",
+      "waypoints"
+    ]
+  },
+  {
+    "name": "Webhook",
+    "slug": "webhook",
+    "componentName": "Webhook",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "webhook",
+      "webhook"
+    ]
+  },
+  {
+    "name": "Wifi",
+    "slug": "wifi",
+    "componentName": "Wifi",
+    "category": "System & Devices",
+    "animationType": "wave",
+    "keywords": [
+      "wifi",
+      "wifi"
+    ]
+  },
+  {
+    "name": "Wifi Cog",
+    "slug": "wifi-cog",
+    "componentName": "WifiCog",
+    "category": "System & Devices",
+    "animationType": "wave",
+    "keywords": [
+      "wifi-cog",
+      "wifi",
+      "cog"
+    ]
+  },
+  {
+    "name": "Wifi Low",
+    "slug": "wifi-low",
+    "componentName": "WifiLow",
+    "category": "System & Devices",
+    "animationType": "wave",
+    "keywords": [
+      "wifi-low",
+      "wifi",
+      "low"
+    ]
+  },
+  {
+    "name": "Wifi Pen",
+    "slug": "wifi-pen",
+    "componentName": "WifiPen",
+    "category": "System & Devices",
+    "animationType": "wave",
+    "keywords": [
+      "wifi-pen",
+      "wifi",
+      "pen"
+    ]
+  },
+  {
+    "name": "Wifi Sync",
+    "slug": "wifi-sync",
+    "componentName": "WifiSync",
+    "category": "System & Devices",
+    "animationType": "wave",
+    "keywords": [
+      "wifi-sync",
+      "wifi",
+      "sync"
+    ]
+  },
+  {
+    "name": "Wind",
+    "slug": "wind",
+    "componentName": "Wind",
+    "category": "Weather & Nature",
+    "animationType": "spring",
+    "keywords": [
+      "wind",
+      "wind"
+    ]
+  },
+  {
+    "name": "Wind Arrow Down",
+    "slug": "wind-arrow-down",
+    "componentName": "WindArrowDown",
+    "category": "Arrows & Navigation",
+    "animationType": "bounce",
+    "keywords": [
+      "wind-arrow-down",
+      "wind",
+      "arrow",
+      "down"
+    ]
+  },
+  {
+    "name": "Workflow",
+    "slug": "workflow",
+    "componentName": "Workflow",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "workflow",
+      "workflow"
+    ]
+  },
+  {
+    "name": "Wrench",
+    "slug": "wrench",
+    "componentName": "Wrench",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "wrench",
+      "wrench"
+    ]
+  },
+  {
+    "name": "X",
+    "slug": "x",
+    "componentName": "X",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "x",
+      "x"
+    ]
+  },
+  {
+    "name": "Youtube",
+    "slug": "youtube",
+    "componentName": "Youtube",
+    "category": "General & UI",
+    "animationType": "spring",
+    "keywords": [
+      "youtube",
+      "youtube"
+    ]
+  },
+  {
+    "name": "Zap",
+    "slug": "zap",
+    "componentName": "Zap",
+    "category": "General & UI",
+    "animationType": "pop",
+    "keywords": [
+      "zap",
+      "zap"
+    ]
+  },
+  {
+    "name": "Zap Off",
+    "slug": "zap-off",
+    "componentName": "ZapOff",
+    "category": "General & UI",
+    "animationType": "pop",
+    "keywords": [
+      "zap-off",
+      "zap",
+      "off"
+    ]
+  }
+]

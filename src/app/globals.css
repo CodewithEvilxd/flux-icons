@@ -1,0 +1,529 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: var(--font-sans);
+  --font-handwritten: var(--font-handwritten);
+  --font-display: var(--font-display);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-hover: var(--muted-hover);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --background: oklch(0.985 0.005 85);
+  --foreground: oklch(0.18 0.02 250);
+  --card: oklch(0.995 0.002 85);
+  --card-foreground: oklch(0.18 0.02 250);
+  --popover: oklch(0.995 0.002 85);
+  --popover-foreground: oklch(0.18 0.02 250);
+  --primary: oklch(0.52 0.16 240);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.96 0.008 85);
+  --secondary-foreground: oklch(0.20 0.02 250);
+  --muted: oklch(0.955 0.008 85);
+  --muted-foreground: oklch(0.48 0.02 250);
+  --muted-hover: oklch(0.92 0.01 85);
+  --accent: oklch(0.96 0.008 85);
+  --accent-foreground: oklch(0.20 0.02 250);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.90 0.01 85);
+  --input: oklch(0.90 0.01 85);
+  --ring: var(--primary);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.18 0.02 250);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: oklch(0.96 0.008 85);
+  --sidebar-accent-foreground: oklch(0.20 0.02 250);
+  --sidebar-border: oklch(0.90 0.01 85);
+  --sidebar-ring: var(--primary);
+}
+
+.dark {
+  --background: oklch(0.14 0.01 250);
+  --foreground: oklch(0.96 0.005 85);
+  --card: oklch(0.18 0.01 250);
+  --card-foreground: oklch(0.96 0.005 85);
+  --popover: oklch(0.18 0.01 250);
+  --popover-foreground: oklch(0.96 0.005 85);
+  --primary: oklch(0.75 0.12 230);
+  --primary-foreground: oklch(0.16 0.03 250);
+  --secondary: oklch(0.24 0.01 250);
+  --secondary-foreground: oklch(0.96 0.005 85);
+  --muted: oklch(0.22 0.01 250);
+  --muted-foreground: oklch(0.68 0.01 250);
+  --muted-hover: oklch(0.28 0.01 250);
+  --accent: oklch(0.24 0.01 250);
+  --accent-foreground: oklch(0.96 0.005 85);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: var(--primary);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.18 0.01 250);
+  --sidebar-foreground: oklch(0.96 0.005 85);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: oklch(0.24 0.01 250);
+  --sidebar-accent-foreground: oklch(0.96 0.005 85);
+  --sidebar-border: oklch(1 0 0 / 12%);
+  --sidebar-ring: var(--primary);
+}
+
+/*
+  There was a `.chrome-panel` component class here: a translucent fill over a
+  12px backdrop blur, with a 1px ring for its edge, worn by the two floating
+  pieces of the site bar. The bar is now one opaque full-width surface, so the
+  glass had nothing left to sit on and the class had one caller left. Its
+  `--chrome` and `--chrome-edge` tokens went with it.
+
+  Worth keeping the reason it existed, in case a floating panel is ever wanted
+  again: the fill and the blur were a pair, not two settings. The blur destroys
+  the detail behind, and the fill lands on the result. Raising the transparency
+  without the blur shows the icon grid straight through the panel and the links
+  stop being readable.
+*/
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    background-image: radial-gradient(circle, oklch(0.2 0 0 / 0.08) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  .dark body {
+    background-image: radial-gradient(circle, oklch(0.9 0 0 / 0.09) 1px, transparent 1px);
+  }
+
+  html {
+    @apply font-sans;
+  }
+
+  /* A pull past the end of an inner scroller would otherwise chain out to the
+     page and trigger pull-to-refresh. This page has two such scrollers now:
+     the phone stage and the browser's category rail. */
+  html,
+  body {
+    overscroll-behavior: none;
+  }
+
+  /* `manipulation` drops the ~300ms the browser spends waiting to see whether
+     a tap is the first half of a double-tap-to-zoom, which is the single
+     biggest source of "the button felt slow" on touch.
+
+     `user-select: none` stops a long press selecting a control's own label —
+     a press-and-hold on a tab should do nothing, not raise a text selection.
+     Scoped to controls, so prose, icon names and code samples stay selectable. */
+  button,
+  a,
+  label,
+  summary,
+  [role="button"],
+  [role="radio"],
+  [role="switch"],
+  [role="tab"] {
+    touch-action: manipulation;
+  }
+
+  button,
+  summary,
+  [role="button"],
+  [role="radio"],
+  [role="switch"],
+  [role="tab"] {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+}
+
+/* Handwritten Annotations & Neat Paper Styles */
+.font-handwritten {
+  font-family: var(--font-handwritten), "Shantell Sans", "Caveat", "Architects Daughter", cursive;
+}
+
+.bg-paper-grid {
+  background-image: radial-gradient(circle, oklch(0.2 0 0 / 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.dark .bg-paper-grid {
+  background-image: radial-gradient(circle, oklch(0.9 0 0 / 0.09) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Marker Highlighting */
+.ann-highlight-amber {
+  position: relative;
+  display: inline-block;
+  background: linear-gradient(120deg, oklch(0.88 0.16 85 / 0.45) 0%, oklch(0.88 0.16 85 / 0.5) 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 45%;
+  background-position: 0 85%;
+  border-radius: 3px;
+  padding: 0 4px;
+}
+
+.ann-highlight-blue {
+  position: relative;
+  display: inline-block;
+  background: linear-gradient(120deg, oklch(0.65 0.15 240 / 0.28) 0%, oklch(0.65 0.15 240 / 0.35) 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 45%;
+  background-position: 0 85%;
+  border-radius: 3px;
+  padding: 0 4px;
+}
+
+.ann-highlight-green {
+  position: relative;
+  display: inline-block;
+  background: linear-gradient(120deg, oklch(0.72 0.18 150 / 0.32) 0%, oklch(0.72 0.18 150 / 0.38) 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 45%;
+  background-position: 0 85%;
+  border-radius: 3px;
+  padding: 0 4px;
+}
+
+/* Hand-drawn SVG Underlines */
+.ann-underline-amber {
+  position: relative;
+  display: inline-block;
+}
+
+.ann-underline-amber::after {
+  content: "";
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  bottom: -6px;
+  height: 8px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 12' preserveAspectRatio='none'%3E%3Cpath d='M2,7 C20,2 45,10 65,4 C85,8 92,3 98,7' fill='none' stroke='%23f59e0b' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  pointer-events: none;
+}
+
+.ann-underline-blue {
+  position: relative;
+  display: inline-block;
+}
+
+.ann-underline-blue::after {
+  content: "";
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  bottom: -6px;
+  height: 8px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 12' preserveAspectRatio='none'%3E%3Cpath d='M2,6 C25,10 50,2 75,9 C88,4 94,8 98,6' fill='none' stroke='%233b82f6' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  pointer-events: none;
+}
+
+/* Hand-drawn Tag Badges */
+.ann-tag-green {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-handwritten), "Shantell Sans", cursive;
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #22c55e;
+  border: 1px dashed #22c55e;
+  border-radius: 6px;
+  padding: 2px 8px;
+  letter-spacing: 0.05em;
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.ann-tag-amber {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-handwritten), "Shantell Sans", cursive;
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #f59e0b;
+  border: 1px dashed #f59e0b;
+  border-radius: 6px;
+  padding: 2px 8px;
+  letter-spacing: 0.05em;
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.ann-tag-red {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-handwritten), "Shantell Sans", cursive;
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #ef4444;
+  border: 1px dashed #ef4444;
+  border-radius: 6px;
+  padding: 2px 8px;
+  letter-spacing: 0.05em;
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.ann-tag-purple {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-handwritten), "Shantell Sans", cursive;
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #a855f7;
+  border: 1px dashed #a855f7;
+  border-radius: 6px;
+  padding: 2px 8px;
+  letter-spacing: 0.05em;
+  background: rgba(168, 85, 247, 0.08);
+}
+
+.ann-tag-cyan {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-handwritten), "Shantell Sans", cursive;
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #06b6d4;
+  border: 1px dashed #06b6d4;
+  border-radius: 6px;
+  padding: 2px 8px;
+  letter-spacing: 0.05em;
+  background: rgba(6, 182, 212, 0.08);
+}
+
+.ann-tag-pink {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-handwritten), "Shantell Sans", cursive;
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #ec4899;
+  border: 1px dashed #ec4899;
+  border-radius: 6px;
+  padding: 2px 8px;
+  letter-spacing: 0.05em;
+  background: rgba(236, 72, 153, 0.08);
+}
+
+.ann-tag-yellow {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-handwritten), "Shantell Sans", cursive;
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #eab308;
+  border: 1px dashed #eab308;
+  border-radius: 6px;
+  padding: 2px 8px;
+  letter-spacing: 0.05em;
+  background: rgba(234, 179, 8, 0.08);
+}
+
+.font-display {
+  font-family: var(--font-display), "Permanent Marker", "Shantell Sans", cursive;
+  letter-spacing: 0.03em;
+}
+
+.paper-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+}
+
+.paper-card-dashed {
+  background: var(--card);
+  border: 1.5px dashed var(--border);
+  border-radius: 12px;
+}
+
+.paper-badge {
+  font-family: var(--font-handwritten), "Shantell Sans", cursive;
+  font-weight: 700;
+  border-radius: 9999px;
+  padding: 2px 10px;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Hand-drawn sketchy circle ring around key text */
+.ann-circle-amber {
+  position: relative;
+  display: inline-block;
+  padding: 2px 8px;
+}
+
+.ann-circle-amber::before {
+  content: "";
+  position: absolute;
+  inset: -4px -8px;
+  border: 2px dashed #f59e0b;
+  border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+  pointer-events: none;
+}
+
+.ann-circle-pink {
+  position: relative;
+  display: inline-block;
+  padding: 2px 8px;
+}
+
+.ann-circle-pink::before {
+  content: "";
+  position: absolute;
+  inset: -4px -8px;
+  border: 2px dashed #ec4899;
+  border-radius: 225px 15px 255px 15px/15px 255px 15px 225px;
+  pointer-events: none;
+}
+
+/* Timeline sketchy connector line */
+.sketchy-timeline-line {
+  position: absolute;
+  left: 24px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: repeating-linear-gradient(to bottom,
+      oklch(0.6 0.15 85 / 0.5),
+      oklch(0.6 0.15 85 / 0.5) 8px,
+      transparent 8px,
+      transparent 16px);
+}
+
+.chalkboard-card {
+  background: oklch(0.16 0.01 250);
+  border: 1.5px dashed oklch(0.35 0.02 250);
+  border-radius: 16px;
+  color: oklch(0.95 0.005 85);
+}
+
+/* Paper Tape Corner Strips */
+.paper-tape-top-left {
+  position: relative;
+}
+
+.paper-tape-top-left::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 14px;
+  width: 50px;
+  height: 18px;
+  background: rgba(245, 158, 11, 0.25);
+  border: 1px dashed rgba(245, 158, 11, 0.4);
+  transform: rotate(-6deg);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.paper-tape-top-right {
+  position: relative;
+}
+
+.paper-tape-top-right::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  right: 14px;
+  width: 50px;
+  height: 18px;
+  background: rgba(59, 130, 246, 0.25);
+  border: 1px dashed rgba(59, 130, 246, 0.4);
+  transform: rotate(6deg);
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Floating Handwritten Sticky Notes */
+.hand-sticky-note {
+  background: oklch(0.96 0.08 90);
+  color: oklch(0.2 0.04 85);
+  border: 1.5px dashed oklch(0.8 0.12 85);
+  box-shadow: 3px 4px 12px rgba(0, 0, 0, 0.08);
+  transform: rotate(-1.5deg);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dark .hand-sticky-note {
+  background: oklch(0.22 0.04 85);
+  color: oklch(0.95 0.05 90);
+  border: 1.5px dashed oklch(0.4 0.08 85);
+  box-shadow: 3px 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.hand-sticky-note:hover {
+  transform: none;
+  box-shadow: 5px 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.paper-card-lift {
+  transition: box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.paper-card-lift:hover {
+  transform: none;
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.08);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

@@ -1,0 +1,196 @@
+/**
+ * One icon, rendered from the markup its own file carries.
+ *
+ * It lives apart from the browser so that anything else on the site drawing an
+ * icon from the set — at grid size or at display size — goes through the same
+ * renderer. Two of these is how one surface starts disagreeing with another
+ * about what an icon looks like.
+ */
+export const STYLES = ["stroke", "two-tone", "duotone", "fill"] as const
+export type Style = (typeof STYLES)[number]
+
+/**
+ * The three container forms, named here rather than inline in the type below.
+ *
+ * They were a union written out in `BrowserIcon`, which is fine until something
+ * has to *validate* against them: `/icons?shape=` arrives as an unchecked
+ * string from the URL and has to be narrowed before it can seed a filter. A
+ * type cannot do that at runtime, so the values live here and the type is
+ * derived from them.
+ *
+ * This file rather than `lib/icons.ts`, which is the same pair for `STYLES`:
+ * that module reads the filesystem, so a client component cannot import from
+ * it, and the browser is a client component.
+ */
+export const CONTAINERS = ["regular", "square", "circle"] as const
+export type Container = (typeof CONTAINERS)[number]
+
+/**
+ * The corner treatments, for the same reason the containers are here.
+ *
+ * `regular` rather than `rounded`, matching the Figma property, which left the
+ * name free for a third treatment. A drawing owes the same styles in both, so
+ * this is a third axis over the same set rather than a second set.
+ */
+export const CORNERS = ["regular", "sharp"] as const
+export type Corners = (typeof CORNERS)[number]
+
+/**
+ * The flag the sharp option wears while the treatment is still news.
+ *
+ * One constant behind all four corner switches — the landing page, the filter
+ * row, the preview dock and the icon page — because a flag is temporary by
+ * definition and four call sites is four places to find when it stops being
+ * true. Set it to `undefined` and it comes off everywhere at once.
+ *
+ * It lives next to `CORNERS` rather than in the switch component because it is
+ * a fact about this treatment, not about segmented controls: the style and
+ * format groups use the same control and want nothing to do with it.
+ */
+export const SHARP_BADGE: string | undefined = "New"
+
+export type StyleArt = { body: string; root: Record<string, string> }
+
+/**
+ * One drawing in both corner treatments: `art` is the rounded styles, `sharp`
+ * the squared ones.
+ *
+ * A second field rather than a second dimension on `art`, because twenty files
+ * read `icon.art[style]` and every one of them means the rounded drawing.
+ * `artOf` below is what anything treatment-aware asks instead.
+ *
+ * Named rather than restated per surface, which is what it was: the browser's
+ * `BrowserIcon` carried it, and then the landing page and the two demos each
+ * needed their own narrowed set of it. Four spellings of one shape is how one
+ * of them ends up shipping half the treatments and nothing fails to compile.
+ */
+export type IconArt = {
+  art: Partial<Record<Style, StyleArt>>
+  sharp?: Partial<Record<Style, StyleArt>>
+}
+
+/** Git's answers about the drawing, baked at build. See `lib/icons.ts`. */
+export type IconHistory = {
+  added: string
+  addedLabel: string
+  updated: string
+  updatedLabel: string
+  /** The release it shipped in, or null while no tag covers it yet. */
+  version: string | null
+  /** Everyone whose commits touched it, newest first. */
+  by: { name: string; email: string }[]
+}
+
+export type BrowserIcon = IconArt & {
+  name: string
+  base: string
+  container: Container
+  history?: IconHistory
+  /**
+   * Added since the last release, so the grid can badge it.
+   *
+   * Decided on the server and carried here rather than worked out in the
+   * browser: the comparison needs the tag date out of `lib/icon-history.json`,
+   * and `lib/icons.ts` reads the icon directories off disk, so a client
+   * component cannot import it to ask.
+   */
+  isNew?: boolean
+}
+
+/**
+ * One drawing, in the style and corner treatment asked for.
+ *
+ * The single place the two fields are chosen between, so nothing has to
+ * remember that `art` means rounded. Returns undefined where the icon does not
+ * carry that style, which is the same answer `art[style]` gives and what every
+ * caller already checks for.
+ */
+export function artOf(
+  icon: IconArt,
+  style: Style,
+  corners: Corners = "regular"
+): StyleArt | undefined {
+  return corners === "sharp" ? icon.sharp?.[style] : icon.art[style]
+}
+
+/** kebab-case SVG attribute -> the React prop name. */
+const REACT_ATTR: Record<string, string> = {
+  "fill-rule": "fillRule",
+  "clip-rule": "clipRule",
+  "stroke-width": "strokeWidth",
+  "stroke-linecap": "strokeLinecap",
+  "stroke-linejoin": "strokeLinejoin",
+  "fill-opacity": "fillOpacity",
+  "stroke-opacity": "strokeOpacity",
+}
+
+export const toReactProps = (a: Record<string, string>) =>
+  Object.fromEntries(Object.entries(a).map(([k, v]) => [REACT_ATTR[k] ?? k, v]))
+
+/**
+ * Render an icon using the root attributes from its own file.
+ *
+ * Hardcoding stroke here breaks pure-fill icons: their paths carry no stroke of
+ * their own, so an inherited one paints a 2px outline over the whole shape and
+ * swallows thin knockouts.
+ */
+export function Glyph({
+  art,
+  size,
+  stroke,
+  className,
+  style,
+  viewBox = "0 0 24 24",
+}: {
+  art: StyleArt
+  size: number
+  stroke: number
+  className?: string
+  /**
+   * Inline styles on the `svg`, for the two things a class cannot carry: a
+   * colour computed rather than named, and a blend mode.
+   *
+   * The blog's diagnostic figures are the caller. They paint one drawing over
+   * another in two fixed inks and multiply the second, which is a measurement
+   * rather than a theme, so the values are hexadecimal and belong at the call
+   * site rather than in a token.
+   *
+   * Not an escape hatch for layout. Sizing goes through `size` and the class,
+   * and anything that wants to move a drawing around wants a wrapper.
+   */
+  style?: React.CSSProperties
+  /**
+   * A crop, in grid units, for a figure that has to magnify one corner of a
+   * drawing. Defaults to the whole grid, which is what every surface drawing
+   * an icon as an icon wants.
+   *
+   * A prop here rather than a second renderer in the one place that needs it:
+   * the stroke width, the root attributes and the fill rules all have to come
+   * off the icon's own file, and a copy of that logic is how one surface
+   * starts disagreeing with another about what a drawing looks like. The only
+   * thing a crop changes is which part of it you are looking at.
+   *
+   * Note what it does *not* change: `stroke` is in grid units, so a cropped
+   * drawing keeps the keyline weight it has at 24px, scaled up with
+   * everything else. That is the point. A figure showing a fault in the ink
+   * has to show the ink at the proportion it actually ships at.
+   */
+  viewBox?: string
+}) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox={viewBox}
+      className={className}
+      style={style}
+      {...toReactProps(art.root)}
+      // Only where the file itself sets one. A pure-fill icon carries no stroke
+      // at all, and handing it a width would be the first step toward painting
+      // an outline over its knockouts.
+      {...(art.root["stroke-width"] ? { strokeWidth: stroke } : null)}
+      dangerouslySetInnerHTML={{ __html: art.body }}
+    />
+  )
+}

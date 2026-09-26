@@ -1,0 +1,26 @@
+{
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "css.lint.unknownAtRules": "ignore",
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.tabSize": 2,
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/.next": true,
+    "**/*.tsbuildinfo": true,
+    "**/.claude": true,
+    "**/.githooks": true
+  },
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    "package.json": ".gitignore, pnpm-lock.yaml, pnpm-workspace.yaml, .prettierrc, .prettierignore, eslint.config.mjs, components.json, .mcp.json, next.config.ts, next-env.d.ts, postcss.config.mjs, tsconfig.json, tsconfig.tsbuildinfo",
+    "README.md": "CONTRIBUTING.md, LICENSE, AGENTS.md",
+    ".env": ".env.local, .env.*.local, .env.development, .env.production"
+  }
+}

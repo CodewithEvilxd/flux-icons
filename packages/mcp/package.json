@@ -1,0 +1,43 @@
+{
+  "name": "@flux-icons/mcp",
+  "version": "1.0.0",
+  "description": "MCP server for Flux Icons. Search the set, get SVG source, get the React import.",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Nishant Gaurav (codewithevilxd)",
+  "homepage": "https://fluxicons.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codewithevilxd/flux-icons.git",
+    "directory": "packages/mcp"
+  },
+  "bugs": "https://github.com/codewithevilxd/flux-icons/issues",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "icons",
+    "svg",
+    "shadcn",
+    "claude"
+  ],
+  "type": "module",
+  "bin": {
+    "flux-icons-mcp": "./src/index.mjs"
+  },
+  "exports": {
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src",
+    "icons.json",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "scripts": {
+    "start": "node ./src/index.mjs"
+  }
+}
