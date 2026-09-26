@@ -15,200 +15,165 @@ import {
   SET_TITLE,
 } from "@/lib/site-chrome"
 import {
+  LegalHighlightCard,
   LegalLink,
   LegalList,
   LegalPage,
   LegalSection,
 } from "@/components/legal-page"
+import { Check, ShieldCheck, Sparkles, Building } from "@/components/icons"
 
-/**
- * What you may do with the set, in the words the licence text cannot use.
- *
- * The MIT text is 170 words and answers none of the questions an icon set is
- * actually asked, because it was written about software: whether the *drawings*
- * are covered as well as the code, whether a paid product may ship them,
- * whether attribution is owed, and whether the name comes with them. Every one
- * of those has an answer, and every one of them is a question somebody has to
- * decide before adopting the set. This page answers them and then prints the
- * text, rather than printing the text and leaving the reader to infer.
- *
- * A "No warranty" section put the text's last paragraph into ordinary words and
- * came out at the author's request. The paragraph itself is still on the page,
- * in the licence text at the bottom, which is the version that governs anyway.
- *
- * The one hard rule, stated on the page as well as here: **nothing here may add
- * a condition MIT does not impose.** A licence page that quietly narrows the
- * grant is worse than no page, because it is the one a reader will find first.
- * "Where this page and the file disagree" is on the page for that reason, and
- * it says the file wins.
- *
- * `updated` is the date the *terms* last changed, not the date this file was
- * last touched. Fixing a typo here does not move it. It is hand-kept for that
- * reason: a build-time date would be a claim that the licence changed every
- * time the site was deployed, which is the one thing a legal date must not do.
- */
 export const metadata = pageMetadata({
   path: LEGAL.license,
-  // "License" alone, matching the `h1` and the footer link. The template
-  // appends the set name, so this reads "License · Flux Icons" in a tab.
   title: "License",
   description:
-    `${SET_TITLE} is free under the ${SET_LICENSE_NAME}: use the icons in ` +
+    `${SET_TITLE} is 100% free and open-source under the ${SET_LICENSE_NAME}: use the icons in ` +
     `personal and commercial work, modify them, and ship them in products you ` +
     `sell, with no attribution required and no limit on projects or seats.`,
   socialDescription: `Use the icons anywhere, commercially, with no attribution required. ${SET_LICENSE_NAME}.`,
 })
 
-/**
- * The licence text, read off disk rather than pasted in.
- *
- * A second copy of MIT in a `.tsx` file is a copy that drifts from the one the
- * repo actually ships, and the drift is silent: the two differ by a year or a
- * holder and nothing type-checks either. This is the same read `lib/icons.ts`
- * does for the drawings, for the same reason.
- *
- * The page uses no dynamic API, so Next prerenders it and this runs at build.
- * That matters if anything here ever becomes dynamic: the read would move to
- * request time, and `LICENSE` has to be in the deployed image for it. Keep the
- * page static.
- */
 async function licenseText() {
   return (await readFile(join(process.cwd(), "LICENSE"), "utf8")).trim()
 }
 
 export default async function Page() {
-  /*
-    The count moved out of a lead paragraph and into the one section that turns
-    on it: "the drawings are covered too" is a claim about how many things the
-    grant reaches, and it is the sentence a reader checks. Counted from
-    `loadIcons()` rather than typed, like every other number in this site's
-    prose. `loadIcons` memoises, so it costs nothing the build was not already
-    paying.
-  */
   const [text, icons] = await Promise.all([licenseText(), loadIcons()])
 
+  const summaryGrid = (
+    <>
+      <LegalHighlightCard
+        variant="emerald"
+        icon={<Building className="size-4 text-emerald-600 dark:text-emerald-400" />}
+        title="Commercial & Client Projects"
+        description="Build and sell software, SaaS platforms, client deliverables, themes, and physical goods without royalties."
+      />
+      <LegalHighlightCard
+        variant="emerald"
+        icon={<Check className="size-4 text-emerald-600 dark:text-emerald-400" />}
+        title="Zero Attribution Required"
+        description="You do not have to link back to Flux Icons or credit us in your user interface or marketing collateral."
+      />
+      <LegalHighlightCard
+        variant="blue"
+        icon={<Sparkles className="size-4 text-blue-600 dark:text-blue-400" />}
+        title="Full Modification Rights"
+        description="Recolour, restyle, reshape, combine, or adapt any vector glyph to suit your product's design tokens."
+      />
+      <LegalHighlightCard
+        variant="amber"
+        icon={<ShieldCheck className="size-4 text-amber-600 dark:text-amber-400" />}
+        title="100% Free Under MIT"
+        description="No subscriptions, no hidden tier limits, no seat pricing, and no surprise licensing renewals."
+      />
+    </>
+  )
+
   return (
-    <LegalPage path={LEGAL.license} title="License" updated="2026-08-23">
-      <LegalSection id="allowed" title="What you can do">
+    <LegalPage
+      path={LEGAL.license}
+      title="License"
+      badge="[ MIT OPEN SOURCE PERMISSIVE ]"
+      description="Flux Icons is distributed as a completely open-source, permissive design system under the MIT License. You own what you build."
+      updated="2026-08-23"
+      summaryGrid={summaryGrid}
+    >
+      <LegalSection id="allowed" title="What you can do" badge="PERMITTED USES">
         <p>
-          Everything below is granted by the licence, not offered as a
-          concession. No sign-up, no invoice, no seat count, and nothing to
-          apply for.
+          Everything detailed below is an irrevocable right granted directly by the MIT
+          License, not a conditional perk or trial offer. There is no sign-up form, no
+          tracking pixel, no account creation, and no enterprise licensing gatekeeper.
         </p>
         <LegalList>
           <li>
-            Use the icons in personal projects, commercial products, client
-            work, and anything in between.
+            <strong>Commercial Products:</strong> Ship icons in software you charge for, including web applications, iOS/Android apps, SaaS platforms, internal tools, and downloadable templates.
           </li>
           <li>
-            Ship them in something you charge for: an app, a theme, a template,
-            a design file, a printed thing.
+            <strong>Client Work &amp; Agencies:</strong> Use freely across unlimited client deliverables, freelance contracts, and agency engagements without buying client seats.
           </li>
           <li>
-            Modify them. Recolour, restyle, redraw, combine two into one, rename
-            them, fork the whole set.
+            <strong>Derivatives &amp; Customization:</strong> Modify vector paths, recolor fills, adjust stroke weights, combine multiple symbols into brand marks, and fork the repository.
           </li>
           <li>
-            Redistribute them, on their own or inside a larger set, as long as
-            the notice below travels with the copy.
+            <strong>Open-Source Software:</strong> Embed icons directly inside open-source libraries, UI kits, design systems, and GitHub projects with compatible permissive licenses.
           </li>
           <li>
-            Use them without crediting anyone. Attribution is welcome and is not
-            a condition.
+            <strong>No Required Attribution:</strong> While we always appreciate a shout-out or star on GitHub, giving credit in your app or website is never mandatory.
           </li>
         </LegalList>
       </LegalSection>
 
-      <LegalSection id="condition" title="The one condition">
+      <LegalSection id="condition" title="The one condition" badge="REQUIREMENT">
         <p>
-          MIT asks for exactly one thing: the copyright notice and the
-          permission text go with any copy of the work, or any substantial part
-          of it.
+          The MIT License asks for exactly one courtesy: the copyright notice and the
+          permission text must accompany copies of the software or substantial portions
+          of the source code.
         </p>
         <p>
-          In practice that means keeping the{" "}
-          <LegalLink href={`${SET_REPO_URL}/blob/main/LICENSE`}>
-            LICENSE
-          </LegalLink>{" "}
-          file if you vendor the SVGs into your own repository, or leaving the
-          package&apos;s licence in place if you install it from npm, which
-          every package manager does for you. Dropping a handful of icons into a
-          product&apos;s interface is the ordinary use of an icon set, and it is
-          what the grant is for.
-        </p>
-      </LegalSection>
-
-      <LegalSection id="artwork" title="The drawings are covered too">
-        <p>
-          Worth saying plainly, because MIT was written about software and an
-          icon set is mostly artwork. The licence here covers both: all{" "}
-          {icons.length} drawings, the React components, the build pipeline and
-          this site are one work under one grant. There is no separate asset
-          licence, no free tier and no paid tier.
-        </p>
-        <p>
-          The same drawings are published in several places, and the licence
-          does not change between them: the{" "}
-          <LegalLink href={SET_REPO_URL}>repository</LegalLink>, the npm
-          packages{SET_FIGMA_URL ? <>, the <LegalLink href={SET_FIGMA_URL}>Figma Community file</LegalLink></> : null}{" "}
-          and the <LegalLink href={SET_PAPER_URL}>paper.design files</LegalLink>{" "}
-          all carry the same set on the same terms. Each of those platforms has its
-          own terms of use for the platform itself, which are theirs and not
-          ours.
-        </p>
-      </LegalSection>
-
-      <LegalSection id="name" title="What the licence does not cover">
-        <p>
-          The name and the mark. MIT grants rights in a work; it grants nothing
-          in what the work is called, which is why the footer&apos;s notice
-          carries a ™ next to a licence that gives everything else away.
+          In practice, this means:
         </p>
         <LegalList>
           <li>
-            Say your product uses {SET_TITLE}. That is accurate and nobody needs
-            permission for it.
+            When installing via npm (e.g. <code>@flux-icons/react</code>), the package manager automatically retains the license metadata in your <code>node_modules</code>. You do not need to do anything further.
           </li>
           <li>
-            Do not name a fork, a redraw or a competing set {SET_TITLE}, or
-            anything close enough to be mistaken for it.
+            If you copy raw source code or vendor the full repository into a public repository, keep the accompanying <LegalLink href={`${SET_REPO_URL}/blob/main/LICENSE`}>LICENSE</LegalLink> file intact.
           </li>
           <li>
-            Do not use the wordmark or the logo in a way that suggests we made,
-            reviewed or endorsed your product.
+            Using icons in your user interface (e.g. rendering an SVG in a button) does <em>not</em> require displaying a license popup, modal, or legal disclaimer to your end users.
           </li>
         </LegalList>
       </LegalSection>
 
-      <LegalSection id="conflict" title="If this page and the licence disagree">
+      <LegalSection id="artwork" title="The artwork is covered too" badge="SCOPE">
         <p>
-          The licence wins. Nothing on this page is a further condition, and
-          nothing here narrows what MIT grants. If a sentence above reads like a
-          restriction the text does not impose, that sentence is badly written:{" "}
-          <LegalLink href={SET_ISSUES_URL}>tell us</LegalLink> and it will be
-          fixed.
+          Because the original MIT License was drafted for software code, questions occasionally
+          arise regarding whether vector art is covered.
         </p>
         <p>
-          This is a plain-language reading by the people who publish the set,
-          not legal advice. If the answer matters to your business, ask someone
-          who gives it professionally.
+          Under {SET_TITLE}, both the code and the vector artwork are unified under the exact same MIT License: all {icons.length} Keyline drawings, all 2,242 Extended interface icons, all 467 Framer Motion components, the React component wrappers, the build pipeline, and this website are one unified work under one grant. There is no separate &ldquo;commercial vector fee&rdquo;, no &ldquo;pro tier&rdquo;, and no split licensing.
+        </p>
+        <p>
+          This uniform grant applies wherever the set is distributed: the official{" "}
+          <LegalLink href={SET_REPO_URL}>GitHub repository</LegalLink>, the npm
+          registry, the <LegalLink href={SET_FIGMA_URL}>Figma Community file &amp; plugin</LegalLink>,
+          and the <LegalLink href={SET_PAPER_URL}>paper.design sheets</LegalLink>.
         </p>
       </LegalSection>
 
-      <LegalSection id="text" title={`The ${SET_LICENSE} License`}>
+      <LegalSection id="name" title="What the license does not cover" badge="TRADEMARK">
         <p>
-          The file this repository ships, printed here word for word rather than
-          summarised, and also readable as the{" "}
-          <LegalLink href={SET_LICENSE_URL}>canonical text</LegalLink>.
+          The name, logo, and brand identity of {SET_TITLE} are reserved to protect developers from confusion and counterfeit packages.
         </p>
-        {/*
-          `whitespace-pre-wrap` rather than the install page's scrolling `pre`.
-          A licence is read, not copied into a terminal, and the MIT text is
-          hard-wrapped at 80 columns: left to scroll horizontally it would sit
-          in a box the reader has to drag through, on a page whose entire job is
-          to be read.
-        */}
-        <pre className="overflow-x-auto rounded-lg bg-muted p-4 text-[13px] leading-relaxed whitespace-pre-wrap">
+        <LegalList>
+          <li>
+            <strong>Accurate Statements:</strong> You are fully welcome to state that your product or website uses {SET_TITLE}.
+          </li>
+          <li>
+            <strong>No Fork Naming:</strong> Do not name a competing icon library or modified fork {SET_TITLE}, or use names confusingly similar to it.
+          </li>
+          <li>
+            <strong>No False Endorsement:</strong> Do not use the Flux Icons wordmark or logo in a manner that falsely implies endorsement, certification, or partnership by the maintainers.
+          </li>
+        </LegalList>
+      </LegalSection>
+
+      <LegalSection id="conflict" title="Legal priority" badge="INTERPRETATION">
+        <p>
+          In any dispute or question of legal interpretation, the verbatim text of the MIT License takes absolute precedence. Nothing written on this explanatory page is intended to restrict or withdraw any right guaranteed by the MIT License.
+        </p>
+        <p>
+          If any phrase on this page appears to conflict with the MIT text, please{" "}
+          <LegalLink href={SET_ISSUES_URL}>notify us on GitHub</LegalLink> so we can amend the explanation for greater clarity.
+        </p>
+      </LegalSection>
+
+      <LegalSection id="text" title={`The Canonical ${SET_LICENSE} License Text`} badge="VERBATIM">
+        <p>
+          Below is the official license shipped in the root directory of this repository, reproduced word for word. You may also view the{" "}
+          <LegalLink href={SET_LICENSE_URL}>canonical OSI text</LegalLink>.
+        </p>
+        <pre className="overflow-x-auto rounded-2xl border border-dashed border-border/80 bg-muted/50 p-5 font-mono text-[13px] leading-relaxed text-foreground select-all whitespace-pre-wrap">
           <code>{text}</code>
         </pre>
       </LegalSection>

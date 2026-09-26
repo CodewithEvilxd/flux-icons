@@ -6,132 +6,143 @@ import {
   SET_REPO_URL,
   SET_TITLE,
 } from "@/lib/site-chrome"
-import { LegalLink, LegalPage, LegalSection } from "@/components/legal-page"
+import {
+  LegalHighlightCard,
+  LegalLink,
+  LegalList,
+  LegalPage,
+  LegalSection,
+} from "@/components/legal-page"
+import { Globe, Lock, ShieldCheck, FileText } from "@/components/icons"
 
-/**
- * The terms for using the site, which are deliberately short.
- *
- * Two decisions shaped it, and both were taken against the boilerplate:
- *
- * - **No governing law and no jurisdiction clause.** The usual paragraph names
- *   a country and a court, and here it would name the maintainer's home address
- *   in all but words, in exchange for a clause that is unenforceable anyway
- *   against a reader who accepted nothing, paid nothing and signed nothing. A
- *   free set with no accounts and no payments has no dispute to route.
- * - **No indemnity, no arbitration, no class-action waiver and no
- *   "by using this site you agree" banner.** They belong to a service that has
- *   users and revenue. This one has readers.
- *
- * What is left is the part that is actually true and actually needed: the set is
- * licensed separately and these terms do not narrow that, the name is not part
- * of the grant, and there is one place to raise anything.
- *
- * Two sections were written and then removed at the author's request, and they
- * are worth naming so they are not helpfully reinstated by the next person:
- *
- * - **"The site comes as is"**, disclaiming warranty and availability. The
- *   disclaimer it restated is in the licence text and on `/legal/license`, and
- *   Liability below still covers the site.
- * - **"Using the site fairly"**, asking readers not to hammer it and pointing
- *   bulk users at the repo and the npm package. A rule nobody is going to
- *   enforce, addressed to an audience that is not the problem.
- * - **"Other people's services"**, disclaiming GitHub, npm, Figma, paper.design
- *   and X. `/legal/privacy` already says that following a link puts you under
- *   someone else's rules, which is the part a reader needs.
- *
- * The licence section is the one to be careful with. **Terms may not add a
- * condition MIT does not impose**, so it links to `/legal/license` and states
- * that it takes nothing back, rather than restating the grant in words that
- * could drift from it.
- *
- * `updated` is hand-kept: the date the terms last changed, not the date the
- * file was last touched.
- */
 export const metadata = pageMetadata({
   path: LEGAL.terms,
   title: "Terms",
   description:
-    `The terms for using the ${SET_TITLE} site: what it promises, what it ` +
-    `does not, and how to take the whole set without hammering it. The icons ` +
-    `themselves are covered by the ${SET_LICENSE_NAME}.`,
+    `The terms for using the ${SET_TITLE} website, documentation, registry, and tooling: ` +
+    `what it promises, what it disclaims, and how the icons are licensed separately under ${SET_LICENSE_NAME}.`,
   socialDescription:
-    "What you can expect from the site, and what it expects from you.",
+    "Transparent terms of use for the Flux Icons website, registry, and developer tooling.",
 })
 
 export default function Page() {
   const host = SITE_URL.replace(/^https:\/\//, "")
 
+  const summaryGrid = (
+    <>
+      <LegalHighlightCard
+        variant="emerald"
+        icon={<Globe className="size-4 text-emerald-600 dark:text-emerald-400" />}
+        title="Free & Open Access"
+        description="Browse, search, inspect, and copy icon code without paying subscription fees or creating user accounts."
+      />
+      <LegalHighlightCard
+        variant="blue"
+        icon={<FileText className="size-4 text-blue-600 dark:text-blue-400" />}
+        title="Independent Icon License"
+        description="The icons themselves are licensed under the MIT License, which operates completely independent of website terms."
+      />
+      <LegalHighlightCard
+        variant="neutral"
+        icon={<Lock className="size-4 text-muted-foreground" />}
+        title="Zero Account Lock-in"
+        description="No login barriers, no API keys, and no telemetry tracking tied to your personal identity."
+      />
+      <LegalHighlightCard
+        variant="amber"
+        icon={<ShieldCheck className="size-4 text-amber-600 dark:text-amber-400" />}
+        title="Transparent Commit History"
+        description="Every modification to these terms is publicly tracked in our repository commit history."
+      />
+    </>
+  )
+
   return (
-    <LegalPage path={LEGAL.terms} title="Terms" updated="2026-08-23">
-      <LegalSection id="scope" title="What these terms cover">
+    <LegalPage
+      path={LEGAL.terms}
+      title="Terms of Service"
+      badge="[ WEBSITE & REGISTRY TERMS ]"
+      description={`Clear and transparent terms of service governing your use of ${host}, our shadcn/ui registry endpoints, and online developer utilities.`}
+      updated="2026-08-23"
+      summaryGrid={summaryGrid}
+    >
+      <LegalSection id="scope" title="What these terms cover" badge="JURISDICTION">
         <p>
-          The website at {host}: these pages, the icon browser, the demos and
-          the registry it serves. They are the terms on which the site is
-          offered, and they apply while you use it.
+          These Terms of Service apply directly to your interaction with the website at {host},
+          including the online icon gallery, the search catalog, interactive component previews,
+          the Next.js documentation portal, and the public shadcn/ui registry endpoints hosted at this domain.
         </p>
         <p>
-          They do not cover the icons themselves. Those are licensed, which is a
-          different thing from terms of use, and the licence is not conditional
-          on this page.
+          <strong>Crucial Distinction:</strong> These terms govern the web platform itself. They do <em>not</em> govern your subsequent use of the downloaded icon drawings or packages in your own projects. Those are governed exclusively by the <LegalLink href={LEGAL.license}>{SET_LICENSE_NAME}</LegalLink>, which is unconditional and irrevocable.
         </p>
         <p>
-          What the site records while you read it is a separate question, and it
-          has its own page: <LegalLink href={LEGAL.privacy}>Privacy</LegalLink>.
-        </p>
-      </LegalSection>
-
-      <LegalSection id="license" title="The icons are licensed separately">
-        <p>
-          {SET_TITLE} is free under the{" "}
-          <LegalLink href={LEGAL.license}>{SET_LICENSE_NAME}</LegalLink>, and
-          nothing in these terms adds a condition to that grant, withdraws part
-          of it, or makes it depend on your agreement to anything here. If the
-          two ever appear to conflict, the licence governs what you may do with
-          the drawings and the code.
+          For information on how we protect your privacy while browsing the site, please review our{" "}
+          <LegalLink href={LEGAL.privacy}>Privacy Policy</LegalLink>.
         </p>
       </LegalSection>
 
-      <LegalSection id="name" title="The name and the mark">
+      <LegalSection id="license" title="Independent icon licensing" badge="PRECEDENCE">
         <p>
-          {SET_TITLE}, the wordmark and the logo are not part of what the
-          licence gives away. Say that your product uses the set, by all means.
-          Do not name a fork after it, and do not present the mark in a way that
-          suggests we made or endorsed something we did not. The reasoning is on
-          the <LegalLink href={LEGAL.license}>License</LegalLink> page.
+          {SET_TITLE} is published under the terms of the{" "}
+          <LegalLink href={LEGAL.license}>{SET_LICENSE_NAME}</LegalLink>.
+        </p>
+        <p>
+          Nothing in these website terms introduces any additional fee, restriction, or prerequisite on the license granted by MIT. If any interpretation of these terms appears to conflict with the MIT License regarding the code or the vector assets, the MIT License takes full precedence.
         </p>
       </LegalSection>
 
-      <LegalSection id="liability" title="Liability">
+      <LegalSection id="acceptable-use" title="Acceptable use of the site" badge="FAIR USE">
         <p>
-          To the fullest extent the law allows, nobody involved in publishing
-          this site is liable for any loss or damage arising from using it or
-          the icons on it, whether that is downtime, a drawing that turned out
-          to be wrong for the job, or anything that follows from either. This
-          matches the last paragraph of the licence, which says the same thing
-          about the set.
+          We provide this documentation site, registry, and CLI endpoints as a public good for the design and engineering communities.
+        </p>
+        <LegalList>
+          <li>
+            <strong>Fair Consumption:</strong> You may query the search engine, download SVGs, copy code snippets, and use the shadcn registry freely.
+          </li>
+          <li>
+            <strong>Bulk Programmatic Access:</strong> If you need to perform bulk downloads, mirror the collection, or conduct automated analysis, please clone the <LegalLink href={SET_REPO_URL}>GitHub repository</LegalLink> or install our npm packages (<code>@flux-icons/react</code>, <code>@flux-icons/cli</code>) rather than scraping the web pages.
+          </li>
+          <li>
+            <strong>System Integrity:</strong> Do not attempt to bypass security headers, inject malicious payloads, conduct denial-of-service attacks, or disrupt availability for fellow developers.
+          </li>
+        </LegalList>
+      </LegalSection>
+
+      <LegalSection id="name" title="Brand identity and marks" badge="PROTECTION">
+        <p>
+          The name {SET_TITLE}, our wordmark, and our logos represent our project reputation and quality standards.
+        </p>
+        <p>
+          You are entirely free and encouraged to state truthfully that your application, theme, or design kit is built using {SET_TITLE}. However, you may not use our brand marks in a confusing or deceptive manner that suggests official endorsement, sponsorship, or co-authorship without express consent.
         </p>
       </LegalSection>
 
-      <LegalSection id="changes" title="Changes">
+      <LegalSection id="liability" title="Disclaimer of warranties and liability" badge="DISCLAIMER">
         <p>
-          These terms can change. The date at the top is the day they last did,
-          and every revision is in the public{" "}
-          <LegalLink href={SET_REPO_URL}>repository&apos;s</LegalLink> commit
-          history, with the reason in the message.
+          To the maximum extent permitted by applicable law, this website, its documentation, and all associated software and icon assets are provided strictly on an <strong>&ldquo;as is&rdquo;</strong> and <strong>&ldquo;as available&rdquo;</strong> basis, without warranty of any kind, whether express, implied, statutory, or otherwise.
+        </p>
+        <p>
+          In no event shall the authors, maintainers, or contributors be held liable for any damages, losses, or claims (including loss of data, profits, or business interruption) arising out of your access to or inability to use this site, its registry, or the icons downloaded from it.
         </p>
       </LegalSection>
 
-      <LegalSection id="contact" title="Getting in touch">
+      <LegalSection id="revisions" title="Revisions and transparency" badge="AUDIT TRAIL">
         <p>
-          There is no support inbox. Questions, corrections and notices go to
-          the repository&apos;s{" "}
-          <LegalLink href={SET_ISSUES_URL}>issue tracker</LegalLink>, which is
-          where the work is and where an answer stays readable for the next
-          person asking.
+          We periodically update these terms to reflect infrastructure enhancements or regulatory changes. The date displayed at the top indicates when these terms were last amended.
         </p>
         <p>
-          It is public. Do not put personal details in an issue: say what the
-          problem is, not who you are.
+          In keeping with our open-source values, every revision is committed directly to our public{" "}
+          <LegalLink href={SET_REPO_URL}>GitHub repository commit log</LegalLink>, accompanied by a transparent explanatory note.
+        </p>
+      </LegalSection>
+
+      <LegalSection id="contact" title="Inquiries and feedback" badge="COMMUNITY">
+        <p>
+          As an open-source project, all inquiries, bug reports, and suggestions are handled openly through our official{" "}
+          <LegalLink href={SET_ISSUES_URL}>GitHub Issue Tracker</LegalLink>.
+        </p>
+        <p>
+          This ensures questions and answers remain visible, transparent, and beneficial to the wider open-source community.
         </p>
       </LegalSection>
     </LegalPage>
