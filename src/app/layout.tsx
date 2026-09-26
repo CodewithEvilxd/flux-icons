@@ -31,8 +31,6 @@ const fontDisplay = Permanent_Marker({
   display: "swap",
 })
 
-const fontHandwritten = fontSans
-
 const fontMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",

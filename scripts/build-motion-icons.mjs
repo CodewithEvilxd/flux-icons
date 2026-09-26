@@ -22,8 +22,7 @@ function toPascalCase(slug) {
     .join('');
 }
 
-function getCategory(slug, keywords = []) {
-  const kw = keywords.join(' ').toLowerCase();
+function getCategory(slug) {
   const s = slug.toLowerCase();
 
   if (s.includes('arrow') || s.includes('chevron') || s.includes('move') || s.includes('expand') || s.includes('shrink') || s.includes('corner') || s.includes('compass') || s.includes('navigation') || s.includes('locate') || s.includes('map')) {
@@ -57,8 +56,7 @@ function getCategory(slug, keywords = []) {
   return 'General & UI';
 }
 
-function getAnimationType(slug, keywords = []) {
-  const kw = keywords.join(' ').toLowerCase();
+function getAnimationType(slug) {
   const s = slug.toLowerCase();
 
   if (s.includes('rotate') || s.includes('refresh') || s.includes('spin') || s.includes('loader') || s.includes('settings') || s.includes('sun') || s.includes('disc') || s.includes('fan')) {

@@ -12,6 +12,12 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "src/components/icons/**",
+    "src/components/extended-icons/**",
+    "src/components/motion-icons/icons/**",
+    "packages/**",
+    "tools/**",
+    "public/**",
   ]),
 ]);
 
