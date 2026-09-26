@@ -73,10 +73,10 @@ temp-repo/
 .tempmediaStorage/
 
 # Internal Project Working Directories
-.claude/settings.local.json
-.claude/skills/
+.claude/
+.githooks/
 previews/community/
 previews/sharp-history/
 marketing/
 refs/
-tools/v5/scratch/
+pipeline/tools/v5/scratch/

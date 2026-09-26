@@ -16,7 +16,7 @@ const eslintConfig = defineConfig([
     "src/components/extended-icons/**",
     "src/components/motion-icons/icons/**",
     "packages/**",
-    "tools/**",
+    "pipeline/tools/**",
     "public/**",
   ]),
 ]);
