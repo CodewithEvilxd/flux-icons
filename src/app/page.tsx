@@ -354,31 +354,6 @@ export default async function Page() {
                   Install packages
                 </Button>
               </div>
-
-              {/* Quick Jump Vault Pills */}
-              <div className="mt-5 flex flex-wrap items-center justify-center gap-2 font-mono text-xs">
-                <Link
-                  href="/icons"
-                  className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/5 px-3 py-1 font-semibold text-amber-700 dark:text-amber-400 hover:bg-amber-500/10 hover:border-amber-500/50 transition-colors"
-                >
-                  <span className="size-2 rounded-full bg-amber-500" />
-                  Keyline Vault (1,000)
-                </Link>
-                <Link
-                  href="/extended"
-                  className="inline-flex items-center gap-1.5 rounded-full border border-blue-500/30 bg-blue-500/5 px-3 py-1 font-semibold text-blue-700 dark:text-blue-400 hover:bg-blue-500/10 hover:border-blue-500/50 transition-colors"
-                >
-                  <span className="size-2 rounded-full bg-blue-500" />
-                  Extended Vault (2,242)
-                </Link>
-                <Link
-                  href="/motion"
-                  className="inline-flex items-center gap-1.5 rounded-full border border-purple-500/30 bg-purple-500/5 px-3 py-1 font-semibold text-purple-700 dark:text-purple-400 hover:bg-purple-500/10 hover:border-purple-500/50 transition-colors"
-                >
-                  <span className="size-2 rounded-full bg-purple-500" />
-                  Motion Vault (467)
-                </Link>
-              </div>
             </div>
 
             {/* THREE CORE VAULTS CARDS (Replaces single 1,000 fact cards) */}
