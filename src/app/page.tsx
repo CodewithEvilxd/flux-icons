@@ -288,10 +288,10 @@ export default async function Page() {
           page.
         */}
         {/* SECTION 1: HERO STUDIO */}
-        <section className="relative overflow-hidden pt-16 sm:pt-20 lg:pt-28 pb-20 lg:pb-32 bg-paper-grid">
+        <section className="relative overflow-hidden pt-24 sm:pt-32 lg:pt-40 pb-20 lg:pb-32 bg-paper-grid">
           <IconWall
             icons={icons}
-            className="pointer-events-none absolute inset-x-0 top-0 hidden h-160 select-none md:block opacity-40"
+            className="pointer-events-none absolute inset-x-0 top-6 hidden h-160 select-none md:block opacity-40"
           />
 
           <div className={`relative ${CONTAINER}`}>
