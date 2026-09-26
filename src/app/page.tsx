@@ -17,7 +17,6 @@ import { KeylineShowcase } from "@/components/keyline-showcase"
 import { StyleShowcase } from "@/components/style-showcase"
 import { homeFaq } from "@/lib/faq"
 import {
-  HERO_FACT_ICON_NAMES,
   INSTALL_EXAMPLE_ICON_NAMES,
   SPONSOR_ICON_NAMES,
   pickFrameworkHintIcons,
@@ -234,10 +233,6 @@ export default async function Page() {
     circle: icons.filter((icon) => icon.container === "circle").length,
   }
 
-  /* The hero's three glyphs, named in `lib/home.ts` so `check-demos` can hold
-     them to what is on disk. Destructured rather than indexed at the call site,
-     so which drawing belongs to which sentence is readable there. */
-  const [_countGlyph, _weightGlyph, _licenceGlyph] = HERO_FACT_ICON_NAMES
 
   /* The drawing the install terminal's `cli add` line names, from the same
      kind of checked list, so a rename cannot leave a command that 404s. */
