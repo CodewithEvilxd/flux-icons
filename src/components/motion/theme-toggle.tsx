@@ -1,15 +1,13 @@
 "use client"
 
 // beui.dev/components/motion/theme-toggle
-import { Moon, Sun } from "@/components/icons"
 import { useTheme } from "next-themes"
 import { useReducedMotion } from "motion/react"
+import { PullCord } from "pullcord"
 import { useEffect, useSyncExternalStore, type ComponentPropsWithoutRef } from "react"
 
 const emptySubscribe = () => () => {}
-import { ActionSwapIcon } from "@/components/motion/action-swap"
 import { EASE_OUT_CSS } from "@/lib/ease"
-import { cn } from "@/lib/utils"
 
 export type ThemeVariant = "rectangle" | "circle" | "circle-blur" | "blinds"
 export type RectStart =
@@ -193,34 +191,21 @@ export function ThemeToggle({
   variant = "blinds",
   start = "bottom-up",
   className,
-  iconClassName,
-  ...rest
 }: ThemeToggleProps) {
   const { isDark, mounted, toggle } = useThemeToggle({ variant, start })
 
+  if (!mounted) {
+    return null
+  }
+
   return (
-    <button
-      type="button"
-      aria-label={mounted && isDark ? "Switch to light mode" : "Switch to dark mode"}
-      onClick={toggle}
-      className={cn("flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground", className)}
-      {...rest}
-    >
-      {mounted ? (
-        <ActionSwapIcon
-          value={isDark ? "dark" : "light"}
-          animation="blur"
-          className={iconClassName}
-        >
-          {isDark ? (
-            <Sun className={cn("size-4", iconClassName)} />
-          ) : (
-            <Moon className={cn("size-4", iconClassName)} />
-          )}
-        </ActionSwapIcon>
-      ) : (
-        <span className={cn("size-4", iconClassName)} aria-hidden="true" />
-      )}
-    </button>
+    <PullCord
+      onPull={toggle}
+      pulled={!isDark}
+      ariaLabel={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      className={className}
+    />
   )
 }
+
+export { PullCord }

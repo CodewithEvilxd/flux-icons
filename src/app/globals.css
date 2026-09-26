@@ -84,9 +84,14 @@
   --sidebar-accent-foreground: oklch(0.20 0.02 250);
   --sidebar-border: oklch(0.90 0.01 85);
   --sidebar-ring: var(--primary);
+  --pullcord-top: 0px;
+  --pullcord-right: calc(max(1.5rem, (100vw - 1440px) / 2 + 1.5rem));
+  --pullcord-z: 45;
+  --pullcord-ink: rgba(0, 0, 0, 0.35);
 }
 
 .dark {
+  --pullcord-ink: rgba(255, 255, 255, 0.4);
   --background: oklch(0.14 0.01 250);
   --foreground: oklch(0.96 0.005 85);
   --card: oklch(0.18 0.01 250);
@@ -526,4 +531,23 @@
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* PullCord ceiling mount & responsiveness */
+@media (max-width: 640px) {
+  :root {
+    --pullcord-right: 1.25rem;
+  }
+}
+
+.pullcord::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 28px;
+  width: 8px;
+  height: 4px;
+  border-radius: 0 0 4px 4px;
+  background: var(--pullcord-ink, rgba(127, 127, 127, 0.5));
+  pointer-events: none;
 }
