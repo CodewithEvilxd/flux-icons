@@ -1,27 +1,30 @@
+<p align="center">
+  <img src="previews/social-preview.png" alt="Flux Icons Banner" width="100%" />
+</p>
+
 <div align="center">
-  <a href="https://fluxicons.vercel.app">
-    <img src="public/logo/logo.svg" width="88" height="88" alt="Flux Icons logo" />
-  </a>
-  <br />
   <h1>Flux Icons</h1>
   <p><strong>The High-Precision Icon Ecosystem Engineered for Modern Web Apps, shadcn/ui & React.</strong></p>
-  <p>3 Specialized Vaults · 3,700+ Master Glyphs · 21,000+ Production SVGs · Zero Runtime Bloat · 100% Free & MIT.</p>
+  <p>3 Specialized Vaults · 3,700+ Master Glyphs · 21,450+ Production SVGs · Zero Runtime Overhead · 100% Free & MIT.</p>
 
   <p>
-    <a href="https://fluxicons.vercel.app"><img src="https://img.shields.io/badge/Website-fluxicons.vercel.app-000000?style=for-the-badge&logo=vercel" alt="Website" /></a>
-    <a href="https://github.com/codewithevilxd/flux-icons/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/codewithevilxd/flux-icons/ci.yml?branch=main&label=CI&style=for-the-badge&color=000000" alt="CI Status" /></a>
-    <a href="https://www.npmjs.com/package/@flux-icons/react"><img src="https://img.shields.io/npm/v/@flux-icons/react?style=for-the-badge&color=000000&label=%40flux-icons%2Freact" alt="NPM Version" /></a>
-    <a href="https://www.figma.com/community/plugin/1672557050316875938/flux-icons"><img src="https://img.shields.io/badge/Figma-Community%20Plugin-000000?style=for-the-badge&logo=figma" alt="Figma Plugin" /></a>
-    <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-000000?style=for-the-badge" alt="License: MIT" /></a>
+    <a href="https://fluxicons.vercel.app"><img src="https://img.shields.io/badge/Website-fluxicons.vercel.app-black?style=flat-square&logo=vercel" alt="Website" /></a>
+    <a href="https://github.com/codewithevilxd/flux-icons/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/codewithevilxd/flux-icons/ci.yml?branch=main&label=CI&style=flat-square&color=black" alt="CI Status" /></a>
+    <a href="https://www.npmjs.com/package/@flux-icons/react"><img src="https://img.shields.io/npm/v/@flux-icons/react?style=flat-square&color=black&label=%40flux-icons%2Freact" alt="NPM Version" /></a>
+    <a href="https://www.npmjs.com/package/@flux-icons/react"><img src="https://img.shields.io/npm/dm/%40flux-icons%2Freact?style=flat-square&color=black&label=Downloads" alt="NPM Downloads" /></a>
+    <a href="https://github.com/CodewithEvilxd/flux-icons"><img src="https://img.shields.io/github/stars/CodewithEvilxd/flux-icons?style=flat-square&color=black" alt="GitHub Stars" /></a>
+    <a href="https://www.figma.com/community/plugin/1672557050316875938/flux-icons"><img src="https://img.shields.io/badge/Figma-Community%20Plugin-black?style=flat-square&logo=figma" alt="Figma Plugin" /></a>
+    <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-black.svg?style=flat-square" alt="License: MIT" /></a>
   </p>
 
   <p>
     <a href="https://fluxicons.vercel.app"><strong>Browse Library</strong></a> &nbsp;•&nbsp;
+    <a href="#-why-flux-icons"><strong>Why Flux?</strong></a> &nbsp;•&nbsp;
+    <a href="#-comparison-matrix"><strong>Comparison</strong></a> &nbsp;•&nbsp;
     <a href="#-the-three-vaults"><strong>The 3 Vaults</strong></a> &nbsp;•&nbsp;
     <a href="#-quick-start"><strong>Quick Start</strong></a> &nbsp;•&nbsp;
     <a href="#-keyline-system-specification"><strong>Keyline Grid</strong></a> &nbsp;•&nbsp;
-    <a href="#-shadcnui-registry"><strong>shadcn/ui</strong></a> &nbsp;•&nbsp;
-    <a href="#-ai-assistant-mcp-server"><strong>AI MCP Server</strong></a> &nbsp;•&nbsp;
+    <a href="#-developer--ai-tooling"><strong>Tooling & AI</strong></a> &nbsp;•&nbsp;
     <a href="#-monorepo-packages"><strong>Packages</strong></a> &nbsp;•&nbsp;
     <a href="#-development--contributing"><strong>Development</strong></a>
   </p>
@@ -29,15 +32,31 @@
 
 ---
 
-## ⚡ Overview
+## ⚡ Why Flux Icons?
 
-**Flux Icons** is an open-source, production-grade icon design system engineered from first principles for React, Next.js, and design-conscious developers. Rather than a loosely curated bundle, Flux Icons provides a unified visual hierarchy organized into **three specialized vaults totaling over 3,700 unique icons**:
+Most icon libraries give you a single style, a loose collection of symbols, and zero interaction capabilities. **Flux Icons** is architected from first principles as a complete visual design system for high-growth digital products:
 
-1. **Vault 01: Keyline (1,000 Glyphs · 8,000 SVGs)**: Geometric drawings on a 24×24 coordinate grid with strict 2px keyline rules, 4 rendering weights (`stroke`, `two-tone`, `duotone`, `fill`), and dual corner geometry (`rounded` and `sharp`).
-2. **Vault 02: Extended (2,242 Glyphs · 13,450+ SVGs)**: Rich interface icons spanning 6 distinct visual treatments (`Linear`, `Bold`, `Two-Tone`, `Bulk`, `Broken`, `Outline`) tailored for fintech, commerce, dashboards, and enterprise applications.
-3. **Vault 03: Motion (467 Components)**: Living, interactive React micro-animations powered by Framer Motion with fluid hover, tap, loop, and controlled animation physics.
+- 🎯 **3 Specialized Vaults**: Over 3,700 unique glyphs organized across Keyline, Extended, and Motion collections.
+- 📐 **Dual Corner Geometry**: Every Keyline icon is drawn twice from scratch: **Rounded** (smooth filleted corners) and **Sharp** (clean architectural butt-caps).
+- ✨ **Interactive Micro-Animations**: 467 native Framer Motion components with responsive hover, tap, loop, and stateful triggers.
+- ⚡ **Direct shadcn/ui Registry**: Add isolated icon components directly to your codebase with `npx shadcn add @flux/name` with zero runtime dependencies.
+- 🤖 **AI Agent Native (MCP Server)**: Official Model Context Protocol integration enabling Cursor, Claude Code, Windsurf, and Antigravity to search and inspect icons in real time.
+- 🚀 **Zero Runtime Bloat**: Direct SVG rendering with pure CSS/Tailwind color inheritance (`currentColor`) and minimal bundle footprint.
 
-Every icon is available as tree-shakable React components, copy-paste shadcn/ui registry items, raw normalized SVGs, or via the terminal CLI and AI MCP server.
+---
+
+## 📊 Comparison Matrix
+
+| Feature | Flux Icons | Lucide | Heroicons | Phosphor |
+| :--- | :---: | :---: | :---: | :---: |
+| **Total Icons Available** | **3,700+** | ~1,450 | ~290 | ~1,250 |
+| **Specialized Icon Vaults** | **3 (Keyline, Extended, Motion)** | 1 | 1 | 1 |
+| **Production SVGs** | **21,450+** | ~1,450 | ~1,160 | ~7,500 |
+| **Dual Corner Geometry** | **Both Rounded & Sharp** | Rounded only | Rounded only | Rounded only |
+| **Interactive Motion Components** | **Native (467 Framer Motion)** | Community | None | None |
+| **shadcn/ui Native Registry** | **Native Direct (`@flux/*`)** | Manual copy | Manual copy | Manual copy |
+| **Official AI MCP Server** | **Native (`@flux-icons/mcp`)** | None | None | None |
+| **License** | **MIT (100% Free)** | ISC | MIT | MIT |
 
 ---
 
@@ -55,9 +74,9 @@ Flux Icons organizes its 3,700+ glyphs into three distinct collections so that e
 
 ## 🚀 Quick Start
 
-### 1. Keyline React Icons (`@flux-icons/react`)
+### Installation
 
-Install `@flux-icons/react` using your package manager of choice:
+Install `@flux-icons/react` using your favorite package manager:
 
 ```bash
 # pnpm (recommended)
@@ -73,7 +92,9 @@ yarn add @flux-icons/react
 bun add @flux-icons/react
 ```
 
-Import icons directly into your React / Next.js application:
+### 1. Keyline React Icons (`@flux-icons/react`)
+
+Keyline icons feature clean 24×24 geometry and full tree-shakable subpath imports:
 
 ```tsx
 import { ArrowUpRight, Check, Menu } from "@flux-icons/react"
@@ -85,9 +106,14 @@ import { Folder as FolderSharpFill } from "@flux-icons/react/sharp/fill"
 export function Navbar() {
   return (
     <nav className="flex items-center gap-4">
+      {/* Default rounded stroke */}
       <Check className="size-5 text-emerald-500" />
       <ArrowUpRight size={20} strokeWidth={2} />
+      
+      {/* Duotone style */}
       <FolderDuotone className="size-6 text-sky-500" />
+      
+      {/* Sharp architectural corner treatment */}
       <FolderSharpFill className="size-6 text-neutral-800 dark:text-neutral-200" />
     </nav>
   )
@@ -96,7 +122,7 @@ export function Navbar() {
 
 ### 2. Extended React Icons
 
-Import rich dashboard, commerce, and settings icons across 6 styles:
+Import rich dashboard, commerce, fintech, and settings icons across 6 distinct weights:
 
 ```tsx
 import { 
@@ -112,7 +138,7 @@ export function DashboardHeader() {
       <CardSend className="size-6 text-blue-500" />
       <DirectboxNotif className="size-6 text-violet-500" />
       <WalletMoney className="size-6 text-emerald-500" />
-      <Element3 className="size-6 text-neutral-700" />
+      <Element3 className="size-6 text-neutral-700 dark:text-neutral-300" />
     </div>
   )
 }
@@ -128,12 +154,53 @@ import { BellMotion, HeartMotion, CheckMotion } from "@/components/motion-icons/
 export function InteractiveToolbar() {
   return (
     <div className="flex items-center gap-4">
+      {/* Animate on hover */}
       <BellMotion trigger="hover" className="size-6 cursor-pointer" />
+      
+      {/* Trigger on click */}
       <HeartMotion trigger="click" className="size-6 text-rose-500" />
+      
+      {/* Controlled state */}
       <CheckMotion isCompleted={true} className="size-6 text-emerald-500" />
     </div>
   )
 }
+```
+
+---
+
+## 🎨 UI Recipes & Best Practices
+
+### A. shadcn/ui Button with Leading Icon
+
+```tsx
+import { Button } from "@/components/ui/button"
+import { Plus, ArrowRight } from "@flux-icons/react"
+
+export function ActionButtons() {
+  return (
+    <div className="flex items-center gap-3">
+      <Button variant="default" className="gap-2">
+        <Plus className="size-4" strokeWidth={2.5} />
+        Create Project
+      </Button>
+      <Button variant="outline" className="gap-2 group">
+        Explore Features
+        <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+      </Button>
+    </div>
+  )
+}
+```
+
+### B. Dynamic Color & Theme Inheritance
+
+Flux Icons use `currentColor` for both stroke and fill elements, automatically inheriting foreground color tokens:
+
+```tsx
+{/* Inherits text color directly from Tailwind classes */}
+<Check className="size-5 text-emerald-600 dark:text-emerald-400" />
+<Menu className="size-6 text-muted-foreground hover:text-foreground transition-colors" />
 ```
 
 ---
@@ -152,6 +219,10 @@ Flux Icons provides a complete visual language designed on a strict 24×24 coord
 | `fill` | 1,000 | Solid, with the detail knocked back out of the shape. |
 
 `stroke` is the drawing every other style starts from, and since 1.0.0 every name comes in all four. `two-tone` is what `duotone` meant until 0.9.0: the outline kept, a 40% plate under it. `duotone` now drops the outline and decides per icon which part is grey and which is black, so the thing that matters reads first: the check on a badge, the liquid in a flask, the data rather than the chart's axes. A glyph with nothing to fill, like `bar-chart`, carries its stroke drawing in the filled styles, so no import ever comes up empty.
+
+<p align="center">
+  <img src="public/mockups/paper.png" alt="Flux Icons Paper Proof & Grid Geometry" width="100%" />
+</p>
 
 ### Dual Corner Geometry (Rounded & Sharp)
 
@@ -269,7 +340,13 @@ The entire set is indexed on [Iconify](https://icon-sets.iconify.design/flux-ico
 <iconify-icon icon="flux-icons:bell-sharp-duotone"></iconify-icon>
 ```
 
-### F. Figma Community
+### F. Figma Community & Design Assets
+
+<p align="center">
+  <a href="https://www.figma.com/community/plugin/1672557050316875938/flux-icons">
+    <img src="public/mockups/figma-plugin.png" alt="Flux Icons Figma Plugin" width="100%" />
+  </a>
+</p>
 
 - **[Figma Community Plugin](https://www.figma.com/community/plugin/1672557050316875938/flux-icons)**: Instant icon browser inside Figma with style and corner switching.
 - **[Figma Community File](https://www.figma.com/community/file/1672255957017818239/flux-icons)**: The complete vector design system with interactive component properties.
