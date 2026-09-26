@@ -9,18 +9,20 @@ Nothing else here needs it, and it tells you where to point `CHROME` if it canno
 find one.
 
 ```bash
-pnpm icons:build     # raw/ -> icons/
-pnpm icons:lint      # check icons/
-pnpm icons:react     # icons/stroke/ -> components/icons/index.tsx
-pnpm icons:demos     # check the demo pages against icons/
-pnpm readmes:check   # check the counts typed into the READMEs against icons/
-pnpm readmes:fix     # rewrite those counts in place
-pnpm icons:figma     # check the Figma file against raw/ (two steps, see below)
-pnpm icons:ci        # sync checks, lint, demo and README checks, typecheck (for CI)
-pnpm brand:build     # public/logo/logo.svg -> app/ icons
-pnpm paper:build     # icons/ -> previews/paper/ (sheets for paper.design)
-pnpm paper:import    # write those sheets into the paper.design file
-pnpm paper:verify    # check the paper.design file against those sheets
+pnpm icons:build          # raw/ -> icons/
+pnpm icons:lint           # check icons/
+pnpm icons:react          # icons/stroke/ -> components/icons/index.tsx
+pnpm icons:extended:build # compile extended React icon components (2,242 icons)
+pnpm icons:motion:build   # compile animated Framer Motion icons & metadata (467 icons)
+pnpm icons:demos          # check the demo pages against icons/
+pnpm readmes:check        # check the counts typed into the READMEs against icons/
+pnpm readmes:fix          # rewrite those counts in place
+pnpm icons:figma          # check the Figma file against raw/ (two steps, see below)
+pnpm icons:ci             # sync checks, lint, demo and README checks, typecheck (for CI)
+pnpm brand:build          # public/logo/logo.svg -> app/ icons
+pnpm paper:build          # icons/ -> previews/paper/ (sheets for paper.design)
+pnpm paper:import         # write those sheets into the paper.design file
+pnpm paper:verify         # check the paper.design file against those sheets
 ```
 
 `icons:figma` is the odd one out and is deliberately not in `icons:ci`: it needs

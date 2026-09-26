@@ -1,11 +1,19 @@
-import fs from 'node:fs';
-import path from 'node:path';
+#!/usr/bin/env node
+/**
+ * Compile animated Framer Motion icons and metadata for the Motion Vault (467 icons).
+ *
+ *   node pipeline/build-motion.mjs
+ */
 
-const ICONS_DIR = path.resolve('src/components/motion-icons/icons');
-const OUT_DIR = path.resolve('public/motion-icons');
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 
-if (!fs.existsSync(OUT_DIR)) {
-  fs.mkdirSync(OUT_DIR, { recursive: true });
+const ROOT = resolve(import.meta.dirname, '..');
+const ICONS_DIR = join(ROOT, 'src', 'components', 'motion-icons', 'icons');
+const OUT_DIR = join(ROOT, 'public', 'motion-icons');
+
+if (!existsSync(OUT_DIR)) {
+  mkdirSync(OUT_DIR, { recursive: true });
 }
 
 function toTitleCase(slug) {
@@ -68,63 +76,55 @@ function getAnimationType(slug) {
   if (s.includes('arrow') || s.includes('chevron') || s.includes('download') || s.includes('upload') || s.includes('send') || s.includes('bounce') || s.includes('jump')) {
     return 'bounce';
   }
-  if (s.includes('activity') || s.includes('heart') || s.includes('pulse') || s.includes('chart') || s.includes('trend') || s.includes('line')) {
-    return 'draw';
+  if (s.includes('heart') || s.includes('star') || s.includes('thumb') || s.includes('check') || s.includes('pulse') || s.includes('activity') || s.includes('zap') || s.includes('sparkle') || s.includes('fire') || s.includes('flame')) {
+    return 'pulse';
   }
-  if (s.includes('sparkles') || s.includes('star') || s.includes('flame') || s.includes('zap') || s.includes('award') || s.includes('check') || s.includes('plus')) {
-    return 'pop';
-  }
-  if (s.includes('wifi') || s.includes('bluetooth') || s.includes('radio') || s.includes('signal') || s.includes('cast')) {
-    return 'wave';
+  if (s.includes('eye') || s.includes('lock') || s.includes('unlock') || s.includes('shield') || s.includes('folder') || s.includes('toggle') || s.includes('switch')) {
+    return 'path';
   }
 
-  return 'spring';
+  return 'float';
 }
 
 async function build() {
-  if (!fs.existsSync(ICONS_DIR)) {
+  if (!existsSync(ICONS_DIR)) {
     console.error(`Icons directory not found: ${ICONS_DIR}`);
     process.exit(1);
   }
 
-  const files = fs.readdirSync(ICONS_DIR).filter((f) => f.endsWith('.tsx') && f !== 'index.ts');
+  const files = readdirSync(ICONS_DIR).filter((f) => f.endsWith('.tsx') && !f.startsWith('index'));
   console.log(`Found ${files.length} authentic motion icon components in ${ICONS_DIR}`);
 
   const metaList = [];
-  const sources = {};
+  const sourcesMap = {};
 
   for (const file of files) {
     const slug = file.replace(/\.tsx$/, '');
-    const name = toTitleCase(slug);
-    const componentName = `${toPascalCase(slug)}`;
-    const fullPath = path.join(ICONS_DIR, file);
-    const sourceCode = fs.readFileSync(fullPath, 'utf8');
+    const componentName = toPascalCase(slug);
+    const title = toTitleCase(slug);
+    const category = getCategory(slug);
+    const animation = getAnimationType(slug);
 
-    // Extract keywords from component code or file name
-    const keywords = [slug, ...slug.split('-')];
-
-    const category = getCategory(slug, keywords);
-    const animationType = getAnimationType(slug, keywords);
+    const fullPath = join(ICONS_DIR, file);
+    const code = readFileSync(fullPath, 'utf8');
 
     metaList.push({
-      name,
-      slug,
-      componentName,
-      category,
-      animationType,
-      keywords,
+      id: slug,
+      name: componentName,
+      title: title,
+      category: category,
+      animation: animation,
+      triggers: ['hover', 'click', 'loop', 'controlled'],
+      defaultTrigger: 'hover',
     });
 
-    sources[slug] = sourceCode;
+    sourcesMap[slug] = code;
   }
-
-  // Sort metaList alphabetically
-  metaList.sort((a, b) => a.slug.localeCompare(b.slug));
 
   console.log(`Writing ${metaList.length} items to ${OUT_DIR}...`);
 
-  fs.writeFileSync(path.join(OUT_DIR, 'meta.json'), JSON.stringify(metaList, null, 2));
-  fs.writeFileSync(path.join(OUT_DIR, 'sources.json'), JSON.stringify(sources));
+  writeFileSync(join(OUT_DIR, 'meta.json'), JSON.stringify(metaList, null, 2), 'utf8');
+  writeFileSync(join(OUT_DIR, 'sources.json'), JSON.stringify(sourcesMap), 'utf8');
 
   console.log('Successfully generated public/motion-icons/meta.json and sources.json!');
 }
