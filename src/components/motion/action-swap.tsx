@@ -169,7 +169,7 @@ export function ActionSwapText({
   return (
     <span
       className={cn(
-        "relative -my-[0.08em] inline-block max-w-full whitespace-nowrap py-[0.08em] align-bottom",
+        "relative my-[-0.08em] inline-block max-w-full whitespace-nowrap py-[0.08em] align-bottom",
         className
       )}
       style={{
