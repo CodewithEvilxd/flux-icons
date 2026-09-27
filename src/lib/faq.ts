@@ -48,7 +48,6 @@ import {
   SET_AUTHOR_NAME,
   SET_LICENSE_NAME,
   SET_REPO_URL,
-  SET_TAGLINE,
   SET_TITLE,
 } from "@/lib/site-chrome"
 
@@ -112,7 +111,7 @@ export function homeFaq({
     {
       question: `How many icons are there, and what collections are available?`,
       answer:
-        `Over 3,700 icons across three dedicated vaults: (1) Keyline Vault with 1,000 icons in 4 styles and 2 corner treatments (8,000 SVGs total); ` +
+        `Over 3,700 icons across three dedicated vaults: (1) Keyline Vault with ${total.toLocaleString("en-US")} icons in 4 styles and 2 corner treatments (${files.toLocaleString("en-US")} SVGs total); ` +
         `(2) Extended Vault with 2,242 icons in 6 cohesive styles (linear, bold, two-tone, bulk, broken, and outline); and ` +
         `(3) Motion Vault with 467 animated micro-interaction components built natively for React and Framer Motion.`,
     },

@@ -17,7 +17,6 @@ import {
   SET_AUTHOR_HANDLE,
   SET_AUTHOR_NAME,
   SET_TITLE,
-  SET_X_URL,
 } from "@/lib/site-chrome"
 import { GoogleAnalytics } from "@/components/google-analytics"
 import { RouteProgress } from "@/components/route-progress"

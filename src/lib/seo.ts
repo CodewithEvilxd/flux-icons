@@ -157,8 +157,10 @@ export const SITE_KEYWORDS = [
  * route that opts out of the layout's `%s · Flux Icons` template, so the
  * absolute title and the card title are the same string by definition.
  */
-export const homeCardTitle = (_icons: number) =>
-  `${SET_TITLE}: 3,700+ free icons for shadcn/ui & React across 3 collections`
+export const homeCardTitle = (_icons?: number) => {
+  void _icons
+  return `${SET_TITLE}: 3,700+ free icons for shadcn/ui & React across 3 collections`
+}
 
 /**
  * The card's line under that title.
@@ -167,8 +169,10 @@ export const homeCardTitle = (_icons: number) =>
  * search result and says what you can do here, this one is written for a feed
  * card and has to survive being cut off.
  */
-export const homeCardDescription = (_icons: number) =>
-  `3,700+ free MIT-licensed icons for shadcn/ui & React across three dedicated collections: 1,000 Keyline (4 styles, 2 corners), 2,242 Extended (6 styles), and 467 Framer Motion animated icons.`
+export const homeCardDescription = (_icons?: number) => {
+  void _icons
+  return `3,700+ free MIT-licensed icons for shadcn/ui & React across three dedicated collections: 1,000 Keyline (4 styles, 2 corners), 2,242 Extended (6 styles), and 467 Framer Motion animated icons.`
+}
 
 type PageMetadata = {
   /** Route path, e.g. `/demo`. Becomes the canonical and `og:url`. */
