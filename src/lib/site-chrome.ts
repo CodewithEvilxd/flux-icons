@@ -407,6 +407,8 @@ export type SiteLink = {
    * `group` need one — a bar link has its label and the page behind it.
    */
   description?: string
+  /** Set `false` to keep a route out of the footer. Omit otherwise. */
+  footer?: false
   /**
    * Set `true` for a legal page. Only the footer reads it, and only to put
    * these links in their own small row beside the copyright rather than in the
@@ -437,7 +439,11 @@ export const SITE_LINKS: readonly SiteLink[] = [
   { href: "/extended", label: "Extended", priority: 0.95, bar: false },
   { href: "/motion", label: "Motion", priority: 0.95, bar: false },
   { href: "/install", label: "Install", priority: 0.9 },
-
+  { href: "/blog", label: "Blog", priority: 0.85, bar: false },
+  { href: "/changelog", label: "Changelog", priority: 0.8, bar: false },
+  { href: "/examples", label: "Showcase", priority: 0.8, bar: false },
+  { href: "/demo", label: "Dashboard Demo", priority: 0.75, bar: false, footer: false },
+  { href: "/demo/mobile", label: "Mobile Demo", priority: 0.7, bar: false, footer: false },
 
   /*
     The legal pages, last and lowest.
@@ -479,7 +485,9 @@ export const SITE_LINKS: readonly SiteLink[] = [
  * "here is the site", and Terms sitting between Dashboard and Changelog offers
  * a privacy policy as though it were somewhere to go next.
  */
-export const SITE_FOOTER_LINKS = SITE_LINKS.filter((link) => !link.legal)
+export const SITE_FOOTER_LINKS = SITE_LINKS.filter(
+  (link) => !link.legal && link.footer !== false
+)
 
 /** The legal row, in the order `SITE_LINKS` declares them. */
 export const SITE_LEGAL_LINKS = SITE_LINKS.filter((link) => link.legal)

@@ -118,6 +118,11 @@ export const metadata: Metadata = {
   },
   category: "design",
   classification: "Design & Development Icons",
+  verification: {
+    google:
+      process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ||
+      process.env.GOOGLE_SITE_VERIFICATION,
+  },
   other: {
     "author": `${SET_AUTHOR_NAME} (${SET_AUTHOR_HANDLE})`,
     "creator": SET_AUTHOR_NAME,
