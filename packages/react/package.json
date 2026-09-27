@@ -1,13 +1,13 @@
 {
   "name": "@flux-icons/react",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Icons on one 24×24 grid, as React components in four styles: stroke, two-tone, duotone and fill, each in rounded or sharp corners. Built for shadcn/ui.",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
   "author": "Nishant Gaurav (codewithevilxd)",
-  "homepage": "https://fluxicons.vercel.app",
+  "homepage": "https://www.fluxicons.site",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/codewithevilxd/flux-icons.git",

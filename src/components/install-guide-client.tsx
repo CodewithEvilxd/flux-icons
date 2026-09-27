@@ -338,7 +338,7 @@ export function InstallTabs() {
                 Add Individual Icons Via shadcn Registry
               </p>
               <CodeBlock
-                code={`${PM_COMMANDS[pm].shadcn} https://fluxicons.vercel.app/r/bell.json`}
+                code={`${PM_COMMANDS[pm].shadcn} https://www.fluxicons.site/r/bell.json`}
                 language="bash"
                 filename={`SHADCN REGISTRY (${pm})`}
                 maxHeight={90}

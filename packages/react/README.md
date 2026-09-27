@@ -1,11 +1,11 @@
-<img src="https://fluxicons.vercel.app/icon.svg" width="56" height="56" alt="Flux Icons logo">
+<img src="https://www.fluxicons.site/icon.svg" width="56" height="56" alt="Flux Icons logo">
 
 # @flux-icons/react
 
 1,000 icons on one 24×24 grid, as React components. Built for shadcn/ui, free
 under MIT.
 
-[fluxicons.vercel.app](https://fluxicons.vercel.app) to browse the full set.
+[www.fluxicons.site](https://www.fluxicons.site) (mirror: [fluxicons.vercel.app](https://fluxicons.vercel.app)) to browse the full set.
 
 ```bash
 npm i @flux-icons/react

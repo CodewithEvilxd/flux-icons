@@ -11,7 +11,7 @@ import { SET_TITLE } from "@/lib/site-chrome"
  * the CLI resolves `@flux` with no setup. On a CLI that predates the index,
  * a consumer adds one line to their own `components.json`:
  *
- *   "registries": { "@flux": "https://fluxicons.vercel.app/r/{name}.json" }
+ *   "registries": { "@flux": "https://www.fluxicons.site/r/{name}.json" }
  *
  * In `components.json` specifically. shadcn's docs describe a `package.json`
  * form as well, and its CLI does not read it: through 4.13.0 the same entry in

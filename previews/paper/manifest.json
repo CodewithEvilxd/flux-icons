@@ -2222,7 +2222,7 @@
       "parts": 1,
       "icons": 0,
       "variants": 18,
-      "bytes": 16580
+      "bytes": 16578
     },
     {
       "file": "changelog.html",
@@ -2233,7 +2233,7 @@
       "width": 1224,
       "icons": 0,
       "variants": 0,
-      "bytes": 1230
+      "bytes": 1228
     },
     {
       "file": "changelog-newest.html",
@@ -2255,7 +2255,7 @@
       "width": 744,
       "icons": 0,
       "variants": 0,
-      "bytes": 9306
+      "bytes": 9282
     }
   ]
 }

@@ -26,7 +26,7 @@ const data = JSON.parse(
 // older icons.json still runs rather than reading `undefined.includes`.
 const { icons, styles, corners = ["regular"], keywords = {} } = data
 const NAMES = Object.keys(icons)
-const VERSION = "1.0.0"
+const VERSION = "1.0.1"
 
 /** Colour only when a human is looking. Piped output stays clean. */
 const tty = process.stdout.isTTY
@@ -377,7 +377,7 @@ ${bold("EXAMPLES")}
   flux-icons list | grep chart
 
 ${dim("Every icon takes its colour from currentColor.")}
-${dim("https://fluxicons.vercel.app")}
+${dim("https://www.fluxicons.site · https://fluxicons.vercel.app")}
 `
 
 const commands = {

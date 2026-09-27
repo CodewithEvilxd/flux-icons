@@ -109,6 +109,7 @@ Every drawing sits on one 24 × 24 grid with a shared keyline, so icons of diffe
 
 MIT licensed. The set, the site and this plugin are all open source.
 
+fluxicons.site
 fluxicons.vercel.app
 github.com/codewithevilxd/flux-icons
 
@@ -192,7 +193,7 @@ Also redrawn: the pointing hand in four directions, the paperclip longer, the di
 
 Also redrawn in both treatments: the pen family, the same drawing scaled 10/9 with its band moved from the nib to the cap; clock, now exactly clock-3 with both names kept; and the two sliders, whose rails break at the knob.
 
-Earlier releases, back to the first cut: fluxicons.vercel.app/changelog
+Earlier releases, back to the first cut: fluxicons.site/changelog
 ```
 
 ## Category
@@ -565,7 +566,7 @@ rather than bundled so that adding an icon does not require a plugin update and
 a second trip through review. Nothing is sent anywhere: the fetch is a GET with
 no body, no credentials and no query string. The plugin reads no user data,
 stores nothing, and the only other URL in it is the footer link to
-fluxicons.vercel.app, which is an anchor the user clicks rather than a request.
+fluxicons.site, which is an anchor the user clicks rather than a request.
 
 `pipeline/check-search.mjs` and `pipeline/build-data.mjs --check` both run in CI
 and would fail if that URL changed.
@@ -600,6 +601,7 @@ The Catalog page files every icon under one of 38 categories, each card laid out
 
 Also available as React components, a shadcn registry, an MCP server for agents, a CLI, and a Figma plugin that searches the set and drops an icon straight onto the canvas.
 
+fluxicons.site
 fluxicons.vercel.app
 github.com/codewithevilxd/flux-icons
 
@@ -673,7 +675,7 @@ v0.6.0
 * The circled currencies clear the ring by 1 rather than the 2 the set asks between elements: a container is a frame, not a neighbour, and at 2 a letterform comes out at about half the well
 * Categories went from 22 to 24: Finance took the currency marks, the payment cards and the wallet off Commerce, and Education took the mortarboard off Sport
 
-Earlier releases, back to the first cut: fluxicons.vercel.app/changelog
+Earlier releases, back to the first cut: fluxicons.site/changelog
 ```
 
 **The version history is part of this description**, the way it is in the
@@ -690,7 +692,7 @@ the bottom, v0.2.0 and the four 0.1.x releases on 14 Sep 2026, v0.3.0 on
 v0.5.0 from the file's and 0.3.0 and 0.4.0 from the plugin's on 17 Sep 2026
 (10,363 in the plugin's once the singles batch reached 147 drawings),
 and a last line
-points at `fluxicons.vercel.app/changelog`, which keeps every release. Trim from
+points at `fluxicons.site/changelog`, which keeps every release. Trim from
 the oldest end again whenever a new entry pushes it past about 9,500.
 
 **One line per paragraph, and that is not a style choice.** Figma's Description

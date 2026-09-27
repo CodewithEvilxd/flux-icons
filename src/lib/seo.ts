@@ -26,7 +26,8 @@ import {
  *
  * No trailing slash. `absoluteUrl` adds one only where a URL genuinely has it.
  */
-export const SITE_URL = "https://fluxicons.vercel.app"
+export const SITE_URL = "https://www.fluxicons.site"
+export const VERCEL_SITE_URL = "https://fluxicons.vercel.app"
 
 /**
  * A path on this site, as an absolute URL.

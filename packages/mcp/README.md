@@ -1,8 +1,8 @@
-<img src="https://fluxicons.vercel.app/icon.svg" width="56" height="56" alt="Flux Icons logo">
+<img src="https://www.fluxicons.site/icon.svg" width="56" height="56" alt="Flux Icons logo">
 
 # @flux-icons/mcp
 
-An MCP server for [Flux Icons](https://fluxicons.vercel.app). Lets an agent
+An MCP server for [Flux Icons](https://www.fluxicons.site). Lets an agent
 search the set, read an icon's SVG, and get the right React import, without
 guessing at names.
 

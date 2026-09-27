@@ -1,13 +1,13 @@
 {
   "name": "@flux-icons/cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Search Flux Icons and copy them into your project from the terminal.",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
   "author": "Nishant Gaurav (codewithevilxd)",
-  "homepage": "https://fluxicons.vercel.app",
+  "homepage": "https://www.fluxicons.site",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/codewithevilxd/flux-icons.git",
@@ -23,7 +23,7 @@
   ],
   "type": "module",
   "bin": {
-    "flux-icons": "./src/index.mjs"
+    "flux-icons": "src/index.mjs"
   },
   "exports": {
     "./package.json": "./package.json"

@@ -448,7 +448,7 @@ const pluginCoverSvg = (() => {
     `Stroke, two-tone, duotone and fill` +
     `<tspan fill="${COVER_MUTED}">  ·  </tspan>Figma and FigJam` +
     `<tspan fill="${COVER_MUTED}">  ·  </tspan>MIT</text>` +
-    `<text x="${PADX}" y="948" font-family="${FONT}" font-size="26" fill="${COVER_MUTED}">fluxicons.vercel.app</text>` +
+    `<text x="${PADX}" y="948" font-family="${FONT}" font-size="26" fill="${COVER_MUTED}">fluxicons.site</text>` +
     `</svg>\n`
   )
 })()

@@ -70,7 +70,7 @@ const linkRows = [
   },
   {
     label: "Website",
-    value: "https://fluxicons.dev",
+    value: "https://www.fluxicons.site",
     icon: <DemoIcon name="globe" fallback={GlobeIcon} className="size-4" />,
     muted: true,
   },

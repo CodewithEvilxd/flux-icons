@@ -1,8 +1,8 @@
-<img src="https://fluxicons.vercel.app/icon.svg" width="56" height="56" alt="Flux Icons logo">
+<img src="https://www.fluxicons.site/icon.svg" width="56" height="56" alt="Flux Icons logo">
 
 # @flux-icons/cli
 
-Search [Flux Icons](https://fluxicons.vercel.app) and copy them into your project
+Search [Flux Icons](https://www.fluxicons.site) and copy them into your project
 from the terminal. No install, no dependencies, no network.
 
 ```bash

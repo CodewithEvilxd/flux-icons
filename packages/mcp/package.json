@@ -1,13 +1,13 @@
 {
   "name": "@flux-icons/mcp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MCP server for Flux Icons. Search the set, get SVG source, get the React import.",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
   "author": "Nishant Gaurav (codewithevilxd)",
-  "homepage": "https://fluxicons.vercel.app",
+  "homepage": "https://www.fluxicons.site",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/codewithevilxd/flux-icons.git",

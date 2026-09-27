@@ -8,7 +8,8 @@
   <p>3 Specialized Vaults · 3,700+ Master Glyphs · 21,450+ Production SVGs · Zero Runtime Overhead · 100% Free & MIT.</p>
 
   <p>
-    <a href="https://fluxicons.vercel.app"><img src="https://img.shields.io/badge/Website-fluxicons.vercel.app-black?style=flat-square&logo=vercel" alt="Website" /></a>
+    <a href="https://www.fluxicons.site"><img src="https://img.shields.io/badge/Website-fluxicons.site-black?style=flat-square" alt="Website" /></a>
+    <a href="https://fluxicons.vercel.app"><img src="https://img.shields.io/badge/Mirror-fluxicons.vercel.app-black?style=flat-square&logo=vercel" alt="Vercel Mirror" /></a>
     <a href="https://github.com/codewithevilxd/flux-icons/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/codewithevilxd/flux-icons/ci.yml?branch=main&label=CI&style=flat-square&color=black" alt="CI Status" /></a>
     <a href="https://www.npmjs.com/package/@flux-icons/react"><img src="https://img.shields.io/npm/v/@flux-icons/react?style=flat-square&color=black&label=%40flux-icons%2Freact" alt="NPM Version" /></a>
     <a href="https://www.npmjs.com/package/@flux-icons/react"><img src="https://img.shields.io/npm/dm/%40flux-icons%2Freact?style=flat-square&color=black&label=Downloads" alt="NPM Downloads" /></a>
@@ -18,7 +19,8 @@
   </p>
 
   <p>
-    <a href="https://fluxicons.vercel.app"><strong>Browse Library</strong></a> &nbsp;•&nbsp;
+    <a href="https://www.fluxicons.site"><strong>Browse Library (fluxicons.site)</strong></a> &nbsp;•&nbsp;
+    <a href="https://fluxicons.vercel.app"><strong>Vercel Mirror</strong></a> &nbsp;•&nbsp;
     <a href="#-why-flux-icons"><strong>Why Flux?</strong></a> &nbsp;•&nbsp;
     <a href="#-comparison-matrix"><strong>Comparison</strong></a> &nbsp;•&nbsp;
     <a href="#-the-three-vaults"><strong>The 3 Vaults</strong></a> &nbsp;•&nbsp;
@@ -260,7 +262,7 @@ Flux Icons natively serves a [shadcn/ui](https://ui.shadcn.com) compatible regis
 ```json
 {
   "registries": {
-    "@flux": "https://fluxicons.vercel.app/r/{name}.json"
+    "@flux": "https://www.fluxicons.site/r/{name}.json"
   }
 }
 ```
@@ -372,7 +374,7 @@ The icon set spans 39 comprehensive categories designed to meet real production 
 
 Actions, AI, Animals, Art, Charts, Chevrons & Carets, Circle Containers, Commerce, Controls, Devices, Diagrams, Education, Emoji, Files, Finance, Food & Drink, Gender, Git, Health, Home, Layout, Mail, Maps, Media, Nature, Pointers, Science, Shapes, Sport, Square Containers, Stationery, Text, Time, Tools, Transport, Users, Weather, Web, plus specialized utility glyphs.
 
-Release updates and redraws are detailed in the [Changelog](https://fluxicons.vercel.app/changelog).
+Release updates and redraws are detailed in the [Changelog](https://www.fluxicons.site/changelog).
 
 ---
 
