@@ -38,7 +38,7 @@ const MASK =
  */
 export function IconWall({
   icons,
-  count = 220,
+  count = 110,
   className,
 }: {
   icons: Icon[]

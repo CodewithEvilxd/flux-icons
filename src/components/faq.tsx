@@ -33,13 +33,15 @@ export function Faq({
           key={entry.question}
           className="paper-card-dashed paper-card-lift relative flex flex-col gap-3 p-6"
         >
-          <div className="flex items-center justify-between">
-            <span className="ann-tag-amber font-handwritten">
-              [ FAQ #{String(index + 1).padStart(2, "0")} ]
+          <dt className="flex flex-col gap-2">
+            <span className="flex items-center justify-between">
+              <span className="ann-tag-amber font-handwritten">
+                [ FAQ #{String(index + 1).padStart(2, "0")} ]
+              </span>
             </span>
-          </div>
-          <dt className="font-handwritten text-lg font-bold text-foreground">
-            {entry.question}
+            <span className="font-handwritten text-lg font-bold text-foreground">
+              {entry.question}
+            </span>
           </dt>
           <dd className="font-sans text-sm leading-relaxed text-muted-foreground">
             {entry.answer}

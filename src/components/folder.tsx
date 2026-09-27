@@ -481,7 +481,7 @@ function RealDocumentPage({
                 {isMotion ? "motion.svg" : isExtended ? "extended.svg" : "specimen.svg"}
               </span>
             </div>
-            <span className="font-mono text-[8px] font-semibold text-slate-400">
+            <span className="font-mono text-[8px] font-semibold text-slate-500">
               {isMotion ? "467" : isExtended ? "2.2K" : "1.0K"}
             </span>
           </div>
@@ -518,7 +518,7 @@ function RealDocumentPage({
         </div>
 
         {/* Document Footer Barcode / Pagination */}
-        <div className="flex items-center justify-between border-t border-slate-200 pt-1 font-mono text-[8px] text-slate-400">
+        <div className="flex items-center justify-between border-t border-slate-200 pt-1 font-mono text-[8px] text-slate-500">
           <span>PAGE 01/01</span>
           <span>{isMotion ? "INTERACTIVE" : "24×24 GRID"}</span>
         </div>
@@ -563,7 +563,7 @@ function RealDocumentPage({
                 {isMotion ? "physics.ts" : "matrix.pdf"}
               </span>
             </div>
-            <span className="font-mono text-[8px] text-slate-400">
+            <span className="font-mono text-[8px] text-slate-500">
               {isMotion ? "7 MODES" : isExtended ? "6 STYLES" : "4 STYLES"}
             </span>
           </div>
@@ -577,7 +577,7 @@ function RealDocumentPage({
               <Sun className="size-3.5 text-amber-500" />
               <span className="font-mono text-[8px] font-bold">{isMotion ? "Spin / Rotate" : "Linear / Stroke"}</span>
             </div>
-            <span className="font-mono text-[7px] text-slate-400">{isMotion ? "360°" : "1.5px"}</span>
+            <span className="font-mono text-[7px] text-slate-500">{isMotion ? "360°" : "1.5px"}</span>
           </div>
 
           <div className="flex items-center justify-between rounded-md bg-white border border-slate-200/80 px-2 py-1 text-slate-700">
@@ -585,7 +585,7 @@ function RealDocumentPage({
               <ShieldCheck className="size-3.5 text-emerald-500" />
               <span className="font-mono text-[8px] font-bold">{isMotion ? "Ring / Shake" : "Two-Tone / Duotone"}</span>
             </div>
-            <span className="font-mono text-[7px] text-slate-400">{isMotion ? "Elastic" : "30%"}</span>
+            <span className="font-mono text-[7px] text-slate-500">{isMotion ? "Elastic" : "30%"}</span>
           </div>
 
           <div className="flex items-center justify-between rounded-md bg-white border border-slate-200/80 px-2 py-1 text-slate-700">
@@ -593,12 +593,12 @@ function RealDocumentPage({
               <Lock className="size-3.5 text-indigo-500" />
               <span className="font-mono text-[8px] font-bold">{isMotion ? "Bounce / Move" : "Bold / Fill"}</span>
             </div>
-            <span className="font-mono text-[7px] text-slate-400">{isMotion ? "60fps" : "Solid"}</span>
+            <span className="font-mono text-[7px] text-slate-500">{isMotion ? "60fps" : "Solid"}</span>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between border-t border-slate-200 pt-1 font-mono text-[8px] text-slate-400">
+        <div className="flex items-center justify-between border-t border-slate-200 pt-1 font-mono text-[8px] text-slate-500">
           <span>{isMotion ? "FRAMER ENGINE" : "OPTICAL ALIGN"}</span>
           <span>{isMotion ? "FLUX MOTION" : "FLUX LABS"}</span>
         </div>
@@ -642,7 +642,7 @@ function RealDocumentPage({
               manifest.json
             </span>
           </div>
-          <span className="font-mono text-[8px] text-slate-400">v0.1.0</span>
+          <span className="font-mono text-[8px] text-slate-500">v0.1.0</span>
         </div>
         <div className="w-full h-px bg-slate-200 mt-1.5 mb-1" />
       </div>
@@ -651,15 +651,15 @@ function RealDocumentPage({
       <div className="rounded-lg bg-slate-900 p-2 font-mono text-[7.5px] leading-relaxed text-slate-300 shadow-inner my-auto">
         <div className="text-amber-400">&#123;</div>
         <div className="pl-2">
-          <span className="text-slate-400">&quot;name&quot;:</span>{" "}
+          <span className="text-slate-300">&quot;name&quot;:</span>{" "}
           <span className="text-emerald-400">&quot;{isMotion ? "@flux-icons/motion" : "@flux/icons"}&quot;</span>,
         </div>
         <div className="pl-2">
-          <span className="text-slate-400">&quot;{isMotion ? "engine" : "license"}&quot;:</span>{" "}
+          <span className="text-slate-300">&quot;{isMotion ? "engine" : "license"}&quot;:</span>{" "}
           <span className="text-emerald-400">&quot;{isMotion ? "motion/react" : "MIT"}&quot;</span>,
         </div>
         <div className="pl-2">
-          <span className="text-slate-400">&quot;{isMotion ? "interactive" : "treeShakeable"}&quot;:</span>{" "}
+          <span className="text-slate-300">&quot;{isMotion ? "interactive" : "treeShakeable"}&quot;:</span>{" "}
           <span className="text-blue-400">true</span>
         </div>
         <div className="text-amber-400">&#125;</div>
@@ -676,7 +676,7 @@ function RealDocumentPage({
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between border-t border-slate-200 pt-1 font-mono text-[8px] text-slate-400">
+      <div className="flex items-center justify-between border-t border-slate-200 pt-1 font-mono text-[8px] text-slate-500">
         <span>VERIFIED</span>
         <span>2026 MIT</span>
       </div>

@@ -6,16 +6,12 @@ import React, {
   useMemo,
   useCallback,
   useRef,
-  type RefObject,
 } from "react"
 import { motion, AnimatePresence } from "motion/react"
 import { toast } from "sonner"
 import {
   Activity,
-  ArrowRight,
   Check,
-  ChevronDown,
-  Circle,
   Code,
   Compass,
   Copy,
@@ -55,7 +51,7 @@ import {
 } from "@/components/ui/tooltip"
 
 // Import authentic 467 motion icon components and map
-import { ICON_LIST, ICON_MAP, type IconListItem } from "./icons"
+import { ICON_LIST, ICON_MAP } from "./icons"
 
 export interface MotionIconMeta {
   name: string

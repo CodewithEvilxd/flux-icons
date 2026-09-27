@@ -374,9 +374,9 @@ export default async function Page() {
                     <span className="ann-tag-amber text-xs font-mono font-bold">[ 1,000 ICONS ]</span>
                   </div>
                   <div>
-                    <h3 className="font-display text-lg uppercase tracking-wide text-foreground group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                    <h2 className="font-display text-lg uppercase tracking-wide text-foreground group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                       Keyline Grid Vault
-                    </h3>
+                    </h2>
                     <p className="mt-2 text-sm text-muted-foreground font-handwritten leading-relaxed">
                       Flagship precision icon suite drawn on a strict 24×24 grid with a 2px keyline. 4 weights (stroke, two-tone, duotone, fill) × 2 corner treatments. 8,000 SVGs.
                     </p>
@@ -400,9 +400,9 @@ export default async function Page() {
                     <span className="ann-tag-blue text-xs font-mono font-bold">[ 2,242 ICONS ]</span>
                   </div>
                   <div>
-                    <h3 className="font-display text-lg uppercase tracking-wide text-foreground group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    <h2 className="font-display text-lg uppercase tracking-wide text-foreground group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                       Extended UI Vault
-                    </h3>
+                    </h2>
                     <p className="mt-2 text-sm text-muted-foreground font-handwritten leading-relaxed">
                       Comprehensive interface system covering 28+ categories across 6 distinct visual styles: linear, bold, two-tone, bulk, broken, and outline. 13,450+ SVGs.
                     </p>
@@ -426,9 +426,9 @@ export default async function Page() {
                     <span className="ann-tag-purple text-xs font-mono font-bold">[ 467 ICONS ]</span>
                   </div>
                   <div>
-                    <h3 className="font-display text-lg uppercase tracking-wide text-foreground group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                    <h2 className="font-display text-lg uppercase tracking-wide text-foreground group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
                       Animated Motion Vault
-                    </h3>
+                    </h2>
                     <p className="mt-2 text-sm text-muted-foreground font-handwritten leading-relaxed">
                       Drop-in interactive React icons powered by Framer Motion. Smooth micro-interactions with hover triggers, tap feedback, and continuous state pulses.
                     </p>
@@ -484,6 +484,7 @@ export default async function Page() {
                   </span>
                   <Link
                     href="/icons"
+                    aria-label="Open Keyline 24×24 Grid Vault"
                     className="inline-flex items-center gap-1 font-mono text-xs font-bold text-amber-600 dark:text-amber-400 hover:underline"
                   >
                     Open <ArrowRight className="size-3" />
@@ -524,6 +525,7 @@ export default async function Page() {
                   </span>
                   <Link
                     href="/extended"
+                    aria-label="Open Flux Extended UI Vault"
                     className="inline-flex items-center gap-1 font-mono text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline"
                   >
                     Open <ArrowRight className="size-3" />
@@ -564,6 +566,7 @@ export default async function Page() {
                   </span>
                   <Link
                     href="/motion"
+                    aria-label="Open Flux Motion Vault"
                     className="inline-flex items-center gap-1 font-mono text-xs font-bold text-purple-600 dark:text-purple-400 hover:underline"
                   >
                     Open <ArrowRight className="size-3" />

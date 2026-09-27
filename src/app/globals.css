@@ -278,19 +278,24 @@
   pointer-events: none;
 }
 
-/* Hand-drawn Tag Badges */
+/* Hand-drawn Tag Badges (WCAG AA Compliant) */
 .ann-tag-green {
   display: inline-flex;
   align-items: center;
   font-family: var(--font-handwritten), "Shantell Sans", cursive;
   font-size: 0.825rem;
   font-weight: 600;
-  color: #22c55e;
-  border: 1px dashed #22c55e;
+  color: #15803d;
+  border: 1px dashed rgba(21, 128, 61, 0.5);
   border-radius: 6px;
   padding: 2px 8px;
   letter-spacing: 0.05em;
-  background: rgba(34, 197, 94, 0.08);
+  background: rgba(34, 197, 94, 0.1);
+}
+:is(.dark) .ann-tag-green {
+  color: #86efac;
+  border-color: rgba(134, 239, 172, 0.4);
+  background: rgba(34, 197, 94, 0.15);
 }
 
 .ann-tag-amber {
@@ -299,12 +304,17 @@
   font-family: var(--font-handwritten), "Shantell Sans", cursive;
   font-size: 0.825rem;
   font-weight: 600;
-  color: #f59e0b;
-  border: 1px dashed #f59e0b;
+  color: #92400e;
+  border: 1px dashed rgba(180, 83, 9, 0.5);
   border-radius: 6px;
   padding: 2px 8px;
   letter-spacing: 0.05em;
-  background: rgba(245, 158, 11, 0.08);
+  background: rgba(245, 158, 11, 0.1);
+}
+:is(.dark) .ann-tag-amber {
+  color: #fcd34d;
+  border-color: rgba(252, 211, 77, 0.4);
+  background: rgba(245, 158, 11, 0.15);
 }
 
 .ann-tag-red {
@@ -313,12 +323,17 @@
   font-family: var(--font-handwritten), "Shantell Sans", cursive;
   font-size: 0.825rem;
   font-weight: 600;
-  color: #ef4444;
-  border: 1px dashed #ef4444;
+  color: #b91c1c;
+  border: 1px dashed rgba(185, 28, 28, 0.5);
   border-radius: 6px;
   padding: 2px 8px;
   letter-spacing: 0.05em;
-  background: rgba(239, 68, 68, 0.08);
+  background: rgba(239, 68, 68, 0.1);
+}
+:is(.dark) .ann-tag-red {
+  color: #fca5a5;
+  border-color: rgba(252, 165, 165, 0.4);
+  background: rgba(239, 68, 68, 0.15);
 }
 
 .ann-tag-purple {
@@ -327,12 +342,17 @@
   font-family: var(--font-handwritten), "Shantell Sans", cursive;
   font-size: 0.825rem;
   font-weight: 600;
-  color: #a855f7;
-  border: 1px dashed #a855f7;
+  color: #7e22ce;
+  border: 1px dashed rgba(126, 34, 206, 0.5);
   border-radius: 6px;
   padding: 2px 8px;
   letter-spacing: 0.05em;
-  background: rgba(168, 85, 247, 0.08);
+  background: rgba(168, 85, 247, 0.1);
+}
+:is(.dark) .ann-tag-purple {
+  color: #d8b4fe;
+  border-color: rgba(216, 180, 254, 0.4);
+  background: rgba(168, 85, 247, 0.15);
 }
 
 .ann-tag-cyan {
@@ -341,12 +361,17 @@
   font-family: var(--font-handwritten), "Shantell Sans", cursive;
   font-size: 0.825rem;
   font-weight: 600;
-  color: #06b6d4;
-  border: 1px dashed #06b6d4;
+  color: #0e7490;
+  border: 1px dashed rgba(14, 116, 144, 0.5);
   border-radius: 6px;
   padding: 2px 8px;
   letter-spacing: 0.05em;
-  background: rgba(6, 182, 212, 0.08);
+  background: rgba(6, 182, 212, 0.1);
+}
+:is(.dark) .ann-tag-cyan {
+  color: #67e8f9;
+  border-color: rgba(103, 232, 249, 0.4);
+  background: rgba(6, 182, 212, 0.15);
 }
 
 .ann-tag-pink {
@@ -355,12 +380,17 @@
   font-family: var(--font-handwritten), "Shantell Sans", cursive;
   font-size: 0.825rem;
   font-weight: 600;
-  color: #ec4899;
-  border: 1px dashed #ec4899;
+  color: #be185d;
+  border: 1px dashed rgba(190, 24, 93, 0.5);
   border-radius: 6px;
   padding: 2px 8px;
   letter-spacing: 0.05em;
-  background: rgba(236, 72, 153, 0.08);
+  background: rgba(236, 72, 153, 0.1);
+}
+:is(.dark) .ann-tag-pink {
+  color: #f9a8d4;
+  border-color: rgba(249, 168, 212, 0.4);
+  background: rgba(236, 72, 153, 0.15);
 }
 
 .ann-tag-yellow {
@@ -369,12 +399,36 @@
   font-family: var(--font-handwritten), "Shantell Sans", cursive;
   font-size: 0.825rem;
   font-weight: 600;
-  color: #eab308;
-  border: 1px dashed #eab308;
+  color: #854d0e;
+  border: 1px dashed rgba(133, 77, 14, 0.5);
   border-radius: 6px;
   padding: 2px 8px;
   letter-spacing: 0.05em;
-  background: rgba(234, 179, 8, 0.08);
+  background: rgba(234, 179, 8, 0.1);
+}
+:is(.dark) .ann-tag-yellow {
+  color: #fde047;
+  border-color: rgba(253, 224, 71, 0.4);
+  background: rgba(234, 179, 8, 0.15);
+}
+
+.ann-tag-blue {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-handwritten), "Shantell Sans", cursive;
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #1d4ed8;
+  border: 1px dashed rgba(29, 78, 216, 0.5);
+  border-radius: 6px;
+  padding: 2px 8px;
+  letter-spacing: 0.05em;
+  background: rgba(59, 130, 246, 0.1);
+}
+:is(.dark) .ann-tag-blue {
+  color: #93c5fd;
+  border-color: rgba(147, 197, 253, 0.4);
+  background: rgba(59, 130, 246, 0.15);
 }
 
 .font-display {

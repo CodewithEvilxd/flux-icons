@@ -29,6 +29,8 @@ import {
  * rule, which a Tailwind utility here would not. Always a token, never a
  * literal, so the mark still follows the theme.
  */
+import { cn } from "@/lib/utils"
+
 export function BrandMark({
   className,
   style,
@@ -36,15 +38,44 @@ export function BrandMark({
 }: Omit<SVGProps<SVGSVGElement>, "children">) {
   return (
     <svg
-      viewBox="0 0 1024 1024"
+      viewBox={BRAND_MARK_VIEWBOX}
       fill="none"
       aria-hidden="true"
-      className={className}
+      className={cn("text-primary", className)}
       xmlns="http://www.w3.org/2000/svg"
-      style={style}
+      style={{
+        color: "var(--brand-mark-ink, currentColor)",
+        ...style,
+      }}
       {...props}
     >
-      <image href="/logo/logo.png" width="1024" height="1024" preserveAspectRatio="xMidYMid meet" />
+      <path
+        d={BRAND_MARK.diamond}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="butt"
+        strokeLinejoin="round"
+      />
+      <path
+        d={BRAND_MARK.trianglePlate}
+        fill="currentColor"
+        fillOpacity={BRAND_MARK_PLATE_OPACITY}
+      />
+      <path
+        d={BRAND_MARK.plate}
+        fill="currentColor"
+        fillOpacity={BRAND_MARK_PLATE_OPACITY}
+      />
+      <path
+        d={BRAND_MARK.ring}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d={BRAND_MARK.square} fill="currentColor" />
     </svg>
   )
 }

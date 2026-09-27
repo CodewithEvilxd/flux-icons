@@ -9,19 +9,11 @@ import {
   Copy,
   Layers,
   Sparkles,
-  Terminal,
 } from "@/components/icons"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
 
 type PackageManager = "pnpm" | "npm" | "bun" | "yarn"
-
-const PM_COMMANDS: Record<PackageManager, string> = {
-  pnpm: "pnpm add @flux-icons/react",
-  npm: "npm i @flux-icons/react",
-  bun: "bun add @flux-icons/react",
-  yarn: "yarn add @flux-icons/react",
-}
 
 export interface SiteHeroProps {
   /** How many icons the directory holds. Read off disk or passed as count. */
