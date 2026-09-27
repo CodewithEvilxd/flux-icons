@@ -8,10 +8,17 @@ import "pullcord/pullcord.css"
 import {
   OG_DEFAULTS,
   SITE_DESCRIPTION,
+  SITE_KEYWORDS,
   SITE_URL,
   TWITTER_DEFAULTS,
 } from "@/lib/seo"
-import { SET_TITLE } from "@/lib/site-chrome"
+import {
+  SET_AUTHOR_GITHUB,
+  SET_AUTHOR_HANDLE,
+  SET_AUTHOR_NAME,
+  SET_TITLE,
+  SET_X_URL,
+} from "@/lib/site-chrome"
 import { GoogleAnalytics } from "@/components/google-analytics"
 import { RouteProgress } from "@/components/route-progress"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -64,7 +71,7 @@ export const metadata: Metadata = {
   title: {
     // Used only by a route that sets no title at all. There is no such route
     // today; it exists so that the next one added is wrong in a survivable way.
-    default: `${SET_TITLE}: free icons for shadcn/ui`,
+    default: `${SET_TITLE}: 3,700+ Free Icons for shadcn/ui & React by ${SET_AUTHOR_NAME}`,
     // Pages pass their own name only. "Mobile demo" renders as
     // "Mobile demo · Flux Icons"; passing the full title here would render
     // the set name twice.
@@ -75,20 +82,14 @@ export const metadata: Metadata = {
   },
   description: SITE_DESCRIPTION,
   applicationName: SET_TITLE,
-  keywords: [
-    "free icons",
-    "free svg icons",
-    "icon set",
-    "shadcn/ui icons",
-    "react icons",
-    "stroke icons",
-    "two-tone icons",
-    "duotone icons",
-    "24px icon grid",
+  keywords: [...SITE_KEYWORDS],
+  authors: [
+    { name: SET_AUTHOR_NAME, url: SET_AUTHOR_GITHUB },
+    { name: SET_AUTHOR_HANDLE, url: SET_AUTHOR_GITHUB },
+    { name: SET_TITLE, url: SITE_URL },
   ],
-  authors: [{ name: SET_TITLE, url: SITE_URL }],
-  creator: SET_TITLE,
-  publisher: SET_TITLE,
+  creator: `${SET_AUTHOR_NAME} (@${SET_AUTHOR_HANDLE})`,
+  publisher: SET_AUTHOR_NAME,
   // Fallbacks only. A page setting `openGraph` or `twitter` *replaces* these
   // objects rather than extending them, so `pageMetadata` spreads the same two
   // constants back in. See the note on them in `lib/seo.ts`.
@@ -96,7 +97,11 @@ export const metadata: Metadata = {
   // `app/opengraph-image.tsx` supplies `og:image` and its dimensions on its
   // own, for this segment and every one below it, so no `images` key here.
   openGraph: OG_DEFAULTS,
-  twitter: TWITTER_DEFAULTS,
+  twitter: {
+    ...TWITTER_DEFAULTS,
+    creator: `@${SET_AUTHOR_HANDLE}`,
+    site: `@${SET_AUTHOR_HANDLE}`,
+  },
   robots: {
     index: true,
     follow: true,
@@ -113,6 +118,12 @@ export const metadata: Metadata = {
     },
   },
   category: "design",
+  classification: "Design & Development Icons",
+  other: {
+    "author": `${SET_AUTHOR_NAME} (${SET_AUTHOR_HANDLE})`,
+    "creator": SET_AUTHOR_NAME,
+    "profile:username": SET_AUTHOR_HANDLE,
+  },
   // Not an SEO field. It names the shortcut when the site is added to an iOS
   // home screen, next to the touch icon `pipeline/build-brand.mjs` generates.
   // Without it the label is whatever the page title happened to be.

@@ -4,6 +4,9 @@ import { BrandMark } from "@/components/brand-mark"
 import { FigmaLogo, XLogo } from "@/components/brand-logos"
 import {
   LEGAL,
+  SET_AUTHOR_GITHUB,
+  SET_AUTHOR_HANDLE,
+  SET_AUTHOR_NAME,
   SET_FIGMA_PROFILE_URL,
   SET_LICENSE_NAME,
   SET_REPO_URL,
@@ -132,6 +135,15 @@ export function SiteFooter() {
               >
                 {SET_LICENSE_NAME}
               </Link>
+              . Created by{" "}
+              <a
+                href={SET_AUTHOR_GITHUB}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-foreground underline underline-offset-2 transition-colors hover:text-primary"
+              >
+                {SET_AUTHOR_NAME} (@{SET_AUTHOR_HANDLE})
+              </a>
               .
             </p>
 

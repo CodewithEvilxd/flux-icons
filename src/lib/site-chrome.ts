@@ -113,11 +113,15 @@ export const SET_ISSUES_URL = `${SET_REPO_URL}/issues`
 export const SET_REQUEST_URL = `${SET_ISSUES_URL}/new`
 
 /**
- * The author's X account or primary link.
+ * The author's name, handle, and primary links.
  */
-export const SET_X_HANDLE = "codewithevilxd"
+export const SET_AUTHOR_NAME = "Nishant Gaurav"
+export const SET_AUTHOR_HANDLE = "codewithevilxd"
+export const SET_AUTHOR_GITHUB = "https://github.com/codewithevilxd"
+export const SET_AUTHOR_X = `https://x.com/${SET_AUTHOR_HANDLE}`
 
-export const SET_X_URL = `https://x.com/${SET_X_HANDLE}`
+export const SET_X_HANDLE = SET_AUTHOR_HANDLE
+export const SET_X_URL = SET_AUTHOR_X
 
 /**
  * What "post a screenshot" prefills, and the composer it opens.

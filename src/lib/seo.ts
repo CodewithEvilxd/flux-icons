@@ -2,6 +2,10 @@ import type { Metadata } from "next"
 
 import { BLOG_DESCRIPTION, BLOG_SEGMENT } from "@/lib/blog"
 import {
+  SET_AUTHOR_GITHUB,
+  SET_AUTHOR_HANDLE,
+  SET_AUTHOR_NAME,
+  SET_AUTHOR_X,
   SET_LICENSE,
   SET_LICENSE_URL,
   SET_NAME,
@@ -90,6 +94,51 @@ export const SITE_DESCRIPTION =
   `shadcn/ui & React, featuring 3,700+ icons across 3 vaults: Keyline (1,000), Extended (2,242), and Motion (467).`
 
 /**
+ * 25+ curated, high-intent matching search keywords for Google and search engines.
+ * Covers brand, author/creator, frameworks, formats, and design systems.
+ */
+export const SITE_KEYWORDS = [
+  // Core Brand & Creator
+  "flux icons",
+  "fluxicons",
+  "fluxicons.site",
+  "codewithevilxd",
+  "nishant gaurav",
+  "codewithevilxd flux icons",
+  "nishant gaurav icons",
+
+  // shadcn/ui & Modern React Ecosystem
+  "shadcn icons",
+  "shadcn ui icons",
+  "shadcn icon registry",
+  "react icons",
+  "react icon library",
+  "framer motion icons",
+  "animated icons react",
+  "nextjs icons",
+  "tailwind icons",
+
+  // Vector Styles & Design Standards
+  "free svg icons",
+  "open source icons",
+  "svg icon set",
+  "24px icons",
+  "stroke icons",
+  "two tone icons",
+  "duotone icons",
+  "sharp corner icons",
+  "fill icons",
+
+  // Alternatives & Tools
+  "lucide icons alternative",
+  "feather icons alternative",
+  "heroicons alternative",
+  "figma icon plugin",
+  "mcp icon server",
+  "mit licensed icons",
+] as const
+
+/**
  * The homepage's card, in the two strings a network actually reads.
  *
  * Functions of the count rather than constants, for the reason every figure on
@@ -137,6 +186,8 @@ type PageMetadata = {
   socialTitle?: string
   /** Card description, if the card should be shorter than the snippet. */
   socialDescription?: string
+  /** Targeted keywords for this route. Falls back to SITE_KEYWORDS. */
+  keywords?: readonly string[] | string[]
   /**
    * Present only on a route that is a piece of writing with a date on it, which
    * so far means one blog post.
@@ -190,6 +241,7 @@ export function pageMetadata({
   description,
   socialTitle,
   socialDescription,
+  keywords,
   article,
 }: PageMetadata): Metadata {
   const url = absoluteUrl(path)
@@ -200,6 +252,7 @@ export function pageMetadata({
   return {
     title,
     description,
+    keywords: keywords ? [...keywords] : [...SITE_KEYWORDS],
     alternates: { canonical: url },
     openGraph: {
       ...OG_DEFAULTS,
@@ -329,6 +382,19 @@ export function iconJsonLd({
         about: { "@type": "Thing", name: `${name} icon` },
         isPartOf: { "@id": `${SITE_URL}/#website` },
         license: SET_LICENSE_URL,
+        author: {
+          "@type": "Person",
+          name: SET_AUTHOR_NAME,
+          alternateName: SET_AUTHOR_HANDLE,
+          url: SET_AUTHOR_GITHUB,
+          sameAs: [SET_AUTHOR_GITHUB, SET_AUTHOR_X],
+        },
+        creator: {
+          "@type": "Person",
+          name: SET_AUTHOR_NAME,
+          alternateName: SET_AUTHOR_HANDLE,
+          url: SET_AUTHOR_GITHUB,
+        },
       },
       {
         "@type": "BreadcrumbList",
@@ -406,8 +472,27 @@ export function homeJsonLd({
         "@id": `${SITE_URL}/#website`,
         url: absoluteUrl("/"),
         name: SET_TITLE,
+        alternateName: [
+          "Flux Icons",
+          "fluxicons",
+          "Flux Icons by Nishant Gaurav",
+          "codewithevilxd icons",
+        ],
         description: SITE_DESCRIPTION,
         inLanguage: "en",
+        author: {
+          "@type": "Person",
+          name: SET_AUTHOR_NAME,
+          alternateName: SET_AUTHOR_HANDLE,
+          url: SET_AUTHOR_GITHUB,
+          sameAs: [SET_AUTHOR_GITHUB, SET_AUTHOR_X],
+        },
+        creator: {
+          "@type": "Person",
+          name: SET_AUTHOR_NAME,
+          alternateName: SET_AUTHOR_HANDLE,
+          url: SET_AUTHOR_GITHUB,
+        },
       },
       {
         "@type": "SoftwareApplication",
@@ -423,13 +508,21 @@ export function homeJsonLd({
         applicationCategory: "DesignApplication",
         operatingSystem: "Web",
         description: SITE_DESCRIPTION,
+        author: {
+          "@type": "Person",
+          name: SET_AUTHOR_NAME,
+          alternateName: SET_AUTHOR_HANDLE,
+          url: SET_AUTHOR_GITHUB,
+          sameAs: [SET_AUTHOR_GITHUB, SET_AUTHOR_X],
+        },
+        creator: {
+          "@type": "Person",
+          name: SET_AUTHOR_NAME,
+          alternateName: SET_AUTHOR_HANDLE,
+          url: SET_AUTHOR_GITHUB,
+        },
         keywords: [
-          "free icons",
-          "icon set",
-          "svg icons",
-          "shadcn/ui",
-          "react icons",
-          "24px icons",
+          ...SITE_KEYWORDS,
           ...styles.map((style) => `${style} icons`),
           // Spelled out rather than derived from `CORNERS`, which would put
           // "regular icons" in the list: the values are the Figma property's

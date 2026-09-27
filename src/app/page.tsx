@@ -34,6 +34,8 @@ import {
   pageMetadata,
 } from "@/lib/seo"
 import {
+  SET_AUTHOR_HANDLE,
+  SET_AUTHOR_NAME,
   SET_LICENSE,
   SET_NPM_URL,
   SET_SPONSOR_URL,
@@ -94,6 +96,7 @@ export async function generateMetadata(): Promise<Metadata> {
     description:
       `3,700+ free ${SET_LICENSE}-licensed icons for shadcn/ui & React across three dedicated collections: ` +
       `1,000 Keyline (4 styles, 2 corners), 2,242 Extended (6 styles), and 467 Framer Motion animated icons. ` +
+      `Created by ${SET_AUTHOR_NAME} (@${SET_AUTHOR_HANDLE}). ` +
       `Search the ecosystem, copy any icon as SVG or JSX, or import native React components.`,
     socialDescription: homeCardDescription(total),
   })

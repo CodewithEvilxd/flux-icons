@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next"
 
 import { SITE_DESCRIPTION } from "@/lib/seo"
-import { SET_NAME, SET_TITLE } from "@/lib/site-chrome"
+import { SET_AUTHOR_NAME, SET_NAME, SET_TITLE } from "@/lib/site-chrome"
 
 /**
  * The web app manifest, served at `/manifest.webmanifest`.
@@ -24,7 +24,7 @@ export default function manifest(): MetadataRoute.Manifest {
     // Without it the browser derives one from the start URL, and moving the
     // start URL later would register as a different app rather than an update.
     id: "/",
-    name: SET_TITLE,
+    name: `${SET_TITLE} by ${SET_AUTHOR_NAME}`,
     // Roughly twelve characters is what a home-screen label holds before it is
     // truncated, so this is the set's name without the noun: "Flux", not
     // "Flux Icons".

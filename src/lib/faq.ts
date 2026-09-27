@@ -44,6 +44,8 @@ import {
   VUE_PACKAGE,
 } from "@/lib/icon-code"
 import {
+  SET_AUTHOR_HANDLE,
+  SET_AUTHOR_NAME,
   SET_LICENSE_NAME,
   SET_REPO_URL,
   SET_TAGLINE,
@@ -101,9 +103,9 @@ export function homeFaq({
 
   return [
     {
-      question: `What is ${SET_TITLE}?`,
+      question: `What is ${SET_TITLE}, and who created it?`,
       answer:
-        `A complete open-source icon ecosystem: over 3,700+ vector glyphs and animated components across three dedicated collections: ` +
+        `Created by ${SET_AUTHOR_NAME} (@${SET_AUTHOR_HANDLE}), ${SET_TITLE} is a complete open-source icon ecosystem: over 3,700+ vector glyphs and animated components across three dedicated collections: ` +
         `1,000 Keyline icons (in stroke, two-tone, duotone and fill, rounded or sharp), 2,242 Extended icons in 6 architectural styles, ` +
         `and 467 Framer Motion animated icons. Built for shadcn/ui and React, released under the ${SET_LICENSE_NAME}.`,
     },
