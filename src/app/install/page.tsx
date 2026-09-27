@@ -1,5 +1,4 @@
-import Link from "next/link"
-
+import type { Metadata } from "next"
 import { installFaq } from "@/lib/faq"
 import { ICONIFY_PREFIX, ICONIFY_URL, importPath } from "@/lib/icon-code"
 import { artOf, CORNERS } from "@/components/glyph"
@@ -7,8 +6,8 @@ import { loadIcons, STYLES } from "@/lib/icons"
 import { faqJsonLd, pageMetadata } from "@/lib/seo"
 import { SET_REPO_URL } from "@/lib/site-chrome"
 import { Faq } from "@/components/faq"
-import { SiteFooter } from "@/components/site-footer"
 import { SiteNav } from "@/components/site-nav"
+import { SiteFooter } from "@/components/site-footer"
 import { Button } from "@/components/ui/button"
 import {
   ArrowUpRight,
@@ -24,38 +23,110 @@ import {
   Terminal,
   User,
 } from "@/components/icons"
-import { InstallTerminal } from "@/components/install-terminal"
 import {
+  InstallTabs,
   CopyableCodeBlock,
   LucideComparisonCard,
+  ApiReferenceTable,
+  CompositionTree,
   ScrollProgress,
   type ScrollProgressSection,
-  ShadcnCommandBuilder,
 } from "@/components/install-guide-client"
 
-export const metadata = pageMetadata({
-  path: "/install",
+export const metadata: Metadata = pageMetadata({
   title: "Install the icons in React or shadcn/ui",
   description:
-    "How to add Flux Icons to a shadcn/ui project: copy an SVG, import " +
-    "the React components, size them inside Button and Sidebar, and swap out " +
-    "lucide without touching your markup.",
-  socialDescription:
-    "Add Flux Icons to a shadcn/ui project: copy an SVG, import the components, and swap out lucide.",
+    "How to install and consume the set in React, Next.js, and shadcn/ui, including individual icon imports, styling rules, and sizing defaults.",
+  path: "/install",
 })
 
 const SECTIONS: ScrollProgressSection[] = [
+  { id: "install", label: "Install" },
   { id: "quickstart", label: "Quickstart" },
-  { id: "install", label: "React Package" },
-  { id: "registry", label: "shadcn CLI" },
-  { id: "copy", label: "Raw SVG Copy" },
-  { id: "frameworks", label: "Other Frameworks" },
-  { id: "sizing", label: "Component Sizing" },
+  { id: "frameworks", label: "Frameworks" },
+  { id: "sizing", label: "Sizing" },
   { id: "weight", label: "Stroke Weights" },
   { id: "lucide", label: "Lucide Swap" },
-  { id: "styles", label: "Styles & Geometry" },
-  { id: "faq", label: "Setup FAQ" },
+  { id: "styles", label: "Styles" },
+  { id: "api-reference", label: "API Reference" },
+  { id: "composition", label: "Composition" },
+  { id: "faq", label: "FAQ" },
 ]
+
+const ICON_API_ITEMS = [
+  {
+    prop: "size",
+    type: "number | string",
+    default: "24",
+    description: "Rendered boundary box in pixels. Scales width and height proportionally.",
+  },
+  {
+    prop: "strokeWidth",
+    type: "number | string",
+    default: "2",
+    description: "Keyline stroke width on the 24×24 coordinate grid. Scales cleanly without hairline fracturing.",
+  },
+  {
+    prop: "color",
+    type: "string",
+    default: "currentColor",
+    description: "Fill or stroke color. Inherits surrounding text color by default.",
+  },
+  {
+    prop: "corner",
+    type: '"regular" | "sharp"',
+    default: '"regular"',
+    description: "Corner cap geometry: standard rounded caps or architectural square caps.",
+  },
+  {
+    prop: "className",
+    type: "string",
+    default: "—",
+    description: "Tailwind CSS utility classes or custom styles applied to the root SVG element.",
+  },
+]
+
+const SCROLL_PROGRESS_API_ITEMS = [
+  {
+    prop: "sections",
+    type: "ScrollProgressSection[]",
+    default: "[]",
+    description: "List of { id, label } sections observed for viewport scrolling and popout navigation.",
+  },
+  {
+    prop: "offset",
+    type: "number",
+    default: "120",
+    description: "Vertical viewport offset in pixels before switching to the subsequent active section.",
+  },
+  {
+    prop: "containerRef",
+    type: "RefObject<HTMLElement | null>",
+    default: "undefined",
+    description: "Optional custom scroll container reference. Falls back to the global window scroller.",
+  },
+  {
+    prop: "className",
+    type: "string",
+    default: "—",
+    description: "Custom classes applied to the fixed root container.",
+  },
+]
+
+const ICON_COMPOSITION_TREE = `FluxIconProvider (optional global defaults)
+└── FluxIcon (stroke | two-tone | duotone | fill)
+    └── SVG (24×24 keyline geometric canvas)
+        ├── paths (currentColor stroke / plate)
+        └── title / desc (accessible metadata)`
+
+const SCROLL_PROGRESS_COMPOSITION_TREE = `ScrollProgress (fixed viewport root)
+└── Surface (motion.div with squircle physics)
+    ├── ProgressCircle (circular SVG path meter)
+    │   ├── BackgroundRing
+    │   └── ActivePath (pathLength linked to scroll progress)
+    └── SectionMenu (motion.ul popout list)
+        └── SectionItem (motion.li button)
+            └── ActiveIndicator (layoutId="active")`
 
 function Section({
   id,
@@ -119,7 +190,7 @@ export default async function Page() {
       />
       <SiteNav />
 
-      <main className="mx-auto w-full max-w-3xl px-6 pb-24 lg:px-8">
+      <main className="mx-auto w-full max-w-3xl px-6 pb-28 lg:px-8">
         {/* Header */}
         <header className="pt-6 pb-10">
           <div className="mb-3 flex items-center gap-2">
@@ -180,26 +251,17 @@ export default async function Page() {
         </header>
 
         <div className="flex flex-col gap-12">
-          {/* Quickstart Console */}
-          <Section id="quickstart" badge="[ STEP 01 ]" title="Quickstart Console">
-            <p>
-              Choose your package manager below. You can either install the entire component library as a project dependency, or execute the CLI once to drop individual icon source files straight into your repository.
-            </p>
-            <InstallTerminal example="bell" />
+          {/* Main Install Component: CLI vs Manual with theme tokens, dependencies, ease.ts, utils.ts, and component sources */}
+          <Section id="install" badge="[ SETUP ]" title="Installation Methods">
+            <InstallTabs />
           </Section>
 
-          {/* React Package */}
-          <Section id="install" badge="[ STEP 02 ]" title="Install the React package">
+          {/* Quickstart React Example */}
+          <Section id="quickstart" badge="[ USAGE ]" title="Quickstart with React">
             <p>
-              Every icon is generated as an independent, fully tree-shakeable React component from the source SVGs, guaranteeing that downstream packages never diverge from the master drawings.
+              Import glyphs directly by name from <code>@flux-icons/react</code>. All components accept standard SVG props, including <code>className</code>, <code>size</code>, and <code>strokeWidth</code>:
             </p>
-            <CopyableCodeBlock language="bash" filename="TERMINAL">
-              npm i @flux-icons/react
-            </CopyableCodeBlock>
-            <p>
-              Import glyphs directly by name. All components accept standard SVG props, including <code>className</code>, <code>size</code>, and <code>strokeWidth</code>:
-            </p>
-            <CopyableCodeBlock language="tsx" filename="APP.TSX">
+            <CopyableCodeBlock language="tsx" filename="app/page.tsx">
 {`import { Check, Plus, Settings } from "@flux-icons/react"
 
 export function Example() {
@@ -214,68 +276,8 @@ export function Example() {
             </CopyableCodeBlock>
           </Section>
 
-          {/* shadcn CLI */}
-          <Section id="registry" badge="[ STEP 03 ]" title="Install with the shadcn CLI">
-            <p>
-              Flux Icons is officially indexed in shadcn&apos;s registry directory, allowing the CLI to resolve <code>@flux</code> natively with zero pre-configuration. You can generate and install individual icons directly into your component library.
-            </p>
-
-            {/* Interactive shadcn CLI generator */}
-            <ShadcnCommandBuilder />
-
-            <p className="mt-3">
-              Standard CLI commands follow clean path prefixes for alternate weights and corner treatments:
-            </p>
-            <CopyableCodeBlock language="bash" filename="SHADCN CLI">
-{`npx shadcn add @flux/bell               # default stroke outline
-npx shadcn add @flux/fill/bell          # solid fill silhouette
-npx shadcn add @flux/sharp/fill/bell    # sharp corner treatment
-npx shadcn search @flux                 # browse entire collection in terminal`}
-            </CopyableCodeBlock>
-
-            <p>
-              Any shadcn project already has a <code>components.json</code> file. Each icon arrives at{" "}
-              <code>@/components/icons/&lt;name&gt;.tsx</code>, using your project&apos;s configured alias. On older CLIs, you can manually pin the registry in <code>components.json</code>:
-            </p>
-            <CopyableCodeBlock language="json" filename="COMPONENTS.JSON">
-{`{
-  "registries": {
-    "@flux": "https://fluxicons.vercel.app/r/{name}.json"
-  }
-}`}
-            </CopyableCodeBlock>
-            <p>
-              This route gives you <strong>source code ownership</strong> rather than a third-party dependency. Each icon arrives as a standalone component that imports nothing from external libraries, letting you freely adjust paths, modify colors, or adapt props.
-            </p>
-          </Section>
-
-          {/* Copy Single Icon */}
-          <Section id="copy" badge="[ STEP 04 ]" title="Copy a single icon (Clipboard)">
-            <p>
-              The fastest path for quick prototyping, requiring zero package installation. Click any icon on the{" "}
-              <Link
-                href="/icons"
-                className="underline underline-offset-2 hover:text-foreground font-semibold"
-              >
-                icon browser
-              </Link>{" "}
-              to copy its clean SVG code directly to your clipboard, formatted at your preferred size and stroke width.
-            </p>
-            <CopyableCodeBlock language="svg" filename="CLIPBOARD SVG">
-{`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-  <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-</svg>`}
-            </CopyableCodeBlock>
-            <p>
-              Every drawing takes its colour from <code>currentColor</code>, so
-              it inherits whatever <code>text-*</code> utility is in scope and needs no
-              custom stroke or fill attribute.
-            </p>
-          </Section>
-
           {/* Frameworks */}
-          <Section id="frameworks" badge="[ STEP 05 ]" title="Vue, Svelte, Angular and HTML">
+          <Section id="frameworks" badge="[ ECOSYSTEM ]" title="Vue, Svelte, Angular and HTML">
             <p>
               The complete set is mirrored on{" "}
               <a
@@ -315,7 +317,7 @@ npm i -D @iconify/tailwind4
           </Section>
 
           {/* Sizing inside shadcn components */}
-          <Section id="sizing" badge="[ STEP 06 ]" title="Sizing inside shadcn components">
+          <Section id="sizing" badge="[ DESIGN SYSTEM ]" title="Sizing inside shadcn components">
             <p>
               shadcn/ui primitives size their own icons automatically. Button applies the rule{" "}
               <code>{`[&_svg:not([class*='size-'])]:size-4`}</code>, which defaults any nested icon to 16px unless an explicit <code>size-*</code> class is applied.
@@ -352,7 +354,7 @@ npm i -D @iconify/tailwind4
           </Section>
 
           {/* Stroke width */}
-          <Section id="weight" badge="[ STEP 07 ]" title="Stroke width at small sizes">
+          <Section id="weight" badge="[ GEOMETRY ]" title="Stroke width at small sizes">
             <p>
               The library is authored on a strict 24×24 grid with a 2px keyline. At 16px, this matches standard UI text density without clogging apertures or blurring on high-DPI displays.
             </p>
@@ -367,7 +369,7 @@ npm i -D @iconify/tailwind4
           </Section>
 
           {/* Lucide Migration */}
-          <Section id="lucide" badge="[ STEP 08 ]" title="Coming from Lucide">
+          <Section id="lucide" badge="[ MIGRATION ]" title="Coming from Lucide">
             <p>
               Because both icon suites share an identical 24×24 boundary box, 2px stroke weight, and <code>currentColor</code> fill/stroke logic, switching is a one-line import replacement:
             </p>
@@ -378,7 +380,7 @@ npm i -D @iconify/tailwind4
           </Section>
 
           {/* Styles & Corner Treatments */}
-          <Section id="styles" badge="[ STEP 09 ]" title="Four styles, two corner treatments">
+          <Section id="styles" badge="[ VARIATIONS ]" title="Four styles, two corner treatments">
             <p>
               Every icon is crafted in four distinct weights and two corner treatments (Regular rounded and Sharp square caps).
             </p>
@@ -400,7 +402,7 @@ npm i -D @iconify/tailwind4
             <p className="mt-2">
               Each style is exported from its own entry point in the package, guaranteeing dead-code elimination:
             </p>
-            <CopyableCodeBlock language="typescript" filename="ENTRY POINTS">
+            <CopyableCodeBlock language="typescript" filename="ENTRY POINTS" maxHeight={240} defaultExpanded={false}>
               {importSample}
             </CopyableCodeBlock>
             <p>
@@ -417,6 +419,49 @@ npm i -D @iconify/tailwind4
               </a>
               .
             </p>
+          </Section>
+
+          {/* API Reference */}
+          <Section id="api-reference" badge="[ REFERENCE ]" title="API Reference">
+            <p>
+              Component prop specifications for <code>@flux-icons/react</code> icons and the interactive <code>ScrollProgress</code> navigation pill:
+            </p>
+
+            <div className="space-y-6">
+              <div>
+                <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-foreground mb-3">
+                  Flux Icon Props
+                </h3>
+                <ApiReferenceTable items={ICON_API_ITEMS} />
+              </div>
+
+              <div>
+                <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-foreground mb-3">
+                  ScrollProgress Props
+                </h3>
+                <ApiReferenceTable items={SCROLL_PROGRESS_API_ITEMS} />
+              </div>
+            </div>
+          </Section>
+
+          {/* Composition */}
+          <Section id="composition" badge="[ ARCHITECTURE ]" title="Component Composition">
+            <p>
+              Nest and compose components cleanly inside your application tree without runtime overhead:
+            </p>
+
+            <div className="space-y-4">
+              <CompositionTree
+                title="FluxIcon Architecture"
+                description="Atomic SVG rendering with currentColor inheritance and keyline stroke alignment."
+                tree={ICON_COMPOSITION_TREE}
+              />
+              <CompositionTree
+                title="ScrollProgress Architecture"
+                description="Physics-based spring surface with circular pathLength indicator and layoutId pill selection."
+                tree={SCROLL_PROGRESS_COMPOSITION_TREE}
+              />
+            </div>
           </Section>
 
           {/* FAQ */}

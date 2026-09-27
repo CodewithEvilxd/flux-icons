@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Copy, FileCode as FileCode2, Loader as LoaderCircle } from "@/components/icons";
+import { Check, ChevronDown, Copy, FileCode as FileCode2, Loader as LoaderCircle } from "@/components/icons";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
   type ReactNode,
@@ -32,6 +32,8 @@ export interface CodeBlockProps {
   maxHeight?: number | string;
   wrap?: boolean;
   copyable?: boolean;
+  expandable?: boolean;
+  defaultExpanded?: boolean;
   onCopy?: () => void | Promise<void>;
   className?: string;
 }
@@ -43,9 +45,11 @@ export function CodeBlock({
   status = "complete",
   showLineNumbers = true,
   highlightLines = [],
-  maxHeight = 280,
+  maxHeight = 260,
   wrap = false,
   copyable = true,
+  expandable,
+  defaultExpanded = false,
   onCopy,
   className,
 }: CodeBlockProps) {
@@ -62,6 +66,9 @@ export function CodeBlock({
   );
 
   const lines = useMemo(() => splitCodeLines(code), [code]);
+  const isLong = lines.length > 9;
+  const canExpand = expandable ?? isLong;
+  const [isExpanded, setIsExpanded] = useState(defaultExpanded || !isLong);
 
   useEffect(
     () => () => {
@@ -182,56 +189,82 @@ export function CodeBlock({
         </div>
       </div>
 
-      <div
-        ref={viewportRef}
-        role={streaming ? "log" : undefined}
-        aria-live={streaming ? "polite" : undefined}
-        className="scrollbar-hide overflow-auto py-2"
-        style={{ maxHeight }}
-      >
-        <motion.pre
-          key={code}
-          initial={reduce ? false : { opacity: 0.7, y: 3 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.18, ease: EASE_OUT }}
-          className="m-0 min-w-max font-mono text-xs leading-5 text-foreground/85"
+      <div className="relative">
+        <div
+          ref={viewportRef}
+          role={streaming ? "log" : undefined}
+          aria-live={streaming ? "polite" : undefined}
+          className="scrollbar-hide overflow-auto py-2"
+          style={{ maxHeight: isExpanded ? "none" : maxHeight }}
         >
-          <code>
-            {lines.map((line, index) => {
-              const lineNumber = index + 1;
-              return (
-                <span
-                  key={line.offset}
-                  className={cn(
-                    "grid min-h-5 transition-colors duration-150",
-                    showLineNumbers
-                      ? "grid-cols-[2.75rem_minmax(0,1fr)]"
-                      : "grid-cols-1",
-                    highlighted.has(lineNumber) && "bg-blue-500/[0.07]",
-                  )}
-                >
-                  {showLineNumbers ? (
-                    <span className="select-none pr-3 text-right tabular-nums text-muted-foreground/35">
-                      {lineNumber}
-                    </span>
-                  ) : null}
-                  <AgentCodeLine
-                    code={line.content}
-                    tokens={tokens?.[index]}
+          <motion.pre
+            key={code}
+            initial={reduce ? false : { opacity: 0.7, y: 3 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.18, ease: EASE_OUT }}
+            className="m-0 min-w-max font-mono text-xs leading-5 text-foreground/85"
+          >
+            <code>
+              {lines.map((line, index) => {
+                const lineNumber = index + 1;
+                return (
+                  <span
+                    key={line.offset}
                     className={cn(
-                      "pr-4",
-                      showLineNumbers ? "pl-1" : "pl-4",
-                      wrap
-                        ? "whitespace-pre-wrap wrap-break-word"
-                        : "whitespace-pre",
+                      "grid min-h-5 transition-colors duration-150",
+                      showLineNumbers
+                        ? "grid-cols-[2.75rem_minmax(0,1fr)]"
+                        : "grid-cols-1",
+                      highlighted.has(lineNumber) && "bg-blue-500/[0.07]",
                     )}
-                  />
-                </span>
-              );
-            })}
-          </code>
-        </motion.pre>
+                  >
+                    {showLineNumbers ? (
+                      <span className="select-none pr-3 text-right tabular-nums text-muted-foreground/35">
+                        {lineNumber}
+                      </span>
+                    ) : null}
+                    <AgentCodeLine
+                      code={line.content}
+                      tokens={tokens?.[index]}
+                      className={cn(
+                        "pr-4",
+                        showLineNumbers ? "pl-1" : "pl-4",
+                        wrap
+                          ? "whitespace-pre-wrap wrap-break-word"
+                          : "whitespace-pre",
+                      )}
+                    />
+                  </span>
+                );
+              })}
+            </code>
+          </motion.pre>
+        </div>
+
+        {canExpand && !isExpanded && (
+          <div className="pointer-events-none absolute bottom-0 inset-x-0 h-16 bg-linear-to-t from-muted via-muted/60 to-transparent" />
+        )}
       </div>
+
+      {canExpand && (
+        <div className="flex items-center justify-center border-t border-border/40 bg-muted/40 py-2">
+          <motion.button
+            type="button"
+            onClick={() => setIsExpanded(!isExpanded)}
+            whileTap={reduce ? undefined : { scale: 0.96 }}
+            transition={SPRING_PRESS}
+            className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1 font-mono text-xs font-semibold text-muted-foreground hover:bg-background/80 hover:text-foreground transition-colors cursor-pointer select-none"
+          >
+            <ChevronDown
+              className={cn(
+                "size-3.5 transition-transform duration-200",
+                isExpanded && "rotate-180",
+              )}
+            />
+            <span>{isExpanded ? "Collapse Code" : "Expand Code"}</span>
+          </motion.button>
+        </div>
+      )}
     </div>
   );
 }
