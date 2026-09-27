@@ -53,6 +53,10 @@ import {
 // Import authentic 467 motion icon components and map
 import { ICON_LIST, ICON_MAP } from "./icons"
 
+const ICON_KEYWORDS_MAP = new Map(
+  ICON_LIST.map((item) => [item.name, item.keywords || []])
+)
+
 export interface MotionIconMeta {
   name: string
   slug: string
@@ -187,26 +191,66 @@ export function MotionIconBrowser() {
         .catch(() => ({})),
     ])
       .then(([metaData, sourcesData]) => {
-        setMetaList(metaData)
-        setSourcesMap(sourcesData)
+        const normalized: MotionIconMeta[] = (Array.isArray(metaData) ? metaData : []).map(
+          (item: Record<string, unknown>) => {
+            const rawSlug = String(item.slug || item.id || "")
+            const fallbackKeywords = ICON_KEYWORDS_MAP.get(rawSlug) || []
+            const rawKeywords = Array.isArray(item.keywords) ? item.keywords : []
+            const keywords = rawKeywords.length > 0 ? rawKeywords : fallbackKeywords
+            const title =
+              typeof item.title === "string" && item.title
+                ? item.title
+                : typeof item.name === "string" && item.name && !item.name.includes("-")
+                ? item.name
+                : rawSlug
+                    .split("-")
+                    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+                    .join(" ")
+            const compName =
+              typeof item.componentName === "string" && item.componentName
+                ? item.componentName
+                : typeof item.name === "string" && item.name && !item.name.includes("-")
+                ? `${item.name}Icon`
+                : `${rawSlug
+                    .split("-")
+                    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+                    .join("")}Icon`
+
+            return {
+              name: title,
+              slug: rawSlug,
+              componentName: compName,
+              category: typeof item.category === "string" ? item.category : "General & UI",
+              animationType:
+                typeof item.animation === "string"
+                  ? item.animation
+                  : typeof item.animationType === "string"
+                  ? item.animationType
+                  : "custom",
+              keywords: keywords.map(String),
+            }
+          }
+        )
+        setMetaList(normalized)
+        setSourcesMap(sourcesData || {})
         setIsLoading(false)
       })
       .catch((err) => {
         console.error("Failed to load motion icons data:", err)
         // Fallback to ICON_LIST metadata
-        const fallbackMeta = ICON_LIST.map((item) => ({
+        const fallbackMeta: MotionIconMeta[] = ICON_LIST.map((item) => ({
           name: item.name
             .split("-")
             .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
             .join(" "),
           slug: item.name,
-          componentName: `Motion${item.name
+          componentName: `${item.name
             .split("-")
             .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
-            .join("")}`,
+            .join("")}Icon`,
           category: "General & UI",
           animationType: "custom",
-          keywords: item.keywords,
+          keywords: item.keywords || [],
         }))
         setMetaList(fallbackMeta)
         setIsLoading(false)
@@ -272,11 +316,11 @@ export function MotionIconBrowser() {
 
     if (debouncedSearch) {
       result = result.filter((icon) => {
-        const matchesName = icon.name.toLowerCase().includes(debouncedSearch)
-        const matchesSlug = icon.slug.toLowerCase().includes(debouncedSearch)
-        const matchesKeywords = icon.keywords.some((k) =>
-          k.toLowerCase().includes(debouncedSearch)
-        )
+        const matchesName = (icon.name || "").toLowerCase().includes(debouncedSearch)
+        const matchesSlug = (icon.slug || "").toLowerCase().includes(debouncedSearch)
+        const matchesKeywords =
+          Array.isArray(icon.keywords) &&
+          icon.keywords.some((k) => (k || "").toLowerCase().includes(debouncedSearch))
         return matchesName || matchesSlug || matchesKeywords
       })
     }
@@ -713,11 +757,11 @@ export function MotionIconBrowser() {
           </div>
         ) : (
           <div className={cn("grid gap-2.5", gridColClass)}>
-            {filteredIcons.slice(0, visibleCount).map((icon) => {
+            {filteredIcons.slice(0, visibleCount).map((icon, idx) => {
               const IconComponent = ICON_MAP.get(icon.slug)
               return (
                 <MotionIconCard
-                  key={icon.slug}
+                  key={icon.slug || `${icon.name}-${idx}`}
                   icon={icon}
                   IconComponent={IconComponent}
                   size={size}
@@ -844,14 +888,19 @@ export function MotionIconBrowser() {
                       </button>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-2 font-mono text-xs text-muted-foreground">
-                      <span>Keywords:</span>
-                      {inspectedIcon.keywords.slice(0, 5).map((kw) => (
-                        <span key={kw} className="rounded bg-muted px-2 py-0.5 border border-border/60 text-[10px]">
-                          {kw}
-                        </span>
-                      ))}
-                    </div>
+                    {Array.isArray(inspectedIcon.keywords) && inspectedIcon.keywords.length > 0 && (
+                      <div className="flex flex-wrap items-center gap-2 font-mono text-xs text-muted-foreground">
+                        <span>Keywords:</span>
+                        {inspectedIcon.keywords.slice(0, 5).map((kw, kwIdx) => (
+                          <span
+                            key={`${kw}-${kwIdx}`}
+                            className="rounded bg-muted px-2 py-0.5 border border-border/60 text-[10px]"
+                          >
+                            {kw}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
 

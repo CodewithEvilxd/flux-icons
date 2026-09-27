@@ -86,7 +86,10 @@ async function downloads(period: string, name: string): Promise<number | null> {
   try {
     const response = await fetch(
       `https://api.npmjs.org/downloads/point/${period}/${name}`,
-      { next: { revalidate: 3600 } }
+      {
+        signal: AbortSignal.timeout(1200),
+        next: { revalidate: 3600 },
+      }
     )
 
     if (!response.ok) return null
