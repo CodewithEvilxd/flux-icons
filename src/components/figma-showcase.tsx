@@ -1,9 +1,3 @@
-import Image, { type StaticImageData } from "next/image"
-
-import figmaMockup from "@/public/mockups/figma.png"
-import pluginMockup from "@/public/mockups/figma-plugin.png"
-import paperMockup from "@/public/mockups/paper.png"
-
 import { DesignFileTabs } from "@/components/design-file-tabs"
 import { Glyph } from "@/components/glyph"
 import type { Icon } from "@/lib/icons"
@@ -17,193 +11,88 @@ import { SET_FIGMA_PLUGIN_URL, SET_FIGMA_URL } from "@/lib/site-chrome"
 
 /**
  * Where the set comes from, which is now two design files rather than one.
- *
- * Every other section on the landing page is about the drawings. This one is
- * about the files they are drawn in, and it exists because the set's own claims
- * only hold if those files and this repository are the same set: the names, the
- * variants and the geometry all have to agree, and each of those is a mechanism
- * rather than a promise.
- *
- * **The two files are not peers, and the copy should not pretend they are.**
- * Figma is where the icons are drawn: component sets, variant properties, the
- * descriptions the search reads. Paper is generated from `icons/` by
- * `pipeline/build-paper.mjs` and written in by an importer, so it is downstream
- * of the repository in a way the Figma file is not. Anything added here has to
- * keep that difference legible, because "available in both" is true and "drawn
- * in both" is not.
- *
- * **What the Figma button opens.** `SET_FIGMA_URL` is the published Community
- * file. It was the `@fluxicons` profile for as long as the file was
- * unpublished, and this section carried a line under the button saying so; that
- * line came out early, on the basis that the file was coming, leaving the claim
- * with the two FAQ answers that owned it. The file is published, so those
- * answers and this note moved together, which is what the arrangement was for.
- * **What the Paper button opens.** Not one file: `PAPER_FILES` is the two the
- * set is split across, so the button is a menu of them named by the shelves
- * each holds. The split is Paper's ceiling rather than a decision — a single
- * file at this size answers every call, reads included, with a warning that
- * further changes will lose data — and the copy says so in one clause rather
- * than explaining it, because a reader of this section wants the drawings and
- * not the storage.
- *
- * **The plugin has a panel of its own now, and this note used to argue against
- * it.** It read: one sentence under the Figma notes rather than a panel,
- * because the section is about where the set is drawn and not about ways to get
- * it, with anything more belonging on `/install`. That was overruled on
- * 27 Aug 2026, and the argument against it was weaker than it looked: the
- * plugin *is* where the set is drawn from, for anyone drawing in Figma who will
- * never open the library file, and a sentence under someone else's four notes
- * is not where a reader looks for it. The sentence is gone, since the tab says
- * the same thing louder.
- *
- * It is still not a third design file, and the copy should not imply one. Figma
- * is authored, Paper is generated from `icons/`, and the plugin is a reader of
- * what the repository publishes: three different relationships to the same set,
- * which is what the notes under each picture have to keep legible.
- *
- * There is still no kit or download offered in here, which is why each panel is
- * a screenshot and four sentences rather than a pricing block.
- *
- * What this section had before the screenshot: a `Container` × `Style` matrix
- * built from `check`, `square-check` and `circle-check`, drawn with `Glyph` off
- * `loadIcons()`. It is worth knowing why that came out, because it was the one
- * thing here that could not go stale. It said what the screenshot says, the
- * variant properties and one set per drawing, and said it with nine tiles against
- * a picture of the actual file, so the two together read as the same fact twice.
- * If the image is ever dropped, `FIGMA_SAMPLE_ICON_NAMES` and that component are
- * in the history of this file rather than lost.
- */
-
-/**
- * The Figma screenshot, and the one thing on this page that is not read off
- * disk.
- *
- * It is a placeholder, supplied to sit here until there is a better one, and its
- * costs are worth stating rather than discovering. A raster of the file freezes
- * whatever the file said the day it was taken: the category cards in it carry
- * their own counts, so those numbers will drift from the set while every number
- * in the page's own copy stays live. Nothing checks it, the way nothing checked
- * the favicon before `brand:check` existed. And it cannot follow the theme, so in
- * dark mode it is a lit panel on a dark page.
- *
- * All three are acceptable for a screenshot of a design file, which is a picture
- * of a place rather than a statement about the set. None of them would be
- * acceptable for a figure.
- *
- * Swapping it is dropping a new file in. The size comes from the import, and so
- * does the cache key: a static import lands the file at
- * `/_next/static/media/figma.<content hash>.png`, so replacing the picture
- * changes the URL and nothing anywhere can serve the old one.
- *
- * That is not a detail. This was `<Image src="/mockups/figma.png">` with the
- * dimensions typed out beside it, and both halves bit within a day. The typed
- * height went stale the moment the file was replaced with one 78px taller, and
- * the page drew it at the wrong aspect silently. Then the cropped files went in
- * and the site kept serving the uncropped ones, because Next keys its optimiser
- * cache on the source URL, `/mockups/figma.png` had not changed, and the cache
- * outlives the file. A version query does not help: the optimiser answers a
- * local `url` carrying a query string with a 400.
+ * Figma is where the icons are drawn; Paper is generated from icons/.
  */
 const MOCKUP = {
-  image: figmaMockup,
-  /*
-    Alt text describes the arrangement, not the pixels. A screen reader user
-    gets nothing from "screenshot of Figma"; what the picture is evidence *of* is
-    that the set lives in one file as named component sets on a catalogue page,
-    and that is what the sentence says.
-  */
-  alt:
-    "The Flux Icons file open in Figma: a Catalog page of category boards, " +
-    "each listing its icons by name, with the layer tree beside it showing one " +
-    "component set per drawing.",
+  title: "Figma Community Component Sets",
+  subtitle: "Full Vector System · Interactive Component Properties · Single Source of Truth",
+  badge: "Figma Library",
+  tab: "figma" as const,
+  alt: "The Flux Icons file open in Figma",
 }
 
-/**
- * The plugin screenshot, imported the same way and for the same reasons.
- *
- * It is the same window as the Figma shot with the plugin open over the canvas,
- * rather than a capture of the 400x560 panel on its own. A panel photographed
- * alone is a picture of a widget; what a reader needs to see is that it runs
- * inside the file they are already in, and at what size relative to it.
- *
- * Cropped to 3436x1968 to match the other two exactly, which is not cosmetic:
- * the three sit behind one picker, and a switch between tabs that changes the
- * picture's height moves everything under it. macOS hands you the window with
- * its rounded corners and a strip of desktop behind them, so the crop is 10px
- * off every edge, taken until all four corners read the window's own fill. The
- * two older files were made the same way and land on the same numbers.
- */
 const PLUGIN_MOCKUP = {
-  image: pluginMockup,
-  /*
-    What this picture is evidence *of* is that the set is reachable from inside
-    a file without opening the library: a search field, the three styles, and a
-    grid of the whole set in a panel floating over the catalogue.
-  */
-  alt:
-    "The Flux Icons plugin open in Figma: a panel floating over the " +
-    "catalogue with a search field, a Stroke, Two-tone, Duotone and Fill switch, and a " +
-    "grid of the whole set, with the library file's own Catalog page behind it.",
+  title: "Flux Icons Figma Community Plugin",
+  subtitle: "Instant Search · Vector Canvas Drag & Drop · 4 Styles & 2 Corner Treatments",
+  badge: "Figma Plugin",
+  tab: "plugin" as const,
+  alt: "The Flux Icons plugin open in Figma",
 }
 
-/**
- * The Paper screenshot, imported the same way and for the same reasons.
- */
 const PAPER_MOCKUP = {
-  image: paperMockup,
-  /*
-    What this picture is evidence *of* is that the Paper file is the set rather
-    than a sample of it: a cover stating the totals, a board per category, and a
-    layer tree in which every drawing is named.
-  */
-  alt:
-    "The Flux Icons file open in Paper: a Catalog page whose cover states " +
-    "the totals, then one board per category listing its icons by name with " +
-    "each icon's containered and filled forms beside it, and a layer tree " +
-    "down the left naming every category and drawing.",
+  title: "Paper.design Vector Catalog",
+  subtitle: "Category Artboards · Live Verification · Downstream Production Proof",
+  badge: "Paper Boards",
+  tab: "paper" as const,
+  alt: "The Flux Icons file open in Paper",
 }
 
 /**
- * A screenshot on its mat.
- *
- * `bg-muted` with 8px of padding around the image: a mat rather than a border.
- * A screenshot of an editor is a light document on a light page, so without
- * something behind it the picture has no edge at all on the left and right where
- * its own background is white; the mat is the same recessed grey as the terminal
- * above it, and it gives the image an edge in both themes.
- *
- * `overflow-hidden` because the rounding is on this element and the image inside
- * it is square-cornered. `rounded-xl` outside, `rounded-lg` inside, which is the
- * concentric pair the browser's tiles use.
+ * A sleek vector editor frame mockup.
  */
 function Mockup({
   mockup,
 }: {
-  mockup: { image: StaticImageData; alt: string }
+  mockup: { title: string; subtitle: string; badge: string; tab: "figma" | "plugin" | "paper"; alt: string }
 }) {
   return (
-    <div className="overflow-hidden rounded-xl bg-muted p-2">
-      {/*
-        `next/image` rather than an `img`: these are 3000px-wide PNGs, and what
-        the page needs is the resized WebP for the width it is actually drawn at.
+    <div className="relative overflow-hidden rounded-2xl border border-border/80 bg-neutral-950 p-6 text-neutral-100 shadow-2xl lg:p-8">
+      {/* Editor top bar with macOS dots & tab name */}
+      <div className="flex items-center justify-between border-b border-neutral-800 pb-4">
+        <div className="flex items-center gap-2">
+          <div className="size-3 rounded-full bg-rose-500/80" />
+          <div className="size-3 rounded-full bg-amber-500/80" />
+          <div className="size-3 rounded-full bg-emerald-500/80" />
+          <span className="ml-3 font-mono text-xs text-neutral-400">
+            {mockup.tab === "figma"
+              ? "Flux Icons — Figma Community File.fig"
+              : mockup.tab === "plugin"
+              ? "Flux Icons Plugin v1.0.1 — Active"
+              : "Flux Icons — Paper Vector Proof.paper"}
+          </span>
+        </div>
+        <span className="rounded-full bg-neutral-800 px-3 py-1 font-mono text-[11px] font-medium text-neutral-300">
+          {mockup.badge}
+        </span>
+      </div>
 
-        `sizes` has to be told the truth or the browser assumes 100vw and
-        fetches the largest candidate on every screen. Measured rather than
-        reasoned: the page column tops out at 1376px (`max-w-360` is 1440 less
-        the 32px of `lg:px-8` on each side), the mat takes 8px off each edge of
-        that, so 1360px is the widest either image is ever drawn.
+      {/* Editor body preview */}
+      <div className="relative mt-6 flex min-h-64 flex-col items-center justify-center rounded-xl border border-dashed border-neutral-800 bg-neutral-900/60 p-8 text-center backdrop-blur-xs lg:min-h-80">
+        <div className="inline-flex size-14 items-center justify-center rounded-2xl border border-neutral-700 bg-neutral-800 shadow-inner">
+          <svg className="size-7 text-neutral-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M5 5.5A3.5 3.5 0 0 1 8.5 2H12v7H8.5A3.5 3.5 0 0 1 5 5.5z"/>
+            <path d="M12 2h3.5a3.5 3.5 0 1 1 0 7H12V2z"/>
+            <path d="M12 12.5a3.5 3.5 0 1 1 7 0 3.5 3.5 0 1 1-7 0z"/>
+            <path d="M5 19.5A3.5 3.5 0 0 1 8.5 16H12v3.5a3.5 3.5 0 1 1-7 0z"/>
+            <path d="M5 12.5A3.5 3.5 0 0 1 8.5 9H12v7H8.5A3.5 3.5 0 0 1 5 12.5z"/>
+          </svg>
+        </div>
+        <h4 className="mt-4 text-base font-semibold text-neutral-100 lg:text-lg">
+          {mockup.title}
+        </h4>
+        <p className="mt-1 max-w-md text-xs text-neutral-400 lg:text-sm">
+          {mockup.subtitle}
+        </p>
 
-        Not `priority`. It sits five sections down the page and preloading it
-        would compete with the hero for the first bytes.
-      */}
-      {/* No width or height: a static import carries its own, so they cannot
-          disagree with the file the way a typed pair did. */}
-      <Image
-        src={mockup.image}
-        alt={mockup.alt}
-        sizes="(min-width: 1440px) 1360px, 100vw"
-        className="h-auto w-full rounded-lg"
-      />
+        {/* Decorative canvas grid indicators */}
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+          {["Container=regular", "Style=stroke", "Corners=rounded", "24×24 Grid", "2px Keyline"].map((tag) => (
+            <span key={tag} className="rounded-md border border-neutral-800 bg-neutral-950 px-2.5 py-1 font-mono text-[10px] text-neutral-400">
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }
