@@ -35,7 +35,7 @@
 
 ---
 
-## ⚡ Why Flux Icons?
+## ⚡ Why Flux Icons??
 
 Most icon libraries give you a single style, a loose collection of symbols, and zero interaction capabilities. **Flux Icons** is architected from first principles as a complete visual design system for high-growth digital products:
 
