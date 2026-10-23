@@ -35,7 +35,9 @@ import {
   User,
   Wallet,
   X,
+  Zap,
 } from "@/components/icons"
+import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { PhoneToggle } from "@/components/phone-toggle"
 import { CodeBlock } from "@/components/agents/code-block"
@@ -1112,7 +1114,7 @@ export function ExtendedIconBrowser() {
     <div className="w-full flex flex-col gap-6 selection:bg-blue-500/20">
       <div className="w-full flex flex-col gap-5">
         {/* ========================================================================= */}
-        {/* 1. STUDIO MASTER COMMAND CONSOLE                                          */}
+        {/* 1. ICON BROWSER COMMAND CONSOLE                                          */}
         {/* ========================================================================= */}
         <div className="relative overflow-hidden rounded-2xl border border-border/80 bg-card/90 backdrop-blur-2xl p-3.5 md:p-4 shadow-xl shadow-black/10 flex flex-col gap-3">
           {/* Top specular highlight line */}
@@ -1446,7 +1448,7 @@ export function ExtendedIconBrowser() {
       </section>
 
       {/* ========================================================================= */}
-      {/* 4. MODAL INSPECTOR & STUDIO SPECIMEN VIEWER                               */}
+      {/* 4. MODAL INSPECTOR & ICON SPECIMEN VIEWER                               */}
       {/* ========================================================================= */}
       {selectedIcon && (
         <div
@@ -1663,6 +1665,13 @@ export function Example() {
                       >
                         Download .svg
                       </button>
+                      <Link
+                        href={`/extended&icon=${selectedIcon.slug}&variant=${activeVariant}`}
+                        className="rounded-xl border border-blue-500/40 bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-300 font-mono text-xs font-bold px-4 py-2 shadow-xs transition-all cursor-pointer flex items-center gap-1.5"
+                      >
+                        <Zap className="size-3.5 fill-current" />
+                        <span>View icon</span>
+                      </Link>
                     </div>
 
                     {/* NPM manager pill */}

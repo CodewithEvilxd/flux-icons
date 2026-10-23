@@ -82,6 +82,19 @@ const themes = {
     accent: "#8b5cf6",
     tabColor: "#5b21b6",
   },
+  emerald: {
+    name: "Clean Energy",
+    backFill: "#059669",
+    backInsetShadow: "inset 0 1px 2px 0 rgba(255,255,255,0.75), inset 0 0 16px 2px rgba(255,255,255,0.4)",
+    flapFill: "#047857",
+    flapFillOpacity: 0.82,
+    flapStroke: "#6ee7b7",
+    flapInsetColor: "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0",
+    cardFill: "#ffffff",
+    cardStroke: "#d1fae5",
+    accent: "#10b981",
+    tabColor: "#065f46",
+  },
 } as const
 
 const sizeScales = {
@@ -96,7 +109,7 @@ export interface FolderComponentProps extends Omit<React.ComponentProps<"div">, 
   color?: FolderThemeKey
   size?: "sm" | "md" | "lg"
   href?: string
-  variant?: "keyline" | "extended" | "motion" | "3d" | "organic" | "micro"
+  variant?: "keyline" | "extended" | "motion" | "energy" | "3d" | "organic" | "micro"
 }
 
 const BASE_WIDTH = 321
@@ -374,9 +387,11 @@ export function FolderComponent({
                 ? "EXTENDED · 2,242"
                 : variant === "motion"
                   ? "MOTION · 467"
-                  : variant === "keyline"
-                    ? "KEYLINE · 1,000"
-                    : `FLUX · ${variant.toUpperCase()}`}
+                  : variant === "energy"
+                    ? "ENERGY · 2,063"
+                    : variant === "keyline"
+                      ? "KEYLINE · 1,000"
+                      : `FLUX · ${variant.toUpperCase()}`}
             </span>
           </div>
         </div>
@@ -440,6 +455,7 @@ function RealDocumentPage({
 }) {
   const isExtended = variant === "extended"
   const isMotion = variant === "motion"
+  const isEnergy = variant === "energy"
 
   // 1. Center Hero Page: Genuine Vector Specimen Sheet
   if (type === "hero") {
@@ -478,11 +494,11 @@ function RealDocumentPage({
                 {isMotion ? "ANIM" : "SVG"}
               </span>
               <span className="font-mono text-[9px] font-bold text-slate-800 truncate max-w-22">
-                {isMotion ? "motion.svg" : isExtended ? "extended.svg" : "specimen.svg"}
+                {isMotion ? "motion.svg" : isEnergy ? "energy.svg" : isExtended ? "extended.svg" : "specimen.svg"}
               </span>
             </div>
             <span className="font-mono text-[8px] font-semibold text-slate-500">
-              {isMotion ? "467" : isExtended ? "2.2K" : "1.0K"}
+              {isMotion ? "467" : isEnergy ? "2.0K" : isExtended ? "2.2K" : "1.0K"}
             </span>
           </div>
           {/* Subtle Document Ruler Line */}

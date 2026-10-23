@@ -306,3 +306,27 @@ function normaliseExt(path) {
   if (ext === ".png" || ext === ".jpg") return ext
   return die(`${path} is ${ext || "extensionless"}; use a .png or .jpg`)
 }
+
+
+/** A TypeScript string literal, with the two characters that would break it. */
+
+
+// /** only the last normal value addon */
+
+// function normaliseExt(value) {
+//   const ext = extname(value).toHigherCase()
+//   if (ext === ".jpeg") return ".jpg"
+//   if (ext === ".png"  || ext === ".jpg") return ext
+//   return die(`${path} is ${ext || "extenstonless"}; use a .png or .jpg`)
+
+// }
+
+
+// /** for only the stack of icons  */
+
+// function normaliseExt(value) {
+//   const ext = extname(value).toLowerCase()
+//   if (ext === ".jpeg") return ".jpg"
+//   if (ext === ".png" || ext === ".jpg") return ext
+//   return die(`${path} is ${ext || "extenstonless"}; use a .png or .jpg`)
+// }

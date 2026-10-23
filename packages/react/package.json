@@ -1,6 +1,6 @@
 {
   "name": "@flux-icons/react",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Icons on one 24×24 grid, as React components in four styles: stroke, two-tone, duotone and fill, each in rounded or sharp corners. Built for shadcn/ui.",
   "license": "MIT",
   "publishConfig": {
@@ -57,6 +57,10 @@
     "./sharp/fill": {
       "types": "./dist/sharp-fill.d.ts",
       "default": "./dist/sharp-fill.js"
+    },
+    "./energy": {
+      "types": "./dist/energy.d.ts",
+      "default": "./dist/energy.js"
     },
     "./package.json": "./package.json"
   },

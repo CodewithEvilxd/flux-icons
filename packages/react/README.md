@@ -52,6 +52,8 @@ import { Bell } from "@flux-icons/react/sharp"           // the same four,
 import { Bell } from "@flux-icons/react/sharp/two-tone"  // cut sharp,
 import { Bell } from "@flux-icons/react/sharp/duotone"  // with butt caps and
 import { Bell } from "@flux-icons/react/sharp/fill"     // square corners
+
+import { EnergySolarPanel } from "@flux-icons/react/energy" // energy vault, 2,063 icons
 ```
 
 Sharp covers exactly the names the rounded entry point beside it does, and the
