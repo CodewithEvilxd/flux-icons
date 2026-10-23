@@ -56,7 +56,7 @@ export default function BrowsePage() {
               </p>
 
               <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5">
-                <Button size="default" render={<Link href="/icons" />} nativeButton={false}>
+                <Button size="default" variant="outline" render={<Link href="/icons" />} nativeButton={false}>
                   Direct 1,000 Icons Library
                   <ArrowRight className="size-4" />
                 </Button>
@@ -121,12 +121,20 @@ export default function BrowsePage() {
                       <span className="rounded bg-muted px-1.5 py-0.5 border border-border/50">Fill</span>
                     </div>
 
-                    <Link
-                      href="/icons"
-                      className="inline-flex items-center gap-1 font-mono text-xs font-bold text-amber-600 dark:text-amber-400 hover:underline group-hover:translate-x-1 transition-transform"
-                    >
-                      Open Collection <ArrowRight className="size-3" />
-                    </Link>
+                    <div className="flex items-center gap-3">
+                      <Link
+                        href="/icons"
+                        className="inline-flex items-center gap-1 font-mono text-xs font-bold text-amber-500 hover:underline"
+                      >
+                        Browse icons
+                      </Link>
+                      <Link
+                        href="/icons"
+                        className="inline-flex items-center gap-1 font-mono text-xs font-bold text-amber-600 dark:text-amber-400 hover:underline group-hover:translate-x-1 transition-transform"
+                      >
+                        Open Collection <ArrowRight className="size-3" />
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -180,12 +188,20 @@ export default function BrowsePage() {
                       <span className="rounded bg-muted px-1.5 py-0.5 border border-border/50">Outline</span>
                     </div>
 
-                    <Link
-                      href="/extended"
-                      className="inline-flex items-center gap-1 font-mono text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline group-hover:translate-x-1 transition-transform"
-                    >
-                      Open Collection <ArrowRight className="size-3" />
-                    </Link>
+                    <div className="flex items-center gap-3">
+                      <Link
+                        href="/extended"
+                        className="inline-flex items-center gap-1 font-mono text-xs font-bold text-blue-500 hover:underline"
+                      >
+                        Browse icons
+                      </Link>
+                      <Link
+                        href="/extended"
+                        className="inline-flex items-center gap-1 font-mono text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline group-hover:translate-x-1 transition-transform"
+                      >
+                        Open Collection <ArrowRight className="size-3" />
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -238,17 +254,91 @@ export default function BrowsePage() {
                       <span className="rounded bg-muted px-1.5 py-0.5 border border-border/50">Pop</span>
                     </div>
 
-                    <Link
-                      href="/motion"
-                      className="inline-flex items-center gap-1 font-mono text-xs font-bold text-purple-600 dark:text-purple-400 hover:underline group-hover:translate-x-1 transition-transform"
-                    >
-                      Open Collection <ArrowRight className="size-3" />
-                    </Link>
+                    <div className="flex items-center gap-3">
+                      <Link
+                        href="/motion"
+                        className="inline-flex items-center gap-1 font-mono text-xs font-bold text-purple-500 hover:underline"
+                      >
+                        Browse icons
+                      </Link>
+                      <Link
+                        href="/motion"
+                        className="inline-flex items-center gap-1 font-mono text-xs font-bold text-purple-600 dark:text-purple-400 hover:underline group-hover:translate-x-1 transition-transform"
+                      >
+                        Open Collection <ArrowRight className="size-3" />
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* FOLDER 4: ORGANIC & HANDCRAFTED VECTORS */}
+              {/* FOLDER 4: FLUX ENERGY SYSTEM (2,063 CLEAN TECH & ENERGY ICONS) */}
+              <div className="group relative flex flex-col justify-between rounded-2xl border border-emerald-500/40 bg-card/85 backdrop-blur-xl p-4 sm:p-5 shadow-lg shadow-emerald-500/5 hover:border-emerald-500/80 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/15 cursor-pointer">
+                <div className="flex items-center justify-between pb-2.5 border-b border-border/60">
+                  <div className="flex items-center gap-1.5">
+                    <span className="flex size-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                      LIVE &amp; ACTIVE
+                    </span>
+                  </div>
+                  <span className="ann-tag-green font-mono text-[10px] font-bold">
+                    [ 2,063 ENERGY ]
+                  </span>
+                </div>
+
+                <div className="my-2 flex items-center justify-center">
+                  <Folder
+                    color="emerald"
+                    size="md"
+                    variant="energy"
+                    href="/energy"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2 pt-3 border-t border-border/60">
+                  <div className="flex items-center justify-between">
+                    <Link href="/energy" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+                      <h3 className="font-display text-lg uppercase tracking-wide text-foreground">
+                        Flux Energy System
+                      </h3>
+                    </Link>
+                    <span className="font-mono text-[11px] text-muted-foreground">
+                      Clean-Tech &amp; Grid
+                    </span>
+                  </div>
+
+                  <p className="text-xs text-muted-foreground font-handwritten leading-relaxed line-clamp-2">
+                    2,063 clean energy, renewables, grid, storage, EV charging &amp; climate glyphs. Redesigned on an optical 24×24 keyline grid with zero runtime dependencies.
+                  </p>
+
+                  <div className="mt-1 flex items-center justify-between">
+                    <div className="flex flex-wrap gap-1 font-mono text-[9px] text-muted-foreground">
+                      <span className="rounded bg-muted px-1.5 py-0.5 border border-border/50">Solar &amp; Wind</span>
+                      <span className="rounded bg-muted px-1.5 py-0.5 border border-border/50">Storage</span>
+                      <span className="rounded bg-muted px-1.5 py-0.5 border border-border/50">EV Charging</span>
+                      <span className="rounded bg-muted px-1.5 py-0.5 border border-border/50">Hydrogen</span>
+                      <span className="rounded bg-muted px-1.5 py-0.5 border border-border/50">Climate</span>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <Link
+                        href="/energy"
+                        className="inline-flex items-center gap-1 font-mono text-xs font-bold text-emerald-500 hover:underline"
+                      >
+                        Browse icons
+                      </Link>
+                      <Link
+                        href="/energy"
+                        className="inline-flex items-center gap-1 font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline group-hover:translate-x-1 transition-transform"
+                      >
+                        Open Collection <ArrowRight className="size-3" />
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* FOLDER 5: ORGANIC & HANDCRAFTED VECTORS */}
               <div className="group relative flex flex-col justify-between rounded-2xl border border-border/80 bg-card/75 backdrop-blur-xl p-4 sm:p-5 shadow-md hover:border-foreground/40 transition-all duration-300 hover:shadow-xl">
                 <div className="flex items-center justify-between pb-2.5 border-b border-border/60">
                   <div className="flex items-center gap-1.5">

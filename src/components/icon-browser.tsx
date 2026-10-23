@@ -52,8 +52,10 @@ import {
   Venus,
   Wallet,
   Wrench,
+  Zap,
 } from "@/components/icons"
 
+import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { XLogo } from "@/components/brand-logos"
@@ -1830,7 +1832,7 @@ export function IconBrowser({
   return (
     <Drawer>
       <div ref={sectionRef} className="flex w-full flex-col gap-5">
-        {/* Studio Master Command Console */}
+        {/* Icon search and display controls */}
         <div className="relative overflow-hidden rounded-2xl border border-border/80 bg-card/90 backdrop-blur-2xl p-3.5 md:p-4 shadow-xl shadow-black/10 flex flex-col gap-3">
           {/* Top specular highlight line */}
           <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-amber-500/60 to-transparent" />
@@ -1859,7 +1861,7 @@ export function IconBrowser({
                   data-icon="inline-start"
                   className="size-4"
                 />
-                Filter & Configure Studio
+                Filter & Configure Icons
                 {!atDefaults && (
                   <span
                     aria-hidden="true"
