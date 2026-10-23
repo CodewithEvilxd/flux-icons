@@ -176,11 +176,11 @@ export function sanitizeCustomizationState(raw: Record<string, unknown>): Custom
     )
       ? (parsed.strokeStyle as CustomizationState["strokeStyle"])
       : DEFAULT_STATE.strokeStyle,
-    motion: { ...DEFAULT_STATE.motion, ...(parsed.motion ?? {}) },
-    shadow: { ...DEFAULT_STATE.shadow, ...(parsed.shadow ?? {}) },
-    noise: { ...DEFAULT_STATE.noise, ...(parsed.noise ?? {}) },
-    texture: { ...DEFAULT_STATE.texture, ...(parsed.texture ?? {}) },
-    gradient: { ...DEFAULT_STATE.gradient, ...(parsed.gradient ?? {}) },
+    motion: { ...DEFAULT_STATE.motion, ...parsed.motion },
+    shadow: { ...DEFAULT_STATE.shadow, ...parsed.shadow },
+    noise: { ...DEFAULT_STATE.noise, ...parsed.noise },
+    texture: { ...DEFAULT_STATE.texture, ...parsed.texture },
+    gradient: { ...DEFAULT_STATE.gradient, ...parsed.gradient },
     customIcons: Array.isArray(parsed.customIcons)
       ? parsed.customIcons.filter(
           (icon: unknown) =>
