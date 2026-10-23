@@ -1,4 +1,3 @@
-
 /**
  * The card every link to this site unfurls into.
  *
