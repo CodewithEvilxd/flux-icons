@@ -438,6 +438,7 @@ export const SITE_LINKS: readonly SiteLink[] = [
   { href: "/icons", label: "Icons", priority: 1, bar: false },
   { href: "/extended", label: "Extended", priority: 0.95, bar: false },
   { href: "/motion", label: "Motion", priority: 0.95, bar: false },
+  { href: "/energy", label: "Energy", priority: 0.95, bar: false },
   { href: "/install", label: "Install", priority: 0.9 },
   { href: "/blog", label: "Blog", priority: 0.85, bar: false },
   { href: "/changelog", label: "Changelog", priority: 0.8, bar: false },

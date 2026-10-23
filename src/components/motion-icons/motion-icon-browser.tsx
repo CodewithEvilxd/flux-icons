@@ -7,6 +7,7 @@ import React, {
   useCallback,
   useRef,
 } from "react"
+import Link from "next/link"
 import { motion, AnimatePresence } from "motion/react"
 import { toast } from "sonner"
 import {
@@ -366,7 +367,7 @@ export function MotionIconBrowser() {
     setShowNames(true)
     setIsContinuousPlay(false)
     setVisibleCount(48)
-    toast.success("Reset studio controls to defaults")
+    toast.success("Reset animation controls to defaults")
   }
 
   // --- Sub-components for Command Console ---
@@ -567,7 +568,7 @@ export function MotionIconBrowser() {
     <div className="w-full flex flex-col gap-6 selection:bg-purple-500/20">
       <div className="w-full flex flex-col gap-5">
         {/* ========================================================================= */}
-        {/* 1. STUDIO MASTER COMMAND CONSOLE                                          */}
+        {/* 1. ICON BROWSER COMMAND CONSOLE                                          */}
         {/* ========================================================================= */}
         <div className="relative overflow-hidden rounded-2xl border border-border/80 bg-card/90 backdrop-blur-2xl p-3.5 md:p-4 shadow-xl shadow-black/10 flex flex-col gap-3">
           {/* Top specular highlight line */}
@@ -991,6 +992,14 @@ npm install @flux-icons/motion`}
                     <Terminal className="size-3.5" />
                     <span>Copy CLI</span>
                   </button>
+
+                  <Link
+                    href={`/motion&icon=${inspectedIcon.slug}`}
+                    className="flex items-center gap-1.5 rounded-xl border border-purple-500/40 bg-purple-500/10 px-3.5 py-2 font-mono text-xs font-bold text-purple-600 dark:text-purple-300 shadow-xs hover:bg-purple-500/20 transition-all cursor-pointer"
+                  >
+                    <Zap className="size-3.5 fill-current" />
+                    <span>View icon</span>
+                  </Link>
 
                   <button
                     onClick={() => {

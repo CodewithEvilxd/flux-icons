@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   ...pageMetadata({
     title: "Flux Extended — 2,242 Icons in 6 Styles",
     description:
-      "Explore 2,242 open-source icons across 6 styles: Linear, Bold, Two-Tone, Bulk, Broken, and Outline. Unified 24×24 grid, live studio customizer, and official @flux-icons/react integration.",
+      "Explore 2,242 open-source icons across 6 styles: Linear, Bold, Two-Tone, Bulk, Broken, and Outline. Unified 24×24 grid and official @flux-icons/react integration.",
     path: "/extended",
   }),
 }

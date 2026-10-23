@@ -5,7 +5,7 @@
 <div align="center">
   <h1>Flux Icons</h1>
   <p><strong>The High-Precision Icon Ecosystem Engineered for Modern Web Apps, shadcn/ui & React.</strong></p>
-  <p>3 Specialized Vaults · 3,700+ Master Glyphs · 21,450+ Production SVGs · Zero Runtime Overhead · 100% Free & MIT.</p>
+  <p>4 Specialized Vaults · 5,700+ Master Glyphs · 27,600+ Production SVGs · Zero Runtime Overhead · 100% Free & MIT.</p>
 
   <p>
     <a href="https://www.fluxicons.site"><img src="https://img.shields.io/badge/Website-fluxicons.site-black?style=flat-square" alt="Website" /></a>
@@ -65,15 +65,16 @@ Most icon libraries give you a single style, a loose collection of symbols, and 
 
 ---
 
-## 🏛️ The Three Vaults
+## 🏛️ The Four Vaults
 
-Flux Icons organizes its 3,700+ glyphs into three distinct collections so that every part of your application gets the exact visual density it needs:
+Flux Icons organizes its 5,700+ glyphs into four distinct collections so that every part of your application gets the exact visual density it needs:
 
 | Vault | Master Glyphs | Production Files | Styles & Treatments | Primary Use Case |
 | :--- | :---: | :---: | :--- | :--- |
 | **01. Keyline** | `1,000` | 8,000 SVGs | `stroke`, `two-tone`, `duotone`, `fill` (Rounded & Sharp) | Core product navigation, actions, toolbars, and design system primitives. |
 | **02. Extended** | `2,242` | 13,450+ SVGs | `Linear`, `Bold`, `Two-Tone`, `Bulk`, `Broken`, `Outline` | Fintech, e-commerce, dashboards, crypto, settings panels, and complex workflows. |
 | **03. Motion** | `467` | 467 Components | Framer Motion interactive micro-animations | Hero sections, active toggle feedback, notifications, and micro-delight. |
+| **04. Energy** | `2,063` | 6,180+ SVGs | `linear`, `twotone`, `solid` | Clean tech, renewables, solar, wind, battery storage, EV charging, and climate. |
 
 ---
 
@@ -189,6 +190,36 @@ export function InteractiveToolbar() {
       
       {/* Controlled state */}
       <CheckMotion isCompleted={true} className="size-6 text-emerald-500" />
+    </div>
+  )
+}
+```
+
+---
+
+### 4. Energy React Icons (`@flux-icons/react/energy`)
+
+Clean energy, renewables, grid, storage, EV charging, clean fuels, and climate glyphs on a 24×24 keyline grid:
+
+```tsx
+import { 
+  SolarPanel, 
+  WindTurbine, 
+  BatteryStorage, 
+  EvCharger, 
+  HydrogenTank,
+  HeatPump
+} from "@flux-icons/react/energy"
+
+export function CleanEnergyDashboard() {
+  return (
+    <div className="flex items-center gap-4">
+      <SolarPanel size={24} className="text-amber-500" />
+      <WindTurbine size={24} className="text-sky-500" />
+      <BatteryStorage size={24} variant="twotone" className="text-emerald-500" />
+      <EvCharger size={24} className="text-indigo-500" />
+      <HydrogenTank size={24} className="text-cyan-500" />
+      <HeatPump size={24} variant="solid" className="text-teal-500" />
     </div>
   )
 }

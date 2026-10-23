@@ -485,3 +485,4 @@ export function toSvgDocument(body: string, size = 24, linecap = "round") {
     `stroke-linecap="${linecap}" stroke-linejoin="round">\n  ${body}\n</svg>\n`
   )
 }
+

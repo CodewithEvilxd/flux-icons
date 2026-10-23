@@ -290,7 +290,7 @@ export default async function Page() {
           than the column and would otherwise put a horizontal scrollbar on the
           page.
         */}
-        {/* SECTION 1: HERO STUDIO */}
+        {/* SECTION 1: HERO */}
         <section className="relative overflow-hidden pt-24 sm:pt-32 lg:pt-40 pb-20 lg:pb-32 bg-paper-grid">
           <IconWall
             icons={icons}
@@ -442,16 +442,16 @@ export default async function Page() {
           </div>
         </section>
 
-        {/* SECTION 01: THREE VAULTS (INTERACTIVE FOLDER PREVIEWS) */}
+        {/* SECTION 01: FOUR VAULTS (INTERACTIVE FOLDER PREVIEWS) */}
         <section className={`${CONTAINER} py-16 lg:py-24`}>
           <SectionHead
-            tag="SECTION 01: THREE SPECIALIZED VAULTS"
+            tag="SECTION 01: FOUR SPECIALIZED VAULTS"
             tagColor="blue"
-            title="One Ecosystem. Three Specialized Collections."
-            lead="Every style and dimension of modern UI icons, organized into three focused vaults with zero runtime bloat."
+            title="One Ecosystem. Four Specialized Collections."
+            lead="Every style and dimension of modern UI icons, organized into four focused vaults with zero runtime bloat."
           />
 
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Vault 1 Folder Card */}
             <div className="group relative flex flex-col justify-between rounded-2xl border border-border/80 bg-card/75 backdrop-blur-xl p-5 shadow-md hover:border-amber-500/60 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/10">
               <div className="flex items-center justify-between pb-2.5 border-b border-border/60">
@@ -568,6 +568,47 @@ export default async function Page() {
                     href="/motion"
                     aria-label="Open Flux Motion Vault"
                     className="inline-flex items-center gap-1 font-mono text-xs font-bold text-purple-600 dark:text-purple-400 hover:underline"
+                  >
+                    Open <ArrowRight className="size-3" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* Vault 4 Folder Card: Flux Energy */}
+            <div className="group relative flex flex-col justify-between rounded-2xl border border-emerald-500/40 bg-card/85 backdrop-blur-xl p-5 shadow-lg shadow-emerald-500/5 hover:border-emerald-500/80 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/15">
+              <div className="flex items-center justify-between pb-2.5 border-b border-border/60">
+                <div className="flex items-center gap-1.5">
+                  <span className="flex size-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                    CLEAN-TECH SUITE
+                  </span>
+                </div>
+                <span className="ann-tag-green font-mono text-[10px] font-bold">
+                  [ 2,063 ICONS ]
+                </span>
+              </div>
+              <div className="my-3 flex items-center justify-center">
+                <Folder color="emerald" size="md" variant="energy" href="/energy" />
+              </div>
+              <div className="flex flex-col gap-2 pt-3 border-t border-border/60">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-display text-base uppercase tracking-wide text-foreground">
+                    Flux Energy
+                  </h3>
+                  <span className="font-mono text-[10px] text-muted-foreground">Renewables &amp; Grid</span>
+                </div>
+                <p className="text-xs text-muted-foreground font-handwritten line-clamp-2">
+                  Specialized collection for solar, wind, battery storage, EV charging, clean fuels, and climate technology.
+                </p>
+                <div className="mt-2 flex items-center justify-between">
+                  <span className="font-mono text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">
+                    12 domains · 24×24 Grid
+                  </span>
+                  <Link
+                    href="/energy"
+                    aria-label="Open Flux Energy Vault"
+                    className="inline-flex items-center gap-1 font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline"
                   >
                     Open <ArrowRight className="size-3" />
                   </Link>
