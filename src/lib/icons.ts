@@ -90,7 +90,7 @@ function rootAttrs(svg: string): Record<string, string> {
   return out
 }
 
-const ICONS_DIR = join(process.cwd(), "icons")
+const ICONS_DIR = join(/*turbopackIgnore: true*/ process.cwd(), "icons")
 
 /**
  * A whole SVG document split the way `Glyph` wants it.

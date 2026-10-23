@@ -5,6 +5,23 @@ import type { NextConfig } from "next"
 const nextConfig: NextConfig = {
   allowedDevOrigins: ["127.0.0.1"],
   devIndicators: false,
+  /*
+    These trees are read by path at runtime. File tracing cannot infer the
+    directory walks and constructed filenames, so production deployments can
+    otherwise contain the routes without the drawings they serve.
+  */
+  outputFileTracingIncludes: {
+    "/*": ["./icons/**/*.svg"],
+    "/api/vault-icon": [
+      "./icons/**/*.svg",
+      "./public/glass-icons/**/*.svg",
+      "./public/pixelated/**/*.svg",
+      "./public/extended-icons/chunks/**/*.json",
+      "./public/energy-icons/chunks/**/*.json",
+      "./public/motion-icons/sources.json",
+      "./public/keyline-icons/chunks/**/*.json",
+    ],
+  },
   images: {
     /*
       Contributor avatars, which are `github.com/<handle>.png`. One host, and
